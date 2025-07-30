@@ -36,25 +36,18 @@ const prompt = ai.definePrompt({
   name: 'suggestResourcesPrompt',
   input: {schema: SuggestResourcesInputSchema},
   output: {schema: SuggestResourcesOutputSchema},
-  prompt: `You are an AI assistant specialized in finding high-quality, relevant online resources for university students.
-  For the given syllabus section, you must suggest a list of 3 to 5 online resources that will help a student understand the material better.
+  prompt: `
+    You are an expert curriculum assistant. Your goal is to find 3-5 high-quality online resources for a university student studying the following syllabus section.
 
-  You must provide your response in the JSON format specified by the output schema.
+    Syllabus Section:
+    "{{{syllabusSection}}}"
 
-  Guidelines:
-  1.  **Prioritize Quality:** Suggest resources from reputable sources like university websites (.edu), well-known educational platforms (Coursera, edX, Khan Academy), established technical blogs, and official documentation.
-  2.  **Variety of Media:** Include a mix of resources, such as articles, video tutorials (especially from YouTube), and interactive demos if possible.
-  3.  **Validate URLs:** Ensure all URLs you provide are valid, complete, and lead directly to the resource. Do not provide broken or placeholder links.
-  4.  **Relevance:** The description for each resource should clearly explain how it relates to the specified syllabus section.
-
-  Example of a good resource:
-  {
-    "title": "MIT OpenCourseWare - Introduction to Algorithms",
-    "url": "https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/",
-    "description": "A full university course on algorithms, covering topics like data structures, sorting, and graph algorithms which are central to the provided syllabus section."
-  }
-
-  Syllabus Section: {{{syllabusSection}}}
+    Guidelines:
+    1.  Provide a mix of resource types (e.g., video, article, tutorial).
+    2.  Prioritize reputable sources like university websites, established educational platforms, and well-known technical blogs.
+    3.  Ensure all URLs are valid and directly accessible.
+    4.  The description should clearly explain the resource's relevance.
+    5.  You MUST return the data in the specified JSON format.
   `,
 });
 
@@ -67,7 +60,7 @@ const suggestResourcesFlow = ai.defineFlow(
   async input => {
     try {
       const {output} = await prompt(input);
-      if (!output) {
+      if (!output || !output.resources || output.resources.length === 0) {
         // If the model returns no output, return an empty list of resources.
         return { resources: [] };
       }
