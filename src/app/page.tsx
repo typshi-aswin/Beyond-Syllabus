@@ -1,9 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, BookOpenCheck, BarChart3, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Header } from '@/components/common/Header';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  GraduationCap,
+  BookOpenCheck,
+  BarChart3,
+  ChevronRight,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Header } from "@/components/common/Header";
 
 export default function Home() {
   return (
@@ -20,20 +25,22 @@ export default function Home() {
                     WikiSyllabus
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Explore your university subjects, syllabus, and study resources in a click.
+                    Explore your university subjects, syllabus, and study
+                    resources in a click.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg" className="group">
                     <Link href="/select">
-                      Get Started <ChevronRight className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" />
+                      Get Started{" "}
+                      <ChevronRight className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </Button>
                 </div>
               </div>
               <div className="flex items-center justify-center">
                 <Image
-                  src="https://placehold.co/600x400.png"
+                  src="/studying.jpg"
                   width="600"
                   height="400"
                   alt="Students studying"
@@ -50,10 +57,16 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium">Key Features</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Learn Smarter, Not Harder</h2>
+                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium">
+                  Key Features
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Learn Smarter, Not Harder
+                </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our platform is designed to streamline your learning process, from understanding complex topics to finding the best study materials.
+                  Our platform is designed to streamline your learning process,
+                  from understanding complex topics to finding the best study
+                  materials.
                 </p>
               </div>
             </div>
@@ -67,7 +80,8 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-center text-muted-foreground">
-                    Access your complete university syllabus, broken down by program, semester, and subject.
+                    Access your complete university syllabus, broken down by
+                    program, semester, and subject.
                   </p>
                 </CardContent>
               </Card>
@@ -80,7 +94,8 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-center text-muted-foreground">
-                    Get concise summaries of your syllabus modules to grasp key concepts quickly.
+                    Get concise summaries of your syllabus modules to grasp key
+                    concepts quickly.
                   </p>
                 </CardContent>
               </Card>
@@ -93,7 +108,8 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-center text-muted-foreground">
-                    Track your learning progress through each module and semester with ease.
+                    Track your learning progress through each module and
+                    semester with ease.
                   </p>
                 </CardContent>
               </Card>
@@ -103,12 +119,22 @@ export default function Home() {
       </main>
 
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">&copy; 2024 WikiSyllabus. All rights reserved.</p>
+        <p className="text-xs text-muted-foreground">
+          &copy; 2024 WikiSyllabus. All rights reserved.
+        </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link href="#" className="text-xs hover:underline underline-offset-4" prefetch={false}>
+          <Link
+            href="#"
+            className="text-xs hover:underline underline-offset-4"
+            prefetch={false}
+          >
             Terms of Service
           </Link>
-          <Link href="#" className="text-xs hover:underline underline-offset-4" prefetch={false}>
+          <Link
+            href="#"
+            className="text-xs hover:underline underline-offset-4"
+            prefetch={false}
+          >
             Privacy
           </Link>
         </nav>
