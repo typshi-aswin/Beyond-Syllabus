@@ -17,10 +17,16 @@ export interface Semester {
   subjects: Subject[];
 }
 
-export interface Program {
+export interface Scheme {
   id: string;
   name: string;
   semesters: Semester[];
+}
+
+export interface Program {
+  id: string;
+  name: string;
+  schemes: Scheme[];
 }
 
 export interface University {

@@ -10,26 +10,30 @@ interface SubjectPageProps {
   params: {
     university: string;
     program: string;
+    scheme: string;
     semester: string;
     subject: string;
   };
 }
 
-export default async function SubjectPage({ params: { university: universityId, program: programId, semester: semesterId, subject: subjectId } }: SubjectPageProps) {
+export default async function SubjectPage({ params }: SubjectPageProps) {
+  const { university: universityId, program: programId, scheme: schemeId, semester: semesterId, subject: subjectId } = params;
+  
   const university = universities.find(u => u.id === universityId);
   const program = university?.programs.find(p => p.id === programId);
-  const semester = program?.semesters.find(s => s.id === semesterId);
+  const scheme = program?.schemes.find(s => s.id === schemeId);
+  const semester = scheme?.semesters.find(s => s.id === semesterId);
   const subject = semester?.subjects.find(sub => sub.id === subjectId);
 
-  if (!university || !program || !semester || !subject) {
+  if (!university || !program || !scheme || !semester || !subject) {
     notFound();
   }
 
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: university.name, href: '/select' },
-    { label: program.name, href: `/${university.id}/${program.id}/${semester.id}` },
-    { label: semester.name, href: `/${university.id}/${program.id}/${semester.id}` },
+    { label: program.name, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
+    { label: `${semester.name} (${scheme.name})`, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
     { label: subject.name },
   ];
 
