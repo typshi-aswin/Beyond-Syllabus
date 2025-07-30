@@ -1,3 +1,4 @@
+
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { universities } from '@/lib/data';
@@ -14,10 +15,10 @@ interface SubjectsPageProps {
   };
 }
 
-export default async function SubjectsPage({ params }: SubjectsPageProps) {
-  const university = universities.find(u => u.id === params.university);
-  const program = university?.programs.find(p => p.id === params.program);
-  const semester = program?.semesters.find(s => s.id === params.semester);
+export default async function SubjectsPage({ params: { university: universityId, program: programId, semester: semesterId } }: SubjectsPageProps) {
+  const university = universities.find(u => u.id === universityId);
+  const program = university?.programs.find(p => p.id === programId);
+  const semester = program?.semesters.find(s => s.id === semesterId);
 
   if (!university || !program || !semester) {
     notFound();
