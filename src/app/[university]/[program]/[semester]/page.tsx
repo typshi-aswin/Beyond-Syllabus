@@ -34,31 +34,33 @@ export default async function SubjectsPage({ params: { university: universityId,
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <Breadcrumbs items={breadcrumbItems} />
-        <div className="mt-6 mb-8">
-          <h1 className="text-3xl font-bold font-headline">{semester.name} Subjects</h1>
-          <p className="text-muted-foreground mt-1">
-            {program.name}, {university.name}
-          </p>
-        </div>
+      <main className="container mx-auto px-4 py-8 md:py-12">
+        <div className="max-w-5xl mx-auto">
+          <Breadcrumbs items={breadcrumbItems} />
+          <div className="mt-6 mb-10">
+            <h1 className="text-3xl font-bold font-headline md:text-4xl">{semester.name} Subjects</h1>
+            <p className="text-muted-foreground mt-2">
+              {program.name}, {university.name}
+            </p>
+          </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {semester.subjects.map(subject => (
-            <Link key={subject.id} href={`/${university.id}/${program.id}/${semester.id}/${subject.id}`}>
-              <Card className="h-full flex flex-col justify-between hover:border-primary hover:shadow-lg transition-all duration-300">
-                <CardHeader>
-                  <CardTitle>{subject.name}</CardTitle>
-                  <CardDescription>{subject.code}</CardDescription>
-                </CardHeader>
-                <CardFooter>
-                  <div className="flex items-center text-sm font-medium text-primary">
-                    View Syllabus <ArrowRight className="ml-2 h-4 w-4" />
-                  </div>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {semester.subjects.map(subject => (
+              <Link key={subject.id} href={`/${university.id}/${program.id}/${semester.id}/${subject.id}`}>
+                <Card className="h-full flex flex-col justify-between hover:border-primary hover:shadow-lg transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle>{subject.name}</CardTitle>
+                    <CardDescription>{subject.code}</CardDescription>
+                  </CardHeader>
+                  <CardFooter>
+                    <div className="flex items-center text-sm font-medium text-primary">
+                      View Syllabus <ArrowRight className="ml-2 h-4 w-4" />
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </main>
     </>
