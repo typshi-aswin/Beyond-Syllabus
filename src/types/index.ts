@@ -7,6 +7,7 @@ export interface Subject {
   id: string;
   name: string;
   code: string;
+  category?: 'Code' | 'Math' | 'Physics' | 'Core';
   modules: Module[];
   fullSyllabus: string;
 }

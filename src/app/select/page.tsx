@@ -6,14 +6,8 @@ export default function SelectPage() {
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-8 md:py-16">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold font-headline md:text-4xl">Select Your Academic Path</h1>
-            <p className="text-muted-foreground mt-2 max-w-xl mx-auto">
-              Choose your university, program, and semester to view the syllabus.
-            </p>
-          </div>
+      <main className="container mx-auto px-4 py-12 md:py-20">
+        <div className="max-w-3xl mx-auto">
           <SelectionForm universities={universities} />
         </div>
       </main>

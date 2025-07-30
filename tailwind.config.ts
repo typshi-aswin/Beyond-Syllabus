@@ -1,5 +1,7 @@
 import type {Config} from 'tailwindcss';
 
+const { fontFamily } = require('tailwindcss/defaultTheme');
+
 export default {
   darkMode: ['class'],
   content: [
@@ -17,9 +19,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
-        code: ['monospace'],
+        sans: ['var(--font-sans)', ...fontFamily.sans],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -74,6 +74,7 @@ export default {
         },
       },
       borderRadius: {
+        xl: `calc(var(--radius) + 4px)`,
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
@@ -100,7 +101,22 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      typography: (theme: (arg0: string) => any) => ({
+        DEFAULT: {
+          css: {
+            h1: {
+              fontFamily: `${theme('fontFamily.sans')}`,
+            },
+            h2: {
+              fontFamily: `${theme('fontFamily.sans')}`,
+            },
+            h3: {
+              fontFamily: `${theme('fontFamily.sans')}`,
+            },
+          }
+        }
+      })
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 } satisfies Config;

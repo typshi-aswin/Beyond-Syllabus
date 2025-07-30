@@ -28,33 +28,34 @@ export default async function SubjectPage({ params: { university: universityId, 
   }
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
     { label: university.name, href: '/select' },
-    { label: program.name, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
-    { label: `${semester.name} (${scheme.name})`, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
+    { label: program.name, href: '/select' },
+    { label: `${scheme.name}`, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
+    { label: semester.name, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
     { label: subject.name },
   ];
 
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-8 md:py-16">
-        <div className="max-w-5xl mx-auto">
+      <main className="container mx-auto px-4 py-8 md:py-12">
+        <div className="max-w-6xl mx-auto">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="mt-6 mb-10">
-            <h1 className="text-3xl font-bold font-headline md:text-4xl">{subject.name}</h1>
+          
+          <div className="mt-8 mb-12">
+            <h1 className="text-3xl font-bold md:text-4xl">{subject.name}</h1>
             <p className="text-muted-foreground mt-2 text-lg">{subject.code}</p>
           </div>
 
-          <div className="grid gap-16 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-8">
-              <h2 className="text-2xl font-bold font-headline">Course Modules</h2>
-              <CourseModules modules={subject.modules} />
-            </div>
+          <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
             <div className="space-y-8">
-              <h2 className="text-2xl font-bold font-headline">AI-Powered Tools</h2>
-              <SyllabusSummary fullSyllabus={subject.fullSyllabus} />
+              <h2 className="text-2xl font-bold">Course Modules</h2>
+              <CourseModules subjectId={subject.id} modules={subject.modules} />
             </div>
+            <aside className="space-y-8">
+              <h2 className="text-2xl font-bold">AI-Powered Tools</h2>
+              <SyllabusSummary fullSyllabus={subject.fullSyllabus} />
+            </aside>
           </div>
         </div>
       </main>
