@@ -277,22 +277,187 @@ Module 5: System security.`,
                 name: 'Semester 1',
                 subjects: [
                   {
-                    id: 'mat101_24',
-                    code: 'MAT101',
-                    name: 'Advanced Calculus and Linear Algebra',
-                    fullSyllabus: `2024 Scheme: Module 1: Systems of linear equations, matrices.
-Module 2: Vector spaces, basis and dimension.
-Module 3: Linear transformations, eigenvalues and eigenvectors.
-Module 4: Differential calculus, limits, continuity, derivatives.
-Module 5: Integral calculus, definite and indefinite integrals.`,
+                    id: 'cs24_101',
+                    code: 'CSU101',
+                    name: 'Computational Thinking & Programming',
+                    fullSyllabus: `Module 1: Introduction to Computational Thinking.
+Module 2: Python Basics.
+Module 3: Control Flow and Functions.
+Module 4: Data Structures in Python.
+Module 5: File Handling and Modules.`,
                     modules: [
-                      { title: 'Linear Equations and Matrices', content: 'Solving systems of linear equations using matrices, row echelon form, determinants.' },
+                      { title: 'Computational Thinking', content: 'Decomposition, Pattern Recognition, Abstraction, Algorithms.' },
+                      { title: 'Python Basics', content: 'Variables, data types, operators, input/output.' },
+                      { title: 'Control Flow', content: 'Conditional statements (if-else), loops (for, while), functions.' },
+                      { title: 'Data Structures', content: 'Lists, tuples, dictionaries, and sets.' },
+                      { title: 'File Handling', content: 'Reading from and writing to files. Using Python modules.' },
                     ],
                   },
-                ]
-              }
-            ]
-          }
+                ],
+              },
+              {
+                id: 's2',
+                name: 'Semester 2',
+                subjects: [
+                  {
+                    id: 'cs24_201',
+                    code: 'CSU201',
+                    name: 'Programming in C++',
+                    fullSyllabus: `Module 1: Introduction to C++.
+Module 2: Control Structures and Functions.
+Module 3: Arrays and Pointers.
+Module 4: Object-Oriented Programming Concepts.
+Module 5: Inheritance and Polymorphism.`,
+                    modules: [
+                      { title: 'Introduction to C++', content: 'Basic syntax, variables, data types, operators.' },
+                      { title: 'Control Structures', content: 'If-else, loops, switch-case. Functions and recursion.' },
+                      { title: 'Arrays and Pointers', content: 'Working with arrays, understanding pointers and memory management.' },
+                      { title: 'OOP Concepts', content: 'Classes, objects, encapsulation, constructors, destructors.' },
+                      { title: 'Inheritance and Polymorphism', content: 'Implementing inheritance, virtual functions, and polymorphism.' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 's3',
+                name: 'Semester 3',
+                subjects: [
+                  {
+                    id: 'cs24_301',
+                    code: 'CSU301',
+                    name: 'Data Structures & Algorithms',
+                    fullSyllabus: `Module 1: Advanced Data Structures.
+Module 2: Algorithm Design Techniques.
+Module 3: Graph Algorithms.
+Module 4: Complexity Classes.
+Module 5: Advanced Topics.`,
+                    modules: [
+                      { title: 'Advanced Data Structures', content: 'Heaps, Balanced Trees (AVL, Red-Black), Tries.' },
+                      { title: 'Algorithm Design', content: 'Divide and Conquer, Dynamic Programming, Greedy Algorithms.' },
+                      { title: 'Graph Algorithms', content: 'Dijkstra\'s, Floyd-Warshall, Kruskal\'s, Prim\'s algorithms.' },
+                      { title: 'Complexity', content: 'Analysis of algorithms, P, NP, and NP-Complete problems.' },
+                      { title: 'Advanced Topics', content: 'String matching algorithms, computational geometry.' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 's4',
+                name: 'Semester 4',
+                subjects: [
+                  {
+                    id: 'cs24_401',
+                    code: 'CSU401',
+                    name: 'Database Management Systems (2024)',
+                    fullSyllabus: `Module 1: Modern Database Architectures.
+Module 2: NoSQL Databases.
+Module 3: Big Data and Cloud Databases.
+Module 4: Advanced SQL and Query Optimization.
+Module 5: Database Security.`,
+                    modules: [
+                      { title: 'Database Architectures', content: 'Distributed databases, data warehousing, OLAP.' },
+                      { title: 'NoSQL Databases', content: 'Key-value stores, document databases, graph databases (e.g., MongoDB, Neo4j).' },
+                      { title: 'Big Data', content: 'Introduction to Hadoop, Spark, and cloud database solutions.' },
+                      { title: 'Query Optimization', content: 'Advanced indexing, query execution plans, performance tuning.' },
+                      { title: 'Database Security', content: 'Access control, encryption, data privacy regulations.' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 's5',
+                name: 'Semester 5',
+                subjects: [
+                  {
+                    id: 'cs24_501',
+                    code: 'CSU501',
+                    name: 'Operating Systems (2024)',
+                    fullSyllabus: `Module 1: Modern OS Concepts.
+Module 2: Concurrency and Parallelism.
+Module 3: Virtualization and Cloud.
+Module 4: Distributed Operating Systems.
+Module 5: OS Security.`,
+                    modules: [
+                      { title: 'Modern OS Concepts', content: 'Microkernels, monolithic kernels, hybrid kernels.' },
+                      { title: 'Concurrency', content: 'Multithreading, race conditions, advanced synchronization.' },
+                      { title: 'Virtualization', content: 'Hypervisors, containers (Docker), cloud computing concepts.' },
+                      { title: 'Distributed OS', content: 'Architecture, communication, and synchronization in distributed systems.' },
+                      { title: 'OS Security', content: 'Modern security threats, secure boot, access control models.' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 's6',
+                name: 'Semester 6',
+                subjects: [
+                  {
+                    id: 'cs24_601',
+                    code: 'CSU601',
+                    name: 'Computer Networks (2024)',
+                    fullSyllabus: `Module 1: Software-Defined Networking (SDN).
+Module 2: Network Functions Virtualization (NFV).
+Module 3: Wireless and Mobile Networks.
+Module 4: Network Security.
+Module 5: IoT Networking.`,
+                    modules: [
+                      { title: 'SDN', content: 'Architecture, control plane, data plane, OpenFlow.' },
+                      { title: 'NFV', content: 'Concepts, architecture, virtualized network functions.' },
+                      { title: 'Wireless Networks', content: '5G, Wi-Fi 6, mobile IP, ad-hoc networks.' },
+                      { title: 'Network Security', content: 'Firewalls, IDS/IPS, VPNs, modern cryptographic protocols.' },
+                      { title: 'IoT Networking', content: 'Protocols (MQTT, CoAP), low-power WANs.' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 's7',
+                name: 'Semester 7',
+                subjects: [
+                  {
+                    id: 'cs24_701',
+                    code: 'CSU701',
+                    name: 'AI and Machine Learning',
+                    fullSyllabus: `Module 1: Foundations of AI & ML.
+Module 2: Deep Learning.
+Module 3: Natural Language Processing.
+Module 4: Reinforcement Learning.
+Module 5: AI Ethics and Governance.`,
+                    modules: [
+                      { title: 'Foundations', content: 'Advanced search algorithms, Bayesian networks.' },
+                      { title: 'Deep Learning', content: 'CNNs, RNNs, Transformers, Generative Models (GANs, VAEs).' },
+                      { title: 'NLP', content: 'Language models, sentiment analysis, machine translation.' },
+                      { title: 'Reinforcement Learning', content: 'Q-learning, policy gradients, deep Q-networks.' },
+                      { title: 'AI Ethics', content: 'Bias, fairness, accountability, and transparency in AI.' },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: 's8',
+                name: 'Semester 8',
+                subjects: [
+                  {
+                    id: 'cs24_801',
+                    code: 'CSU801',
+                    name: 'Project and Seminar',
+                    fullSyllabus: `Module 1: Project Ideation.
+Module 2: Literature Review.
+Module 3: Design and Implementation.
+Module 4: Testing and Evaluation.
+Module 5: Documentation and Presentation.`,
+                    modules: [
+                      { title: 'Project Ideation', content: 'Identifying a problem, defining scope and objectives.' },
+                      { title: 'Literature Review', content: 'Researching existing solutions and technologies.' },
+                      { title: 'Implementation', content: 'Developing the project based on the design.' },
+                      { title: 'Evaluation', content: 'Testing the project and analyzing results.' },
+                      { title: 'Presentation', content: 'Documenting the project and presenting the findings.' },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
       {
@@ -380,7 +545,14 @@ Module 5: Digital integrated circuits.`,
             id: '2024',
             name: '2024 Scheme',
             semesters: [
-                { id: 's1', name: 'Semester 1', subjects: [ { id: 'ece101_24', name: 'Intro to ECE (2024)', code: 'ECE101', fullSyllabus: '...', modules: [] } ] }
+                { id: 's1', name: 'Semester 1', subjects: [ { id: 'ec24_101', name: 'Intro to ECE (2024)', code: 'ECU101', fullSyllabus: '...', modules: [] } ] },
+                { id: 's2', name: 'Semester 2', subjects: [ { id: 'ec24_201', name: 'Electronic Devices & Circuits', code: 'ECU201', fullSyllabus: '...', modules: [] } ] },
+                { id: 's3', name: 'Semester 3', subjects: [ { id: 'ec24_301', name: 'Analog Circuits', code: 'ECU301', fullSyllabus: '...', modules: [] } ] },
+                { id: 's4', name: 'Semester 4', subjects: [ { id: 'ec24_401', name: 'Signals and Systems', code: 'ECU401', fullSyllabus: '...', modules: [] } ] },
+                { id: 's5', name: 'Semester 5', subjects: [ { id: 'ec24_501', name: 'Digital Communication', code: 'ECU501', fullSyllabus: '...', modules: [] } ] },
+                { id: 's6', name: 'Semester 6', subjects: [ { id: 'ec24_601', name: 'Digital Signal Processing', code: 'ECU601', fullSyllabus: '...', modules: [] } ] },
+                { id: 's7', name: 'Semester 7', subjects: [ { id: 'ec24_701', name: 'VLSI Design', code: 'ECU701', fullSyllabus: '...', modules: [] } ] },
+                { id: 's8', name: 'Semester 8', subjects: [ { id: 'ec24_801', name: 'Project Work', code: 'ECU801', fullSyllabus: '...', modules: [] } ] },
             ]
           }
         ]
@@ -417,7 +589,14 @@ Module 5: Digital integrated circuits.`,
             id: '2024',
             name: '2024 Scheme',
             semesters: [
-                { id: 's1', name: 'Semester 1', subjects: [ { id: 'me101_24', name: 'Intro to ME (2024)', code: 'ME101', fullSyllabus: '...', modules: [] } ] }
+                { id: 's1', name: 'Semester 1', subjects: [ { id: 'me24_101', name: 'Intro to ME (2024)', code: 'MEU101', fullSyllabus: '...', modules: [] } ] },
+                { id: 's2', name: 'Semester 2', subjects: [ { id: 'me24_201', name: 'Engineering Mechanics', code: 'MEU201', fullSyllabus: '...', modules: [] } ] },
+                { id: 's3', name: 'Semester 3', subjects: [ { id: 'me24_301', name: 'Mechanics of Solids', code: 'MEU301', fullSyllabus: '...', modules: [] } ] },
+                { id: 's4', name: 'Semester 4', subjects: [ { id: 'me24_401', name: 'Manufacturing Technology', code: 'MEU401', fullSyllabus: '...', modules: [] } ] },
+                { id: 's5', name: 'Semester 5', subjects: [ { id: 'me24_501', name: 'Heat Transfer', code: 'MEU501', fullSyllabus: '...', modules: [] } ] },
+                { id: 's6', name: 'Semester 6', subjects: [ { id: 'me24_601', name: 'Machine Design I', code: 'MEU601', fullSyllabus: '...', modules: [] } ] },
+                { id: 's7', name: 'Semester 7', subjects: [ { id: 'me24_701', name: 'Industrial Engineering', code: 'MEU701', fullSyllabus: '...', modules: [] } ] },
+                { id: 's8', name: 'Semester 8', subjects: [ { id: 'me24_801', name: 'Project Work', code: 'MEU801', fullSyllabus: '...', modules: [] } ] },
             ]
           }
         ]
@@ -454,7 +633,14 @@ Module 5: Digital integrated circuits.`,
             id: '2024',
             name: '2024 Scheme',
             semesters: [
-                { id: 's1', name: 'Semester 1', subjects: [ { id: 'ce101_24', name: 'Intro to CE (2024)', code: 'CE101', fullSyllabus: '...', modules: [] } ] }
+                { id: 's1', name: 'Semester 1', subjects: [ { id: 'ce24_101', name: 'Intro to CE (2024)', code: 'CEU101', fullSyllabus: '...', modules: [] } ] },
+                { id: 's2', name: 'Semester 2', subjects: [ { id: 'ce24_201', name: 'Surveying & Geomatics', code: 'CEU201', fullSyllabus: '...', modules: [] } ] },
+                { id: 's3', name: 'Semester 3', subjects: [ { id: 'ce24_301', name: 'Mechanics of Solids', code: 'CEU301', fullSyllabus: '...', modules: [] } ] },
+                { id: 's4', name: 'Semester 4', subjects: [ { id: 'ce24_401', name: 'Structural Analysis I', code: 'CEU401', fullSyllabus: '...', modules: [] } ] },
+                { id: 's5', name: 'Semester 5', subjects: [ { id: 'ce24_501', name: 'Geotechnical Engineering I', code: 'CEU501', fullSyllabus: '...', modules: [] } ] },
+                { id: 's6', name: 'Semester 6', subjects: [ { id: 'ce24_601', name: 'Design of Concrete Structures', code: 'CEU601', fullSyllabus: '...', modules: [] } ] },
+                { id: 's7', name: 'Semester 7', subjects: [ { id: 'ce24_701', name: 'Design of Steel Structures', code: 'CEU701', fullSyllabus: '...', modules: [] } ] },
+                { id: 's8', name: 'Semester 8', subjects: [ { id: 'ce24_801', name: 'Project Work', code: 'CEU801', fullSyllabus: '...', modules: [] } ] },
             ]
           }
         ]
@@ -491,7 +677,14 @@ Module 5: Digital integrated circuits.`,
             id: '2024',
             name: '2024 Scheme',
             semesters: [
-              { id: 's1', name: 'Semester 1', subjects: [ { id: 'eee101_24', name: 'Intro to EEE (2024)', code: 'EEE101', fullSyllabus: '...', modules: [] } ] }
+              { id: 's1', name: 'Semester 1', subjects: [ { id: 'ee24_101', name: 'Intro to EEE (2024)', code: 'EEU101', fullSyllabus: '...', modules: [] } ] },
+              { id: 's2', name: 'Semester 2', subjects: [ { id: 'ee24_201', name: 'Electric Circuit Theory', code: 'EEU201', fullSyllabus: '...', modules: [] } ] },
+              { id: 's3', name: 'Semester 3', subjects: [ { id: 'ee24_301', name: 'Analog Electronics', code: 'EEU301', fullSyllabus: '...', modules: [] } ] },
+              { id: 's4', name: 'Semester 4', subjects: [ { id: 'ee24_401', name: 'DC Machines & Transformers', code: 'EEU401', fullSyllabus: '...', modules: [] } ] },
+              { id: 's5', name: 'Semester 5', subjects: [ { id: 'ee24_501', name: 'Power Systems I', code: 'EEU501', fullSyllabus: '...', modules: [] } ] },
+              { id: 's6', name: 'Semester 6', subjects: [ { id: 'ee24_601', name: 'Control Systems', code: 'EEU601', fullSyllabus: '...', modules: [] } ] },
+              { id: 's7', name: 'Semester 7', subjects: [ { id: 'ee24_701', name: 'Power Electronics', code: 'EEU701', fullSyllabus: '...', modules: [] } ] },
+              { id: 's8', name: 'Semester 8', subjects: [ { id: 'ee24_801', name: 'Electric Drives', code: 'EEU801', fullSyllabus: '...', modules: [] } ] },
             ]
           }
         ]
