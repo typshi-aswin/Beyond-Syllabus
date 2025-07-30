@@ -472,16 +472,16 @@ Module 5: Documentation and Presentation.`,
                 id: 's1',
                 name: 'Semester 1',
                 subjects: [
-                    { id: 'mat101', name: 'Linear Algebra and Calculus', code: 'MAT101', fullSyllabus: '...', modules: [] },
-                    { id: 'phy101', name: 'Engineering Physics', code: 'PHY101', fullSyllabus: '...', modules: [] }
+                    { id: 'mat101', name: 'Linear Algebra and Calculus', code: 'MAT101', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] },
+                    { id: 'phy101', name: 'Engineering Physics', code: 'PHY101', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] }
                 ]
               },
               {
                 id: 's2',
                 name: 'Semester 2',
                 subjects: [
-                    { id: 'cyt100', name: 'Engineering Chemistry', code: 'CYT100', fullSyllabus: '...', modules: [] },
-                    { id: 'est100', name: 'Engineering Mechanics', code: 'EST100', fullSyllabus: '...', modules: [] }
+                    { id: 'cyt100', name: 'Engineering Chemistry', code: 'CYT100', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] },
+                    { id: 'est100', name: 'Engineering Mechanics', code: 'EST100', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] }
                 ]
               },
               {
@@ -525,19 +525,19 @@ Module 5: Digital integrated circuits.`,
                 ]
               },
               {
-                id: 's4', name: 'Semester 4', subjects: [ { id: 'ect202', name: 'Analog Circuits', code: 'ECT202', fullSyllabus: '...', modules: [] } ]
+                id: 's4', name: 'Semester 4', subjects: [ { id: 'ect202', name: 'Analog Circuits', code: 'ECT202', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ]
               },
               {
-                id: 's5', name: 'Semester 5', subjects: [ { id: 'ect301', name: 'Linear Integrated Circuits', code: 'ECT301', fullSyllabus: '...', modules: [] } ]
+                id: 's5', name: 'Semester 5', subjects: [ { id: 'ect301', name: 'Linear Integrated Circuits', code: 'ECT301', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ]
               },
               {
-                id: 's6', name: 'Semester 6', subjects: [ { id: 'ect302', name: 'Digital Signal Processing', code: 'ECT302', fullSyllabus: '...', modules: [] } ]
+                id: 's6', name: 'Semester 6', subjects: [ { id: 'ect302', name: 'Digital Signal Processing', code: 'ECT302', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ]
               },
               {
-                id: 's7', name: 'Semester 7', subjects: [ { id: 'ect401', name: 'Microwave Engineering', code: 'ECT401', fullSyllabus: '...', modules: [] } ]
+                id: 's7', name: 'Semester 7', subjects: [ { id: 'ect401', name: 'Microwave Engineering', code: 'ECT401', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ]
               },
               {
-                id: 's8', name: 'Semester 8', subjects: [ { id: 'ect402', name: 'Optical Communication', code: 'ECT402', fullSyllabus: '...', modules: [] } ]
+                id: 's8', name: 'Semester 8', subjects: [ { id: 'ect402', name: 'Optical Communication', code: 'ECT402', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ]
               },
             ]
           },
@@ -577,12 +577,12 @@ Module 5: Digital integrated circuits.`,
                   { id: 'est100', name: 'Engineering Mechanics', code: 'EST100', fullSyllabus: '...', modules: [] }
                 ]
               },
-              { id: 's3', name: 'Semester 3', subjects: [ { id: 'met201', name: 'Mechanics of Solids', code: 'MET201', fullSyllabus: '...', modules: [] } ] },
-              { id: 's4', name: 'Semester 4', subjects: [ { id: 'met202', name: 'Thermodynamics', code: 'MET202', fullSyllabus: '...', modules: [] } ] },
-              { id: 's5', name: 'Semester 5', subjects: [ { id: 'met301', name: 'Fluid Mechanics', code: 'MET301', fullSyllabus: '...', modules: [] } ] },
-              { id: 's6', name: 'Semester 6', subjects: [ { id: 'met302', name: 'Heat and Mass Transfer', code: 'MET302', fullSyllabus: '...', modules: [] } ] },
-              { id: 's7', name: 'Semester 7', subjects: [ { id: 'met401', name: 'Machine Design', code: 'MET401', fullSyllabus: '...', modules: [] } ] },
-              { id: 's8', name: 'Semester 8', subjects: [ { id: 'met402', name: 'Finite Element Analysis', code: 'MET402', fullSyllabus: '...', modules: [] } ] },
+              { id: 's3', name: 'Semester 3', subjects: [ { id: 'met201', name: 'Mechanics of Solids', code: 'MET201', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's4', name: 'Semester 4', subjects: [ { id: 'met202', name: 'Thermodynamics', code: 'MET202', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's5', name: 'Semester 5', subjects: [ { id: 'met301', name: 'Fluid Mechanics', code: 'MET301', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's6', name: 'Semester 6', subjects: [ { id: 'met302', name: 'Heat and Mass Transfer', code: 'MET302', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's7', name: 'Semester 7', subjects: [ { id: 'met401', name: 'Machine Design', code: 'MET401', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's8', name: 'Semester 8', subjects: [ { id: 'met402', name: 'Finite Element Analysis', code: 'MET402', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
             ]
           },
           {
@@ -621,12 +621,12 @@ Module 5: Digital integrated circuits.`,
                   { id: 'est100', name: 'Engineering Mechanics', code: 'EST100', fullSyllabus: '...', modules: [] }
                 ]
               },
-              { id: 's3', name: 'Semester 3', subjects: [ { id: 'cet201', name: 'Surveying', code: 'CET201', fullSyllabus: '...', modules: [] } ] },
-              { id: 's4', name: 'Semester 4', subjects: [ { id: 'cet202', name: 'Structural Analysis I', code: 'CET202', fullSyllabus: '...', modules: [] } ] },
-              { id: 's5', name: 'Semester 5', subjects: [ { id: 'cet301', name: 'Geotechnical Engineering I', code: 'CET301', fullSyllabus: '...', modules: [] } ] },
-              { id: 's6', name: 'Semester 6', subjects: [ { id: 'cet302', name: 'Transportation Engineering I', code: 'CET302', fullSyllabus: '...', modules: [] } ] },
-              { id: 's7', name: 'Semester 7', subjects: [ { id: 'cet401', name: 'Design of Concrete Structures II', code: 'CET401', fullSyllabus: '...', modules: [] } ] },
-              { id: 's8', name: 'Semester 8', subjects: [ { id: 'cet402', name: 'Environmental Engineering II', code: 'CET402', fullSyllabus: '...', modules: [] } ] },
+              { id: 's3', name: 'Semester 3', subjects: [ { id: 'cet201', name: 'Surveying', code: 'CET201', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's4', name: 'Semester 4', subjects: [ { id: 'cet202', name: 'Structural Analysis I', code: 'CET202', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's5', name: 'Semester 5', subjects: [ { id: 'cet301', name: 'Geotechnical Engineering I', code: 'CET301', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's6', name: 'Semester 6', subjects: [ { id: 'cet302', name: 'Transportation Engineering I', code: 'CET302', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's7', name: 'Semester 7', subjects: [ { id: 'cet401', name: 'Design of Concrete Structures II', code: 'CET401', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+              { id: 's8', name: 'Semester 8', subjects: [ { id: 'cet402', name: 'Environmental Engineering II', code: 'CET402', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
             ]
           },
           {
@@ -665,12 +665,12 @@ Module 5: Digital integrated circuits.`,
                         { id: 'est100', name: 'Engineering Mechanics', code: 'EST100', fullSyllabus: '...', modules: [] }
                     ]
                 },
-                { id: 's3', name: 'Semester 3', subjects: [ { id: 'eet201', name: 'Circuits and Networks', code: 'EET201', fullSyllabus: '...', modules: [] } ] },
-                { id: 's4', name: 'Semester 4', subjects: [ { id: 'eet202', name: 'DC Machines and Transformers', code: 'EET202', fullSyllabus: '...', modules: [] } ] },
-                { id: 's5', name: 'Semester 5', subjects: [ { id: 'eet301', name: 'Power Systems I', code: 'EET301', fullSyllabus: '...', modules: [] } ] },
-                { id: 's6', name: 'Semester 6', subjects: [ { id: 'eet302', name: 'Control Systems', code: 'EET302', fullSyllabus: '...', modules: [] } ] },
-                { id: 's7', name: 'Semester 7', subjects: [ { id: 'eet401', name: 'Power Electronics', code: 'EET401', fullSyllabus: '...', modules: [] } ] },
-                { id: 's8', name: 'Semester 8', subjects: [ { id: 'eet402', name: 'Electric Drives', code: 'EET402', fullSyllabus: '...', modules: [] } ] },
+                { id: 's3', name: 'Semester 3', subjects: [ { id: 'eet201', name: 'Circuits and Networks', code: 'EET201', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+                { id: 's4', name: 'Semester 4', subjects: [ { id: 'eet202', name: 'DC Machines and Transformers', code: 'EET202', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+                { id: 's5', name: 'Semester 5', subjects: [ { id: 'eet301', name: 'Power Systems I', code: 'EET301', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+                { id: 's6', name: 'Semester 6', subjects: [ { id: 'eet302', name: 'Control Systems', code: 'EET302', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+                { id: 's7', name: 'Semester 7', subjects: [ { id: 'eet401', name: 'Power Electronics', code: 'EET401', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
+                { id: 's8', name: 'Semester 8', subjects: [ { id: 'eet402', name: 'Electric Drives', code: 'EET402', fullSyllabus: 'Syllabus content...', modules: [{title: 'Module 1', content: 'Content...'}] } ] },
             ]
           },
           {

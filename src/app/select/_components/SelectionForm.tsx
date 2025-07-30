@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,41 +15,44 @@ interface SelectionFormProps {
 export function SelectionForm({ universities }: SelectionFormProps) {
   const router = useRouter();
 
-  const [selectedUniversity, setSelectedUniversity] = useState<University | null>(universities.find(u => u.id === 'ktu') || null);
-  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
-  const [selectedScheme, setSelectedScheme] = useState<Scheme | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
+  const [selectedUniversityId, setSelectedUniversityId] = useState<string>('ktu');
+  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
+  const [selectedSchemeId, setSelectedSchemeId] = useState<string | null>(null);
+  const [selectedSemesterId, setSelectedSemesterId] = useState<string | null>(null);
 
-  const handleUniversityChange = (id: string) => {
-    const university = universities.find(u => u.id === id) || null;
-    setSelectedUniversity(university);
-    setSelectedProgram(null);
-    setSelectedScheme(null);
-    setSelectedSemester(null);
-  };
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [schemes, setSchemes] = useState<Scheme[]>([]);
+  const [semesters, setSemesters] = useState<Semester[]>([]);
 
-  const handleProgramChange = (id: string) => {
-    const program = selectedUniversity?.programs.find(p => p.id === id) || null;
-    setSelectedProgram(program);
-    setSelectedScheme(null);
-    setSelectedSemester(null);
-  };
-  
-  const handleSchemeChange = (id: string) => {
-    const scheme = selectedProgram?.schemes.find(s => s.id === id) || null;
-    setSelectedScheme(scheme);
-    setSelectedSemester(null);
-  };
+  useEffect(() => {
+    const university = universities.find(u => u.id === selectedUniversityId);
+    setPrograms(university?.programs || []);
+    setSelectedProgramId(null);
+    setSelectedSchemeId(null);
+    setSelectedSemesterId(null);
+    setSchemes([]);
+    setSemesters([]);
+  }, [selectedUniversityId, universities]);
 
-  const handleSemesterChange = (id: string) => {
-    const semester = selectedScheme?.semesters.find(s => s.id === id) || null;
-    setSelectedSemester(semester);
-  };
+  useEffect(() => {
+    const program = programs.find(p => p.id === selectedProgramId);
+    setSchemes(program?.schemes || []);
+    setSelectedSchemeId(null);
+    setSelectedSemesterId(null);
+    setSemesters([]);
+  }, [selectedProgramId, programs]);
+
+  useEffect(() => {
+    const scheme = schemes.find(s => s.id === selectedSchemeId);
+    setSemesters(scheme?.semesters || []);
+    setSelectedSemesterId(null);
+  }, [selectedSchemeId, schemes]);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedUniversity && selectedProgram && selectedScheme && selectedSemester) {
-      router.push(`/${selectedUniversity.id}/${selectedProgram.id}/${selectedScheme.id}/${selectedSemester.id}`);
+    if (selectedUniversityId && selectedProgramId && selectedSchemeId && selectedSemesterId) {
+      router.push(`/${selectedUniversityId}/${selectedProgramId}/${selectedSchemeId}/${selectedSemesterId}`);
     }
   };
 
@@ -62,7 +65,7 @@ export function SelectionForm({ universities }: SelectionFormProps) {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="university">University</Label>
-            <Select onValueChange={handleUniversityChange} defaultValue="ktu">
+            <Select onValueChange={setSelectedUniversityId} defaultValue="ktu">
               <SelectTrigger id="university">
                 <SelectValue placeholder="Select University" />
               </SelectTrigger>
@@ -76,12 +79,12 @@ export function SelectionForm({ universities }: SelectionFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="program">Program (Branch)</Label>
-            <Select onValueChange={handleProgramChange} disabled={!selectedUniversity} value={selectedProgram?.id || ''}>
+            <Select onValueChange={setSelectedProgramId} disabled={!selectedUniversityId} value={selectedProgramId || ''}>
               <SelectTrigger id="program">
                 <SelectValue placeholder="Select Program" />
               </SelectTrigger>
               <SelectContent>
-                {selectedUniversity?.programs.map(prog => (
+                {programs.map(prog => (
                   <SelectItem key={prog.id} value={prog.id}>{prog.name}</SelectItem>
                 ))}
               </SelectContent>
@@ -90,12 +93,12 @@ export function SelectionForm({ universities }: SelectionFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="scheme">Scheme</Label>
-            <Select onValueChange={handleSchemeChange} disabled={!selectedProgram} value={selectedScheme?.id || ''}>
+            <Select onValueChange={setSelectedSchemeId} disabled={!selectedProgramId} value={selectedSchemeId || ''}>
               <SelectTrigger id="scheme">
                 <SelectValue placeholder="Select Scheme" />
               </SelectTrigger>
               <SelectContent>
-                {selectedProgram?.schemes.map(sch => (
+                {schemes.map(sch => (
                   <SelectItem key={sch.id} value={sch.id}>{sch.name}</SelectItem>
                 ))}
               </SelectContent>
@@ -104,12 +107,12 @@ export function SelectionForm({ universities }: SelectionFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="semester">Semester</Label>
-            <Select onValueChange={handleSemesterChange} disabled={!selectedScheme} value={selectedSemester?.id || ''}>
+            <Select onValueChange={setSelectedSemesterId} disabled={!selectedSchemeId} value={selectedSemesterId || ''}>
               <SelectTrigger id="semester">
                 <SelectValue placeholder="Select Semester" />
               </SelectTrigger>
               <SelectContent>
-                {selectedScheme?.semesters.map(sem => (
+                {semesters.map(sem => (
                   <SelectItem key={sem.id} value={sem.id}>{sem.name}</SelectItem>
                 ))}
               </SelectContent>
@@ -117,7 +120,7 @@ export function SelectionForm({ universities }: SelectionFormProps) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full" disabled={!selectedSemester}>
+          <Button type="submit" className="w-full" disabled={!selectedSemesterId}>
             View Subjects
           </Button>
         </CardFooter>
