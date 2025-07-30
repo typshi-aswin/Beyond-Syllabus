@@ -14,7 +14,7 @@ interface SubjectPageProps {
   };
 }
 
-export default function SubjectPage({ params }: SubjectPageProps) {
+export default async function SubjectPage({ params }: SubjectPageProps) {
   const university = universities.find(u => u.id === params.university);
   const program = university?.programs.find(p => p.id === params.program);
   const semester = program?.semesters.find(s => s.id === params.semester);
