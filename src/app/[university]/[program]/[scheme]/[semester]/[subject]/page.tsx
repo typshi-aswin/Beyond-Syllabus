@@ -16,9 +16,7 @@ interface SubjectPageProps {
   };
 }
 
-export default async function SubjectPage({ params }: SubjectPageProps) {
-  const { university: universityId, program: programId, scheme: schemeId, semester: semesterId, subject: subjectId } = params;
-  
+export default async function SubjectPage({ params: { university: universityId, program: programId, scheme: schemeId, semester: semesterId, subject: subjectId } }: SubjectPageProps) {
   const university = universities.find(u => u.id === universityId);
   const program = university?.programs.find(p => p.id === programId);
   const scheme = program?.schemes.find(s => s.id === schemeId);
@@ -40,7 +38,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-8 md:py-12">
+      <main className="container mx-auto px-4 py-8 md:py-16">
         <div className="max-w-5xl mx-auto">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="mt-6 mb-10">
