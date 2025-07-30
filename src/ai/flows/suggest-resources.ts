@@ -39,6 +39,8 @@ const prompt = ai.definePrompt({
   prompt: `You are an AI assistant specialized in finding high-quality, relevant online resources for university students.
   For the given syllabus section, you must suggest a list of 3 to 5 online resources that will help a student understand the material better.
 
+  You must provide your response in the JSON format specified by the output schema.
+
   Guidelines:
   1.  **Prioritize Quality:** Suggest resources from reputable sources like university websites (.edu), well-known educational platforms (Coursera, edX, Khan Academy), established technical blogs, and official documentation.
   2.  **Variety of Media:** Include a mix of resources, such as articles, video tutorials (especially from YouTube), and interactive demos if possible.

@@ -65,7 +65,7 @@ export function CourseModules({ modules }: CourseModulesProps) {
                     {errorModule === module.title && (
                         <p className="text-sm text-destructive text-center p-4">Could not fetch resources. Please try again.</p>
                     )}
-                    {suggestedResources[module.title] && (
+                    {suggestedResources[module.title] && suggestedResources[module.title].length > 0 && (
                         <div className="space-y-4">
                             {suggestedResources[module.title].map(resource => (
                                 <a key={resource.url} href={resource.url} target="_blank" rel="noopener noreferrer" className="block p-4 rounded-md border bg-background hover:border-primary transition-all">
@@ -79,6 +79,9 @@ export function CourseModules({ modules }: CourseModulesProps) {
                                 </a>
                             ))}
                         </div>
+                    )}
+                    {suggestedResources[module.title] && suggestedResources[module.title].length === 0 && (
+                        <p className="text-sm text-muted-foreground text-center p-4">No resources found for this module.</p>
                     )}
                 </CardContent>
                 <CardFooter>
