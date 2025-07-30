@@ -52,7 +52,7 @@ export function CourseModules({ modules }: CourseModulesProps) {
 
             <Card className="bg-muted/30">
                 <CardHeader>
-                    <CardTitle className="text-base">AI Suggested Resources</CardTitle>
+                    <CardTitle className="text-base">AI-Suggested Resources</CardTitle>
                     <CardDescription className="text-xs">Find extra materials to help you study this module.</CardDescription>
                 </CardHeader>
                 <CardContent>
