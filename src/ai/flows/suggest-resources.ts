@@ -24,7 +24,7 @@ const SuggestResourcesOutputSchema = z.object({
       url: z.string().url().describe('The URL of the resource.'),
       description: z.string().describe('A brief description of the resource and its relevance to the syllabus section.'),
     })
-  ).describe('A list of relevant online resources.'),
+  ).describe('A list of 3 to 5 relevant online resources.'),
 });
 export type SuggestResourcesOutput = z.infer<typeof SuggestResourcesOutputSchema>;
 
@@ -36,10 +36,21 @@ const prompt = ai.definePrompt({
   name: 'suggestResourcesPrompt',
   input: {schema: SuggestResourcesInputSchema},
   output: {schema: SuggestResourcesOutputSchema},
-  prompt: `You are an AI assistant helping students find relevant online resources for their syllabus.
-  Given a syllabus section, you will suggest a list of online resources that can help the student understand the material better.
-  The resources should be relevant to the syllabus section and should be easily accessible online.
-  Make sure the url are valid.
+  prompt: `You are an AI assistant specialized in finding high-quality, relevant online resources for university students.
+  For the given syllabus section, you must suggest a list of 3 to 5 online resources that will help a student understand the material better.
+
+  Guidelines:
+  1.  **Prioritize Quality:** Suggest resources from reputable sources like university websites (.edu), well-known educational platforms (Coursera, edX, Khan Academy), established technical blogs, and official documentation.
+  2.  **Variety of Media:** Include a mix of resources, such as articles, video tutorials (especially from YouTube), and interactive demos if possible.
+  3.  **Validate URLs:** Ensure all URLs you provide are valid, complete, and lead directly to the resource. Do not provide broken or placeholder links.
+  4.  **Relevance:** The description for each resource should clearly explain how it relates to the specified syllabus section.
+
+  Example of a good resource:
+  {
+    "title": "MIT OpenCourseWare - Introduction to Algorithms",
+    "url": "https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/",
+    "description": "A full university course on algorithms, covering topics like data structures, sorting, and graph algorithms which are central to the provided syllabus section."
+  }
 
   Syllabus Section: {{{syllabusSection}}}
   `,
@@ -52,7 +63,16 @@ const suggestResourcesFlow = ai.defineFlow(
     outputSchema: SuggestResourcesOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+      const {output} = await prompt(input);
+      if (!output) {
+        throw new Error('The AI model did not return any output.');
+      }
+      return output;
+    } catch (error) {
+      console.error('Error in suggestResourcesFlow:', error);
+      // Re-throwing the error to be caught by the client-side component
+      throw new Error('Failed to generate resources from AI model.');
+    }
   }
 );
