@@ -66,13 +66,14 @@ const suggestResourcesFlow = ai.defineFlow(
     try {
       const {output} = await prompt(input);
       if (!output) {
-        throw new Error('The AI model did not return any output.');
+        // If the model returns no output, return an empty list of resources.
+        return { resources: [] };
       }
       return output;
     } catch (error) {
       console.error('Error in suggestResourcesFlow:', error);
-      // Re-throwing the error to be caught by the client-side component
-      throw new Error('Failed to generate resources from AI model.');
+      // In case of an error, return an empty list of resources to prevent crashing.
+      return { resources: [] };
     }
   }
 );
