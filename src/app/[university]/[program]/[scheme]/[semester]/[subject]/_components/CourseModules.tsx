@@ -81,18 +81,17 @@ export function CourseModules({ subjectId, modules }: CourseModulesProps) {
             {modules.map((module, index) => (
             <Accordion key={module.title} type="single" collapsible className="w-full">
                 <AccordionItem value={module.title} className={index === modules.length - 1 ? 'border-b-0' : ''}>
-                    <AccordionTrigger className="text-lg font-medium p-6 hover:no-underline">
-                        <div className="flex items-center gap-4">
-                            <Checkbox
-                                id={`module-${module.title}`}
-                                checked={checkedModules[module.title] || false}
-                                onCheckedChange={(checked) => handleCheckboxChange(module.title, !!checked)}
-                                onClick={(e) => e.stopPropagation()}
-                                className="h-5 w-5 rounded-md"
-                            />
+                    <div className="flex items-center gap-4 p-6">
+                        <Checkbox
+                            id={`module-${module.title}`}
+                            checked={checkedModules[module.title] || false}
+                            onCheckedChange={(checked) => handleCheckboxChange(module.title, !!checked)}
+                            className="h-5 w-5 rounded-md"
+                        />
+                        <AccordionTrigger className="text-lg font-medium p-0 hover:no-underline flex-1">
                             <span>{module.title}</span>
-                        </div>
-                    </AccordionTrigger>
+                        </AccordionTrigger>
+                    </div>
                     <AccordionContent className="px-6 pb-6">
                         <div className="prose prose-sm max-w-none text-muted-foreground mb-6 ml-10">
                             <p>{module.content}</p>
