@@ -80,7 +80,7 @@ export function CourseModules({ modules }: CourseModulesProps) {
                             ))}
                         </div>
                     )}
-                    {suggestedResources[module.title] && suggestedResources[module.title].length === 0 && (
+                    {suggestedResources[module.title] && suggestedResources[module.title].length === 0 && !loadingModule && (
                         <p className="text-sm text-muted-foreground text-center p-4">No resources found for this module.</p>
                     )}
                 </CardContent>
