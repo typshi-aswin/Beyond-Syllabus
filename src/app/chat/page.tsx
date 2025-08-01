@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Send } from "lucide-react";
 import { chatWithSyllabus } from "@/ai/flows/chat-with-syllabus";
+import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Define message type
