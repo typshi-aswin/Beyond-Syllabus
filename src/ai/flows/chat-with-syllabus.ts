@@ -4,7 +4,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {MessageData} from 'genkit';
+import {MessageData, Part} from 'genkit';
 
 /**
  * @fileOverview An AI agent that can answer questions about a given syllabus context.
@@ -29,7 +29,7 @@ export type ChatWithSyllabusInput = z.infer<typeof ChatWithSyllabusInputSchema>;
 
 // Define the output schema for the chat flow
 const ChatWithSyllabusOutputSchema = z.object({
-  response: z.string().describe('The AI\'s response to the user\'s message.'),
+  response: z.string().describe("The AI's response to the user's message."),
 });
 export type ChatWithSyllabusOutput = z.infer<typeof ChatWithSyllabusOutputSchema>;
 
@@ -52,15 +52,12 @@ const chatWithSyllabusFlow = ai.defineFlow(
       content: [{ text: msg.content }],
     }));
 
-    // Add the latest user message to the prompt
-    const prompt = [...history, { role: 'user' as const, content: [{ text: input.message }] }];
-
-    const { response } = await ai.generate({
+    const result = await ai.generate({
       prompt: input.message, // Pass the new message as the main prompt
       history: history, // Pass the formatted history
     });
 
-    const text = response.text;
+    const text = result.text;
 
     if (!text) {
         return { response: "I'm sorry, I couldn't generate a response. Please try again." };
