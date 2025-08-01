@@ -1,11 +1,10 @@
-// frontend/src/components/common/SyllabusSummary.tsx
-"use client"; // Make sure this directive is present
+"use client";
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Loader2, BookText } from 'lucide-react';
-import { summarizeSyllabus } from '@/ai/flows/summarize-syllabus'; // Ensure correct import
-
+import { Loader2, BookText, Wand2 } from 'lucide-react';
+import { summarizeSyllabus } from '@/ai/flows/summarize-syllabus';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SyllabusSummaryProps {
     fullSyllabus: string;
@@ -37,27 +36,64 @@ export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
     };
 
     return (
-        <div className="space-y-4 bg-card p-6 rounded-xl shadow-sm border">
-            <h3 className="text-xl font-bold">Syllabus Summary</h3>
+        <div className="space-y-4 bg-card/80 backdrop-blur-sm p-6 rounded-2xl shadow-md border">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <BookText className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold">Syllabus Summary</h3>
+            </div>
 
-            {!summary && !loading && !error && (
-                 <Button onClick={handleSummarize} disabled={loading} className="w-full flex items-center">
-                     <BookText className="mr-2 h-4 w-4" /> Generate Summary
-                 </Button>
-            )}
+            <AnimatePresence mode="wait">
+                {!summary && !loading && !error && (
+                     <motion.div
+                        key="button"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                     >
+                        <Button onClick={handleSummarize} disabled={loading} className="w-full py-6 text-base group">
+                           <Wand2 className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" /> Generate AI Summary
+                        </Button>
+                     </motion.div>
+                )}
+            </AnimatePresence>
 
             {loading && (
-                <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+                <motion.div
+                    key="loader"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-center space-x-2 text-muted-foreground py-4"
+                >
                     <Loader2 className="h-5 w-5 animate-spin" />
                     <span>Generating summary...</span>
-                </div>
+                </motion.div>
             )}
 
             {error && (
-                <p className="text-destructive">{error}</p>
+                <motion.p 
+                    key="error"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-destructive text-center py-4"
+                >
+                    {error}
+                </motion.p>
             )}
 
-            {summary && <p className="text-muted-foreground whitespace-pre-wrap">{summary}</p>}
+            {summary && (
+                <motion.div
+                    key="summary"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                >
+                    <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{summary}</p>
+                    <Button onClick={() => setSummary(null)} variant="link" className="mt-4 p-0 h-auto">
+                        Generate again
+                    </Button>
+                </motion.div>
+            )}
 
         </div>
     );

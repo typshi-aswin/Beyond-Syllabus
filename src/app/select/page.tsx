@@ -1,9 +1,9 @@
-// frontend/src/app/select/page.tsx
 import { Header } from '@/components/common/Header';
 import { SelectionForm } from './_components/SelectionForm';
-import { Loader2 } from 'lucide-react';
-import ErrorDisplay from '@/components/common/ErrorDisplay'; // Import the new component
-
+import ErrorDisplay from '@/components/common/ErrorDisplay';
+import { Footer } from '@/components/common/Footer';
+import { motion } from 'framer-motion';
+import { AnimatedDiv } from '@/components/common/AnimatedDiv';
 
 interface DirectoryStructure {
   [key: string]: any;
@@ -32,31 +32,35 @@ export default async function SelectPage() {
   }
 
   if (error) {
-    return <ErrorDisplay errorMessage={error} />; // Use the new component
+    return <ErrorDisplay errorMessage={error} />;
   }
 
   if (!directoryStructure || Object.keys(directoryStructure).length === 0) {
     return (
       <>
         <Header />
-        <main className="container mx-auto px-4 py-12 md:py-20 flex justify-center items-center h-screen">
+        <main className="container mx-auto px-4 py-12 md:py-20 flex justify-center items-center flex-1">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-bold mb-4">No Syllabus Data Found</h1>
             <p className="text-muted-foreground">Please ensure your 'universities' folder and its subdirectories contain valid syllabus data.</p>
           </div>
         </main>
+        <Footer />
       </>
     );
   }
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="container mx-auto px-4 py-12 md:py-20">
-        <div className="max-w-3xl mx-auto">
-          <SelectionForm directoryStructure={directoryStructure} />
-        </div>
+      <main className="flex-1 container mx-auto px-4 py-12 md:py-20">
+        <AnimatedDiv>
+          <div className="max-w-3xl mx-auto">
+            <SelectionForm directoryStructure={directoryStructure} />
+          </div>
+        </AnimatedDiv>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

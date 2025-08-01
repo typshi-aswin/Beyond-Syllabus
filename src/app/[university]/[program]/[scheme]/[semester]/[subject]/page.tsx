@@ -1,11 +1,11 @@
-// frontend/src/app/[university]/[program]/[scheme]/[semester]/[subject]/page.tsx
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/common/Header';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
 import { SyllabusSummary } from './_components/SyllabusSummary';
 import { CourseModules } from './_components/CourseModules';
 import ErrorDisplay from '@/components/common/ErrorDisplay'; 
-
+import { AnimatedDiv } from '@/components/common/AnimatedDiv';
+import { Footer } from '@/components/common/Footer';
 
 interface SubjectPageProps {
   params: {
@@ -84,7 +84,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
   }
 
   if (error || !directoryStructure) {
-      return <ErrorDisplay errorMessage={error || 'Could not fetch directory structure.'} />; // Use the new component
+      return <ErrorDisplay errorMessage={error || 'Could not fetch directory structure.'} />;
   }
 
 
@@ -98,37 +98,41 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
 
 
   const breadcrumbItems = [
-    { label: university.name, href: '/select' },
-    { label: program.name, href: '/select' },
-    { label: `${scheme.name}`, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
+    { label: "Home", href: "/" },
+    { label: university.name, href: `/select?university=${university.id}` },
+    { label: program.name, href: `/select?university=${university.id}&program=${program.id}` },
+    { label: scheme.name, href: `/select?university=${university.id}&program=${program.id}&scheme=${scheme.id}` },
     { label: semester.name, href: `/${university.id}/${program.id}/${scheme.id}/${semester.id}` },
     { label: subject.name },
   ];
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto">
-          <Breadcrumbs items={breadcrumbItems} />
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
+        <AnimatedDiv>
+          <div className="max-w-6xl mx-auto">
+            <Breadcrumbs items={breadcrumbItems} />
 
-          <div className="mt-8 mb-12">
-            <h1 className="text-3xl font-bold md:text-4xl">{subject.name}</h1>
-            <p className="text-muted-foreground mt-2 text-lg">{subject.code}</p>
-          </div>
-
-          <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
-            <div className="space-y-8">
-              <h2 className="text-2xl font-bold">Course Modules</h2>
-              <CourseModules subjectId={subject.id} modules={subject.modules || []} />
+            <div className="mt-8 mb-12">
+              <h1 className="text-3xl font-bold md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">{subject.name}</h1>
+              <p className="text-muted-foreground mt-2 text-lg">{subject.code}</p>
             </div>
-            <aside className="space-y-8">
-              <h2 className="text-2xl font-bold">AI-Powered Tools</h2>
-              <SyllabusSummary fullSyllabus={subject.fullSyllabus || ''} />
-            </aside>
+
+            <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
+              <div className="space-y-8">
+                <h2 className="text-2xl font-bold">Course Modules</h2>
+                <CourseModules subjectId={subject.id} modules={subject.modules || []} />
+              </div>
+              <aside className="space-y-8 lg:sticky lg:top-24 self-start">
+                <h2 className="text-2xl font-bold">AI-Powered Tools</h2>
+                <SyllabusSummary fullSyllabus={subject.fullSyllabus || ''} />
+              </aside>
+            </div>
           </div>
-        </div>
+        </AnimatedDiv>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }

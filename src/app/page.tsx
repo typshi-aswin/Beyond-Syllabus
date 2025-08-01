@@ -5,10 +5,12 @@ import {
   BookOpenCheck,
   BarChart3,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Header } from "@/components/common/Header";
+import { Footer } from "@/components/common/Footer";
 
 export default function Home() {
   return (
@@ -16,36 +18,41 @@ export default function Home() {
       <Header />
 
       <main className="flex-1">
-        <section className="w-full py-20 md:py-32">
+        <section className="w-full py-20 md:py-32 bg-grid-slate-100/[0.05] dark:bg-grid-slate-900/[0.2]">
           <div className="container px-4 md:px-6">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-6">
                 <div className="space-y-4">
-                  <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    WikiSyllabus
+                  <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                    Welcome to WikiSyllabus
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Explore your university subjects, syllabus, and study
-                    resources in a click.
+                    Your modern, AI-powered guide to the university curriculum. Explore subjects, understand modules, and unlock your potential.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button asChild size="lg" className="group">
+                <div className="flex flex-col gap-4 min-[400px]:flex-row">
+                  <Button asChild size="lg" className="group shadow-lg">
                     <Link href="/select">
-                      Get Started{" "}
+                      Explore Your Syllabus{" "}
                       <ChevronRight className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </Button>
+                  <Button asChild size="lg" variant="outline" className="group shadow-lg">
+                     <Link href="/chat-with-file">
+                       <Sparkles className="h-5 w-5 mr-2 text-amber-400" />
+                       AI Chat
+                     </Link>
+                   </Button>
                 </div>
               </div>
               <div className="flex items-center justify-center">
                 <Image
-                  src="/studying.jpg"
+                  src="https://placehold.co/600x400.png"
                   width="600"
                   height="400"
-                  alt="Students studying"
-                  data-ai-hint="students studying"
-                  className="mx-auto aspect-video overflow-hidden rounded-2xl object-cover"
+                  alt="Students studying in a modern library"
+                  data-ai-hint="modern library students"
+                  className="mx-auto aspect-video overflow-hidden rounded-2xl object-cover shadow-2xl"
                   priority
                 />
               </div>
@@ -53,7 +60,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full py-20 md:py-32 bg-card border-t">
+        <section className="w-full py-20 md:py-32 bg-card border-y">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -71,74 +78,45 @@ export default function Home() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 lg:max-w-none mt-12">
-              <Card className="border-0 shadow-none">
-                <CardHeader className="items-center gap-4">
-                  <div className="bg-primary/10 p-4 rounded-full">
-                    <BookOpenCheck className="h-8 w-8 text-primary" />
-                  </div>
-                  <CardTitle className="text-xl">Structured Syllabus</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-muted-foreground">
-                    Access your complete university syllabus, broken down by
-                    program, semester, and subject.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-0 shadow-none">
-                <CardHeader className="items-center gap-4">
-                  <div className="bg-primary/10 p-4 rounded-full">
-                    <GraduationCap className="h-8 w-8 text-primary" />
-                  </div>
-                  <CardTitle>Topic-wise Clarity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-muted-foreground">
-                    Get concise summaries of your syllabus modules to grasp key
-                    concepts quickly.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-0 shadow-none">
-                <CardHeader className="items-center gap-4">
-                  <div className="bg-primary/10 p-4 rounded-full">
-                    <BarChart3 className="h-8 w-8 text-primary" />
-                  </div>
-                  <CardTitle>Semester Progress Tracker</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-muted-foreground">
-                    Track your learning progress through each module and
-                    semester with ease.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard
+                icon={<BookOpenCheck className="h-8 w-8 text-primary" />}
+                title="Structured Syllabus"
+                description="Access your complete university syllabus, broken down by program, semester, and subject."
+              />
+              <FeatureCard
+                icon={<GraduationCap className="h-8 w-8 text-primary" />}
+                title="AI-Powered Insights"
+                description="Get concise summaries of your syllabus modules and chat with an AI to grasp key concepts quickly."
+              />
+              <FeatureCard
+                icon={<BarChart3 className="h-8 w-8 text-primary" />}
+                title="Learning Tools"
+                description="Generate learning tasks and discover real-world applications for each module to deepen your understanding."
+              />
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">
-          &copy; 2024 WikiSyllabus. All rights reserved.
-        </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Terms of Service
-          </Link>
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Privacy
-          </Link>
-        </nav>
-      </footer>
+      <Footer />
     </div>
   );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+  return (
+     <Card className="border-transparent shadow-none text-center hover:bg-muted/50 transition-colors rounded-2xl py-4">
+      <CardHeader className="items-center gap-4">
+        <div className="bg-primary/10 p-4 rounded-full">
+          {icon}
+        </div>
+        <CardTitle className="text-xl">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">
+          {description}
+        </p>
+      </CardContent>
+    </Card>
+  )
 }
