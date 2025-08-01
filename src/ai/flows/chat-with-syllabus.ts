@@ -1,8 +1,10 @@
+
 // src/ai/flows/chat-with-syllabus.ts
 'use server';
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {MessageData} from 'genkit';
 
 /**
  * @fileOverview An AI agent that can answer questions about a given syllabus context.
@@ -36,7 +38,6 @@ export async function chatWithSyllabus(input: ChatWithSyllabusInput): Promise<Ch
   return chatWithSyllabusFlow(input);
 }
 
-
 // Define the Genkit flow for the chat functionality
 const chatWithSyllabusFlow = ai.defineFlow(
   {
@@ -45,10 +46,18 @@ const chatWithSyllabusFlow = ai.defineFlow(
     outputSchema: ChatWithSyllabusOutputSchema,
   },
   async (input) => {
+    // Convert the message history to the format Genkit expects
+    const history: MessageData[] = input.history.map((msg) => ({
+      role: msg.role,
+      content: [{ text: msg.content }],
+    }));
+
+    // Add the latest user message to the prompt
+    const prompt = [...history, { role: 'user' as const, content: [{ text: input.message }] }];
 
     const { response } = await ai.generate({
-      prompt: [...input.history.map(msg => ({role: msg.role, content: [{text: msg.content}]})), {role: 'user', content: [{text: input.message}]}],
-      history: input.history.map(msg => ({role: msg.role, content: [{text: msg.content}]})),
+      prompt: input.message, // Pass the new message as the main prompt
+      history: history, // Pass the formatted history
     });
 
     const text = response.text;
