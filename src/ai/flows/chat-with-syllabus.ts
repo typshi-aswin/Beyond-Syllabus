@@ -51,7 +51,7 @@ const chatWithSyllabusFlow = ai.defineFlow(
   async (input) => {
     // Convert the message history to the format Genkit expects
     const history: MessageData[] = input.history.map((msg) => ({
-      role: msg.role,
+      role: msg.role === 'assistant' ? 'model' : msg.role,
       content: [{ text: msg.content }],
     }));
 
@@ -60,7 +60,7 @@ const chatWithSyllabusFlow = ai.defineFlow(
       history: history,
     });
 
-    const text = result.text();
+    const text = result.text;
 
     if (!text) {
         return { response: "I'm sorry, I couldn't generate a response. Please try again." };
