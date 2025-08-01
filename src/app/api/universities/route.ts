@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const universitiesDir = path.join(process.cwd(), '../universities');
+const universitiesDir = path.join(process.cwd(), 'universities');
 
 function capitalizeWords(str: string): string {
     if (!str) return '';
@@ -20,6 +20,7 @@ async function readSyllabusData() {
 
     try {
         if (!fs.existsSync(universitiesDir)) {
+             console.error(`Directory not found: ${universitiesDir}`);
              return { error: 'University data directory not found. Please ensure the `universities` folder exists at the root of your project.' };
         }
         const universities = await fs.promises.readdir(universitiesDir);
@@ -61,31 +62,30 @@ async function readSyllabusData() {
                                 const { data: frontmatter, content } = matter(fileContent);
 
                                 const courseContentMatch = content.match(/^##\s*Course Content([\s\S]*?)(?=^##\s*|\Z)/m);
-let courseContent = courseContentMatch ? courseContentMatch[1] : '';
+                                let courseContent = courseContentMatch ? courseContentMatch[1] : '';
+                                
+                                // Fallback: If not found, use the whole content
+                                if (!courseContent.trim()) {
+                                    courseContent = content;
+                                }
 
-// Fallback: If not found, use the whole content
-if (!courseContent.trim()) {
-    courseContent = content;
-}
+                                const moduleItems = [];
+                                // Regex to find each module subheading and its content
+                                const moduleRegex = /^###\s*Module\s*-\s*\d+\s*\((.*?)\)\s*\n([\s\S]*?)(?=^###\s*Module\s*-\s*\d+|\Z)/gm;
 
-const moduleItems = [];
-// Regex to find each module subheading and its content
-const moduleRegex = /^###\s*Module\s*-\s*\d+\s*\((.*?)\)\s*\n([\s\S]*?)(?=^###\s*Module\s*-\s*\d+|\Z)/gm;
+                                let moduleMatch;
+                                while ((moduleMatch = moduleRegex.exec(courseContent)) !== null) {
+                                    const moduleTitle = moduleMatch[1].trim();
+                                    const moduleContent = moduleMatch[2].trim();
 
-let moduleMatch;
-while ((moduleMatch = moduleRegex.exec(courseContent)) !== null) {
-    const moduleTitle = moduleMatch[1].trim();
-    const moduleContent = moduleMatch[2].trim();
+                                    // Clean up module content (remove extra blank lines, etc.)
+                                    const cleanedContent = moduleContent.split('\n').filter(line => line.trim() !== '').join('\n');
 
-    // Clean up module content (remove extra blank lines, etc.)
-    const cleanedContent = moduleContent.split('\n').filter(line => line.trim() !== '').join('\n');
-
-    moduleItems.push({
-        title: moduleTitle,
-        content: cleanedContent
-    });
-}
-
+                                    moduleItems.push({
+                                        title: moduleTitle,
+                                        content: cleanedContent
+                                    });
+                                }
 
                                 const subjectData = {
                                     id: subjectFile.replace('.md', ''),
@@ -107,11 +107,10 @@ while ((moduleMatch = moduleRegex.exec(courseContent)) !== null) {
         }
     } catch (error) {
         console.error("Error reading syllabus data:", error);
-        // Check if the error is due to the directory not being found
         if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
              return { error: 'University data directory not found. Please ensure the `universities` folder exists at the root of your project.' };
         }
-        return null;
+        return { error: 'An unexpected error occurred while reading syllabus data.' };
     }
 
     return data;
