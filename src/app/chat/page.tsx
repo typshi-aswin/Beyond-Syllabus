@@ -1,22 +1,17 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import generateModuleTasks from "@/ai/flows/generate-module-tasks";
+import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
 
-export default function ChatPage() {
+function ChatComponent() {
   const searchParams = useSearchParams();
-  const moduleTitle = searchParams.get("title") || "";
+  const moduleTitle = searchParams.get("title") || "Loading title...";
   const moduleContent = searchParams.get("content") || "";
 
-  const [messages, setMessages] = useState([
-    {
-      role: "system",
-      content: `You are an expert assistant for the course module: ${moduleTitle}.\nModule Content:\n${moduleContent}`,
-    },
-  ]);
+  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +19,13 @@ export default function ChatPage() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (moduleContent) {
+    if (moduleContent && moduleTitle !== "Loading title...") {
+      setMessages([
+        {
+          role: "system",
+          content: `You are an expert assistant for the course module: ${moduleTitle}.\nModule Content:\n${moduleContent}`,
+        },
+      ]);
       setLoading(true);
       generateModuleTasks({ moduleContent })
         .then((result) => {
@@ -44,7 +45,7 @@ export default function ChatPage() {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moduleContent]);
+  }, [moduleContent, moduleTitle]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -56,6 +57,7 @@ export default function ChatPage() {
     setLoading(true);
     setError(null);
     try {
+      // Placeholder for actual chat API integration
       setTimeout(() => {
         setMessages((msgs) => [
           ...msgs,
@@ -133,4 +135,13 @@ export default function ChatPage() {
       </main>
     </div>
   );
+}
+
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ChatComponent />
+        </Suspense>
+    )
 }
