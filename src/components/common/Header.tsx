@@ -14,10 +14,10 @@ export function Header() {
             </div>
             <span className="hidden sm:inline-block font-semibold text-xl">WikiSyllabus</span>
             </Link>
-            <div className="hidden md:flex items-center gap-2">
-                 <Button asChild variant="ghost">
+            <div className="hidden md:flex items-center">
+                 {/* <Button asChild variant="ghost">
                     <Link href="/select">Select Course</Link>
-                </Button>
+                </Button> */}
                 <Button asChild variant="ghost">
                     <Link href="/chat-with-file">
                         <Sparkles className="mr-2 h-4 w-4" />

@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+      <ol className=" hidden  md:flex items-center space-x-2 text-sm text-muted-foreground">
         {items.map((item, index) => (
           <Fragment key={item.label}>
             <li>
