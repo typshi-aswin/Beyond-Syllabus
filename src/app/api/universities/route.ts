@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const universitiesDir = path.join(process.cwd(), 'universities');
+const universitiesDir = path.join(process.cwd(), '../universities');
 
 function capitalizeWords(str: string): string {
     if (!str) return '';
@@ -23,18 +23,21 @@ async function readSyllabusData() {
 
         for (const universityId of universities) {
             const universityPath = path.join(universitiesDir, universityId);
+            if (!(await fs.promises.lstat(universityPath)).isDirectory()) continue;
             const programDirs = await fs.promises.readdir(universityPath);
 
             data[universityId] = {};
 
             for (const programId of programDirs) {
                 const programPath = path.join(universityPath, programId);
+                 if (!(await fs.promises.lstat(programPath)).isDirectory()) continue;
                 const schemeDirs = await fs.promises.readdir(programPath);
 
                 data[universityId][programId] = {};
 
                 for (const schemeId of schemeDirs) {
                     const schemePath = path.join(programPath, schemeId);
+                     if (!(await fs.promises.lstat(schemePath)).isDirectory()) continue;
                     const semesterDirs = await fs.promises.readdir(schemePath);
 
                      data[universityId][programId][schemeId] = {};
@@ -42,6 +45,7 @@ async function readSyllabusData() {
 
                     for (const semesterId of semesterDirs) {
                          const semesterPath = path.join(schemePath, semesterId);
+                          if (!(await fs.promises.lstat(semesterPath)).isDirectory()) continue;
                          const subjectFiles = await fs.promises.readdir(semesterPath);
 
                          data[universityId][programId][schemeId][semesterId] = { subjects: [] };
@@ -100,6 +104,10 @@ while ((moduleMatch = moduleRegex.exec(courseContent)) !== null) {
         }
     } catch (error) {
         console.error("Error reading syllabus data:", error);
+        // Check if the error is due to the directory not being found
+        if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+             return { error: 'University data directory not found. Please ensure the `universities` folder exists at the root of your project.' };
+        }
         return null;
     }
 
@@ -112,6 +120,9 @@ export async function GET() {
 
     if (!syllabusData) {
         return NextResponse.json({ error: 'Failed to load syllabus data' }, { status: 500 });
+    }
+     if (syllabusData.error) {
+        return NextResponse.json({ error: syllabusData.error }, { status: 500 });
     }
 
     return NextResponse.json(syllabusData);
