@@ -27,7 +27,9 @@ export default function Home() {
                     Welcome to WikiSyllabus
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Your modern, AI-powered guide to the university curriculum. Explore subjects, understand modules, and unlock your potential.
+                    Your modern, AI-powered guide to the university curriculum.
+                    Explore subjects, understand modules, and unlock your
+                    potential.
                   </p>
                 </div>
                 <div className="flex flex-col gap-4 min-[400px]:flex-row">
@@ -37,12 +39,17 @@ export default function Home() {
                       <ChevronRight className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="group shadow-lg">
-                     <Link href="/chat-with-file">
-                       <Sparkles className="h-5 w-5 mr-2 text-amber-400" />
-                       AI Chat
-                     </Link>
-                   </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="group shadow-lg"
+                  >
+                    <Link href="/chat-with-file">
+                      <Sparkles className="h-5 w-5 mr-2 text-amber-400" />
+                      AI Chat
+                    </Link>
+                  </Button>
                 </div>
               </div>
               <div className="flex items-center justify-center">
@@ -64,7 +71,7 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm font-medium">
+                <div className="inline-block rounded-lg bg-slate-950/20 px-3 py-1 text-sm font-medium">
                   Key Features
                 </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
@@ -103,20 +110,24 @@ export default function Home() {
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
-     <Card className="border-transparent shadow-none text-center hover:bg-muted/50 transition-colors rounded-2xl py-4">
+    <Card className="border-transparent shadow-none text-center hover:bg-slate-950/20 hover:shadow-lg transition-colors rounded-2xl py-4">
       <CardHeader className="items-center gap-4">
-        <div className="bg-primary/10 p-4 rounded-full">
-          {icon}
-        </div>
+        <div className="bg-primary/10 p-4 rounded-full">{icon}</div>
         <CardTitle className="text-xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground">
-          {description}
-        </p>
+        <p className="text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
-  )
+  );
 }
