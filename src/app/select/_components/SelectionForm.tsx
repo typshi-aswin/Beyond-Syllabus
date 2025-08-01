@@ -1,19 +1,23 @@
+// frontend/src/app/select/_components/SelectionForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import type { University, Program, Scheme, Semester } from '@/types';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Computer, Cog, HardHat, CircuitBoard, Bolt, Info, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+interface SyllabusDataStructure {
+  [key: string]: any;
+}
+
 interface SelectionFormProps {
-  universities: University[];
+  directoryStructure: SyllabusDataStructure;
 }
 
 const programIcons: { [key: string]: React.ElementType } = {
@@ -24,146 +28,229 @@ const programIcons: { [key: string]: React.ElementType } = {
   eee: Bolt,
 };
 
-export function SelectionForm({ universities }: SelectionFormProps) {
+function capitalizeWords(str: string | undefined): string {
+  if (!str) return '';
+  return str.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
+function formatSemesterName(semesterId: string): string {
+    if (!semesterId) return '';
+    return `Semester ${semesterId.replace('s', '').replace(/^0+/, '')}`;
+}
+
+export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const router = useRouter();
 
-  const [selectedUniversity] = useState<University>(universities[0]);
-  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
-  const [selectedScheme, setSelectedScheme] = useState<Scheme | null>(null);
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null);
+  const [selectedUniversityId, setSelectedUniversityId] = useState<string | null>(null);
+  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
+  const [selectedSchemeId, setSelectedSchemeId] = useState<string | null>(null);
+  const [selectedSemesterId, setSelectedSemesterId] = useState<string | null>(null);
+
+
+  const handleUniversitySelect = (universityId: string) => {
+    setSelectedUniversityId(universityId);
+    setSelectedProgramId(null);
+    setSelectedSchemeId(null);
+    setSelectedSemesterId(null);
+  };
 
   const handleProgramSelect = (programId: string) => {
-    const program = selectedUniversity.programs.find(p => p.id === programId);
-    setSelectedProgram(program || null);
-    setSelectedScheme(null);
-    setSelectedSemester(null);
+    setSelectedProgramId(programId);
+    setSelectedSchemeId(null);
+    setSelectedSemesterId(null);
   };
 
   const handleSchemeSelect = (schemeId: string) => {
-    const scheme = selectedProgram?.schemes.find(s => s.id === schemeId);
-    setSelectedScheme(scheme || null);
-    setSelectedSemester(null);
+    setSelectedSchemeId(schemeId);
+    setSelectedSemesterId(null);
   };
 
   const handleSemesterSelect = (semesterId: string) => {
-    const semester = selectedScheme?.semesters.find(s => s.id === semesterId);
-    setSelectedSemester(semester || null);
+    setSelectedSemesterId(semesterId);
   };
+
+    const resetToLevel = (level: 'university' | 'program' | 'scheme' | 'semester' | 'start') => {
+        if (level === 'start' || level === 'university') {
+            setSelectedUniversityId(null);
+            setSelectedProgramId(null);
+            setSelectedSchemeId(null);
+            setSelectedSemesterId(null);
+        } else if (level === 'program') {
+            setSelectedProgramId(null);
+            setSelectedSchemeId(null);
+            setSelectedSemesterId(null);
+        } else if (level === 'scheme') {
+            setSelectedSchemeId(null);
+            setSelectedSemesterId(null);
+        } else if (level === 'semester') {
+            setSelectedSemesterId(null);
+        }
+    };
+
+
+  const selectedUniversityData = selectedUniversityId ? directoryStructure[selectedUniversityId] : null;
+  const selectedProgramData = selectedUniversityData && selectedProgramId ? selectedUniversityData[selectedProgramId] : null;
+  const selectedSchemeData = selectedProgramData && selectedSchemeId ? selectedProgramData[selectedSchemeId] : null;
+  const selectedSemesterData = selectedSchemeData && selectedSchemeId ? selectedSchemeData[selectedSchemeId] : null;
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedUniversity && selectedProgram && selectedScheme && selectedSemester) {
-      router.push(`/${selectedUniversity.id}/${selectedProgram.id}/${selectedScheme.id}/${selectedSemester.id}`);
+    if (selectedUniversityId && selectedProgramId && selectedSchemeId && selectedSemesterId) {
+         router.push(`/${selectedUniversityId}/${selectedProgramId}/${selectedSchemeId}/${selectedSemesterId}`);
     }
   };
 
   const renderStep = () => {
-    if (!selectedProgram) {
-      return (
-        <div className="space-y-4">
-          <Label className="text-base font-medium">Choose your branch</Label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {selectedUniversity.programs.map(prog => {
-              const Icon = programIcons[prog.id] || Computer;
-              return (
-                <Card
-                  key={prog.id}
-                  className="cursor-pointer hover:border-primary transition-all text-center p-6"
-                  onClick={() => handleProgramSelect(prog.id)}
-                >
-                  <Icon className="h-10 w-10 text-primary mx-auto mb-3" />
-                  <p className="font-semibold">{prog.name}</p>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-
-    if (!selectedScheme) {
-      return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-2">
-                <Label htmlFor="scheme" className="text-base font-medium">Select Your Scheme</Label>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Your syllabus depends on the academic scheme you follow.</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
-            <Select onValueChange={handleSchemeSelect} name="scheme">
-              <SelectTrigger id="scheme" className="py-6 text-base">
-                <SelectValue placeholder="Select Scheme" />
-              </SelectTrigger>
-              <SelectContent>
-                {selectedProgram.schemes.map(sch => (
-                  <SelectItem key={sch.id} value={sch.id}>{sch.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-        </div>
-      );
-    }
-
-    if (!selectedSemester) {
+    if (!selectedUniversityId) {
+        const universityIds = Object.keys(directoryStructure);
         return (
             <div className="space-y-4">
-                <Label className="text-base font-medium">Current Semester</Label>
-                <RadioGroup onValueChange={handleSemesterSelect} className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    {selectedScheme.semesters.map((sem) => (
+                <Label className="text-base font-medium">Select your University</Label>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {universityIds.map(universityId => (
+                        <Card
+                            key={universityId}
+                            className="cursor-pointer hover:border-primary transition-all p-6 text-center"
+                            onClick={() => handleUniversitySelect(universityId)}
+                        >
+                            <p className="font-semibold text-lg capitalize">{universityId.replace(/-/g, ' ')}</p>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    const universityData: SyllabusDataStructure = selectedUniversityData;
+    const programIds = Object.keys(universityData);
+
+
+    if (!selectedProgramId && selectedUniversityData) {
+        return (
+            <div className="space-y-4">
+                <Label className="text-base font-medium">Choose your branch ({capitalizeWords(selectedUniversityId)})</Label>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                    {programIds.map(programId => {
+                         const Icon = programIcons[programId.replace(/-/g, '')] || Computer;
+                        return (
+                            <Card
+                                key={programId}
+                                className="cursor-pointer hover:border-primary transition-all text-center p-6"
+                                onClick={() => handleProgramSelect(programId)}
+                            >
+                                <Icon className="h-10 w-10 text-primary mx-auto mb-3" />
+                                <p className="font-semibold capitalize">{programId.replace(/-/g, ' ')}</p>
+                            </Card>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }
+
+    const programData: SyllabusDataStructure = selectedProgramData;
+    const schemeIds = Object.keys(programData);
+
+
+    if (!selectedSchemeId && selectedProgramData) {
+         return (
+            <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                    <Label htmlFor="scheme" className="text-base font-medium">Select Your Scheme ({capitalizeWords(selectedProgramId)})</Label>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Your syllabus depends on the academic scheme you follow.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+                <Select onValueChange={handleSchemeSelect} value={selectedSchemeId} name="scheme">
+                  <SelectTrigger id="scheme" className="py-6 text-base">
+                    <SelectValue placeholder="Select Scheme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {schemeIds.map(schemeId => (
+                      <SelectItem key={schemeId} value={schemeId} className="capitalize">{schemeId.replace(/-/g, ' ')}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+            </div>
+          );
+    }
+
+    const schemeData: SyllabusDataStructure = selectedSchemeData;
+    const semesterIds = Object.keys(schemeData);
+
+
+    if (!selectedSemesterId && selectedSchemeData) {
+        return (
+            <div className="space-y-4">
+                <Label className="text-base font-medium">Current Semester ({capitalizeWords(selectedSchemeId)})</Label>
+                <RadioGroup onValueChange={handleSemesterSelect} value={selectedSemesterId} className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    {semesterIds.map((semesterId) => (
                         <Label
-                            key={sem.id}
-                            htmlFor={sem.id}
+                            key={semesterId}
+                            htmlFor={semesterId}
                             className={cn(
                                 "flex flex-col items-center justify-center rounded-lg border-2 p-4 cursor-pointer hover:border-primary transition-all",
-                                selectedSemester?.id === sem.id && "border-primary"
+                                selectedSemesterId === semesterId && "border-primary"
                             )}
                         >
-                            <RadioGroupItem value={sem.id} id={sem.id} className="sr-only" />
-                            <p className="font-semibold">{sem.name}</p>
+                            <RadioGroupItem value={semesterId} id={semesterId} className="sr-only" />
+                             <p className="font-semibold">{formatSemesterName(semesterId)}</p>
                         </Label>
                     ))}
                 </RadioGroup>
             </div>
         );
     }
+
+    return (
+         <div className="space-y-4">
+            <h2 className="text-xl font-bold">Your Selection:</h2>
+            <p><span className="font-semibold">University:</span> {capitalizeWords(selectedUniversityId)}</p>
+            <p><span className="font-semibold">Program:</span> {capitalizeWords(selectedProgramId)}</p>
+            <p><span className="font-semibold">Scheme:</span> {capitalizeWords(selectedSchemeId)}</p>
+            <p><span className="font-semibold">Semester:</span> {selectedSemesterId ? formatSemesterName(selectedSemesterId) : ''}</p>
+         </div>
+    );
   };
 
   return (
     <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-2xl">
       <form onSubmit={handleSubmit}>
         <CardHeader>
-          <CardTitle className="text-2xl">Select Your University & Academic Details</CardTitle>
+          <CardTitle className="text-2xl">Select Your Academic Details</CardTitle>
           <CardDescription>Your selections will tailor your syllabus view.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
-            <div className="space-y-2">
-                <Label htmlFor="university">University</Label>
-                <Select defaultValue={selectedUniversity.id} disabled>
-                    <SelectTrigger id="university" className="py-6 text-base bg-muted/50">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={selectedUniversity.id}>{selectedUniversity.name}</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
             {renderStep()}
         </CardContent>
         <CardFooter className="flex justify-between items-center">
             <div>
-              {selectedProgram && (
-                <Button variant="ghost" onClick={() => { setSelectedProgram(null); setSelectedScheme(null); setSelectedSemester(null); }}>Back</Button>
+              {selectedSemesterId && (
+                <Button variant="ghost" type="button" onClick={() => resetToLevel('semester')}>Back to Semester</Button>
+              )}
+               {!selectedSemesterId && selectedSchemeId && (
+                <Button variant="ghost" type="button" onClick={() => resetToLevel('scheme')}>Back to Scheme</Button>
+              )}
+               {!selectedSchemeId && selectedProgramId && (
+                <Button variant="ghost" type="button" onClick={() => resetToLevel('program')}>Back to Program</Button>
+              )}
+              {!selectedProgramId && selectedUniversityId && (
+                 <Button variant="ghost" type="button" onClick={() => resetToLevel('university')}>Back to University</Button>
               )}
             </div>
-          <Button type="submit" className="group bg-blue-600 hover:bg-blue-700 text-white" disabled={!selectedSemester}>
+          <Button
+            type="submit"
+            className="group bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={!selectedUniversityId || !selectedProgramId || !selectedSchemeId || !selectedSemesterId}
+          >
             Continue <ChevronRight className="h-5 w-5 ml-1 transition-transform group-hover:translate-x-1" />
           </Button>
         </CardFooter>

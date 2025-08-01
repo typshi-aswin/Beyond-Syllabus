@@ -1,72 +1,64 @@
-'use client';
+// frontend/src/components/common/SyllabusSummary.tsx
+"use client"; // Make sure this directive is present
 
 import { useState } from 'react';
-import { summarizeSyllabus } from '@/ai/flows/summarize-syllabus';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Loader2, BrainCircuit } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Loader2, BookText } from 'lucide-react';
+import { summarizeSyllabus } from '@/ai/flows/summarize-syllabus'; // Ensure correct import
+
 
 interface SyllabusSummaryProps {
     fullSyllabus: string;
 }
 
 export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
-  const [summary, setSummary] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+    const [summary, setSummary] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const handleSummarize = async () => {
-    setIsLoading(true);
-    setError('');
-    setSummary('');
-    try {
-      const result = await summarizeSyllabus({ syllabusText: fullSyllabus });
-      setSummary(result.summary);
-    } catch (e) {
-      setError('Failed to generate summary. Please try again.');
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const handleSummarize = async () => {
+        if (!fullSyllabus.trim()) {
+            setSummary('No syllabus content available to summarize.');
+            return;
+        }
 
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-3">
-            <BrainCircuit className="h-6 w-6 text-primary" />
-            <CardTitle>Syllabus Summary</CardTitle>
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await summarizeSyllabus({ syllabusText: fullSyllabus });
+            setSummary(result.summary);
+        } catch (e: any) {
+            console.error("Error summarizing syllabus:", e);
+            setError('Failed to generate summary.');
+            setSummary(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="space-y-4 bg-card p-6 rounded-xl shadow-sm border">
+            <h3 className="text-xl font-bold">Syllabus Summary</h3>
+
+            {!summary && !loading && !error && (
+                 <Button onClick={handleSummarize} disabled={loading} className="w-full flex items-center">
+                     <BookText className="mr-2 h-4 w-4" /> Generate Summary
+                 </Button>
+            )}
+
+            {loading && (
+                <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Generating summary...</span>
+                </div>
+            )}
+
+            {error && (
+                <p className="text-destructive">{error}</p>
+            )}
+
+            {summary && <p className="text-muted-foreground whitespace-pre-wrap">{summary}</p>}
+
         </div>
-        <CardDescription>Get a quick overview of the key learning objectives.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Textarea
-          placeholder="Syllabus content will be used from the database."
-          value={fullSyllabus}
-          readOnly
-          rows={8}
-          className="bg-muted/50"
-        />
-        {summary && (
-          <div className="p-4 bg-muted rounded-md border">
-            <p className="text-sm">{summary}</p>
-          </div>
-        )}
-        {error && <p className="text-sm text-destructive">{error}</p>}
-      </CardContent>
-      <CardFooter>
-        <Button onClick={handleSummarize} disabled={isLoading} className="w-full">
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            'Generate Summary'
-          )}
-        </Button>
-      </CardFooter>
-    </Card>
-  );
+    );
 }
