@@ -127,16 +127,16 @@ export default async function SubjectsPage({ params }: SubjectsPageProps) {
               </div>
 
               {semester.subjects.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid justify-center grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-stretch max-w-[288px] mx-auto md:max-w-none md:mx-0">
                   {semester.subjects.map((subject: any) => {
                     const category = getSubjectCategory(subject.code);
                     return (
                       <Link key={subject.id} href={`/${university.id}/${program.id}/${scheme.id}/${semester.id}/${subject.id}`}>
-                          <Card className="h-full flex flex-col justify-between rounded-2xl hover:border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-card/80 backdrop-blur-sm">
+                          <Card className="h-full w-72 overflow-hidden flex flex-col justify-between rounded-2xl hover:border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-card/80 backdrop-blur-sm">
                             <CardHeader>
                                 <div className="flex justify-between items-start">
-                                    <CardTitle className="text-xl pr-4">{subject.name}</CardTitle>
-                                    <Badge variant="outline" className="flex items-center gap-1.5 whitespace-nowrap">
+                                    <CardTitle className="text-xl pr-4 break-words w-44">{subject.name}</CardTitle>
+                                    <Badge variant="outline" className="flex items-center gap-1.5">
                                         {category.icon}
                                         {category.name}
                                     </Badge>
