@@ -1,10 +1,9 @@
-
 // src/ai/flows/chat-with-syllabus.ts
 'use server';
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {MessageData, Part} from 'genkit';
+import {MessageData} from 'genkit';
 
 /**
  * @fileOverview An AI agent that can answer questions about a given syllabus context.
@@ -13,6 +12,10 @@ import {MessageData, Part} from 'genkit';
  * - ChatWithSyllabusInput - The input type for the chatWithSyllabus function.
  * - ChatWithSyllabusOutput - The return type for the chatWithSyllabus function.
  */
+export interface Message {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
 
 // Define the schema for a single message in the chat history
 const ChatMessageSchema = z.object({
@@ -53,11 +56,11 @@ const chatWithSyllabusFlow = ai.defineFlow(
     }));
 
     const result = await ai.generate({
-      prompt: input.message, // Pass the new message as the main prompt
-      history: history, // Pass the formatted history
+      prompt: input.message,
+      history: history,
     });
 
-    const text = result.text;
+    const text = result.text();
 
     if (!text) {
         return { response: "I'm sorry, I couldn't generate a response. Please try again." };

@@ -17,12 +17,14 @@ const GenerateModuleTasksInputSchema = z.object({
   moduleContent: z
     .string()
     .describe('The text content of the syllabus module to generate tasks and applications for.'),
+  moduleTitle: z
+    .string()
+    .describe('The title of the syllabus module.'),
 });
 export type GenerateModuleTasksInput = z.infer<typeof GenerateModuleTasksInputSchema>;
 
 const GenerateModuleTasksOutputSchema = z.object({
-  tasks: z.array(z.string()).describe('A list of 2-4 learning tasks based on the module content.'),
-  realWorldApplications: z.string().describe('An explanation of 2-3 real-world applications of the module content.'),
+  introductoryMessage: z.string().describe("A welcoming, introductory message that includes the module title and a brief overview of what the user can expect, including learning tasks and real-world applications."),
 });
 export type GenerateModuleTasksOutput = z.infer<typeof GenerateModuleTasksOutputSchema>;
 
@@ -30,15 +32,21 @@ const prompt = ai.definePrompt({
   name: 'generateModuleTasksPrompt',
   input: { schema: GenerateModuleTasksInputSchema },
   output: { schema: GenerateModuleTasksOutputSchema },
-  prompt: `You are an expert curriculum assistant. Your task is to generate specific, actionable learning tasks and concise real-world applications for the provided syllabus module.
+  prompt: `You are an expert curriculum assistant. Your task is to generate a welcoming, introductory message for a student about a specific syllabus module. This message should also include 2-4 distinct learning tasks and 2-3 real-world applications based on the provided content.
+
+Syllabus Module Title:
+"{{{moduleTitle}}}"
 
 Syllabus Module Content:
 "{{{moduleContent}}}"
 
 Guidelines:
-1. Generate 2 to 4 distinct learning tasks that a student could perform to understand the material.
-2. Describe 2 to 3 real-world applications of the module's concepts.
-3. Ensure the output is in the specified JSON format.
+1.  Start with a friendly greeting.
+2.  Clearly state the module title in your response.
+3.  Generate a section with 2 to 4 distinct learning tasks. Use markdown lists.
+4.  Generate a section describing 2 to 3 real-world applications of the module's concepts. Use markdown lists.
+5.  Combine all of this into a single, cohesive "introductoryMessage" field.
+6.  Ensure the output is in the specified JSON format.
 `,
 });
 
