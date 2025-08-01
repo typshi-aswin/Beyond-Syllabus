@@ -19,6 +19,9 @@ async function readSyllabusData() {
     const data: any = {};
 
     try {
+        if (!fs.existsSync(universitiesDir)) {
+             return { error: 'University data directory not found. Please ensure the `universities` folder exists at the root of your project.' };
+        }
         const universities = await fs.promises.readdir(universitiesDir);
 
         for (const universityId of universities) {
