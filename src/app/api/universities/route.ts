@@ -61,29 +61,34 @@ async function readSyllabusData() {
                                 const fileContent = await fs.promises.readFile(subjectFilePath, 'utf-8');
                                 const { data: frontmatter, content } = matter(fileContent);
 
-                                const courseContentMatch = content.match(/^##\s*Course Content([\s\S]*?)(?=^##\s*|\Z)/m);
-                                let courseContent = courseContentMatch ? courseContentMatch[1] : '';
-                                
-                                // Fallback: If not found, use the whole content
-                                if (!courseContent.trim()) {
-                                    courseContent = content;
+                                const moduleItems: { title: string; content: string }[] = [];
+                                const lines = content.split('\n');
+                                let currentModule: { title: string; content: string[] } | null = null;
+                            
+                                for (const line of lines) {
+                                    const moduleMatch = line.match(/^#+\s*Module\s*-\s*\d+\s*(?:\((.*?)\))?(.+)?$/im) || line.match(/^#+\s*Module\s*\d+:\s*(.+)/im) || line.match(/^###\s*(Module\s*\d+.*)/im);
+                                    if (moduleMatch) {
+                                        if (currentModule) {
+                                            moduleItems.push({
+                                                title: currentModule.title,
+                                                content: currentModule.content.join('\n').trim(),
+                                            });
+                                        }
+                                        // Extract title from any of the matching groups
+                                        const titleText = (moduleMatch[1] || moduleMatch[2] || moduleMatch[0]).replace(/#+\s*Module\s*-\s*\d+\s*:?\s*\(?/, '').replace(/\)?/, '').trim();
+                                        currentModule = {
+                                            title: titleText,
+                                            content: [],
+                                        };
+                                    } else if (currentModule && line.trim() !== '') {
+                                        currentModule.content.push(line.replace(/^- /, '• '));
+                                    }
                                 }
-
-                                const moduleItems = [];
-                                // Regex to find each module subheading and its content
-                                const moduleRegex = /^###\s*Module\s*-\s*\d+\s*\((.*?)\)\s*\n([\s\S]*?)(?=^###\s*Module\s*-\s*\d+|\Z)/gm;
-
-                                let moduleMatch;
-                                while ((moduleMatch = moduleRegex.exec(courseContent)) !== null) {
-                                    const moduleTitle = moduleMatch[1].trim();
-                                    const moduleContent = moduleMatch[2].trim();
-
-                                    // Clean up module content (remove extra blank lines, etc.)
-                                    const cleanedContent = moduleContent.split('\n').filter(line => line.trim() !== '').join('\n');
-
+                            
+                                if (currentModule) {
                                     moduleItems.push({
-                                        title: moduleTitle,
-                                        content: cleanedContent
+                                        title: currentModule.title,
+                                        content: currentModule.content.join('\n').trim(),
                                     });
                                 }
 
