@@ -1,4 +1,4 @@
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, MessageSquareCode } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 
@@ -10,9 +10,17 @@ export function Header() {
             <GraduationCap className="h-7 w-7 text-primary" />
             <span className="font-semibold">WikiSyllabus</span>
             </Link>
-            <Button asChild variant="ghost">
-                <Link href="/select">Select Course</Link>
-            </Button>
+            <div className="flex items-center gap-2">
+                 <Button asChild variant="ghost">
+                    <Link href="/select">Select Course</Link>
+                </Button>
+                <Button asChild variant="outline">
+                    <Link href="/chat-with-file">
+                        <MessageSquareCode className="mr-2 h-4 w-4" />
+                        Chat with Syllabus
+                    </Link>
+                </Button>
+            </div>
         </div>
     </header>
   );
