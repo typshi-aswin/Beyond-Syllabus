@@ -42,7 +42,6 @@ function ChatComponent() {
   );
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-
   const copyToClipboard = async (text: string, messageIndex: number) => {
     try {
       await navigator.clipboard.writeText(text);
