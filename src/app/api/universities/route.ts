@@ -25,7 +25,7 @@ async function readSyllabusData() {
         }
         
         // Pre-compile regex for better performance
-        const moduleRegex = /^#+\s*\*{0,2}\s*Module\s*(?:[-–—]?\s*)?((?:\d+)|(?:I{1,4}V?|V(?:I{1,3})?|IX|X))(?:\s*[-–—:()]\s*(.*?))?\s*\*{0,2}$/i;
+        const moduleRegex = /^#{0,6}\s*\*{0,2}\s*Module\s*(?:[-–—]?\s*)?((?:\d+)|(?:I{1,4}V?|V(?:I{1,3})?|IX|X))\s*\*{0,2}\s*(?:[-–—:()]\s*(.*?))?\s*\*{0,2}$/i;
         
         const universities = await fs.promises.readdir(universitiesDir);
 
