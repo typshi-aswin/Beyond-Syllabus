@@ -43,3 +43,6 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+debug-regex.js
+fix-regex-test.js
+test-module-regex.js
