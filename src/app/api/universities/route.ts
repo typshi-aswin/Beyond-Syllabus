@@ -23,6 +23,10 @@ async function readSyllabusData() {
              console.error(`Directory not found: ${universitiesDir}`);
              return { error: 'University data directory not found. Please ensure the `universities` folder exists at the root of your project.' };
         }
+        
+        // Pre-compile regex for better performance
+        const moduleRegex = /^#+\s*\*{0,2}\s*Module\s*(?:[-–—]?\s*)?((?:\d+)|(?:I{1,4}V?|V(?:I{1,3})?|IX|X))(?:\s*[-–—:()]\s*(.*?))?\s*\*{0,2}$/i;
+        
         const universities = await fs.promises.readdir(universitiesDir);
 
         for (const universityId of universities) {
@@ -54,7 +58,6 @@ async function readSyllabusData() {
 
                          data[universityId][programId][schemeId][semesterId] = { subjects: [] };
 
-
                         for (const subjectFile of subjectFiles) {
                             if (subjectFile.endsWith('.md')) {
                                 const subjectFilePath = path.join(semesterPath, subjectFile);
@@ -66,7 +69,8 @@ async function readSyllabusData() {
                                 let currentModule: { title: string; content: string[] } | null = null;
                             
                                 for (const line of lines) {
-                                    const moduleMatch = line.match(/^#+\s*Module\s*-\s*\d+\s*(?:\((.*?)\))?(.+)?$/im) || line.match(/^#+\s*Module\s*\d+:\s*(.+)/im) || line.match(/^###\s*(Module\s*\d+.*)/im);
+                                    const moduleMatch = line.match(moduleRegex);
+                                    
                                     if (moduleMatch) {
                                         if (currentModule) {
                                             moduleItems.push({
@@ -74,13 +78,59 @@ async function readSyllabusData() {
                                                 content: currentModule.content.join('\n').trim(),
                                             });
                                         }
-                                        // Extract title from any of the matching groups
-                                        const titleText = (moduleMatch[1] || moduleMatch[2] || moduleMatch[0]).replace(/#+\s*Module\s*-\s*\d+\s*:?\s*\(?/, '').replace(/\)?/, '').trim();
+                                        
+                                        // Extract module number and title from the regex groups
+                                        const moduleNumber = moduleMatch[1];
+                                        let titleText = moduleMatch[2] || '';
+                                        
+                                        // Clean up the title more carefully
+                                        if (titleText) {
+                                            // Remove bold markers first
+                                            titleText = titleText
+                                                .replace(/^\*{0,2}/, '') // Remove leading bold markers
+                                                .replace(/\*{0,2}$/, '') // Remove trailing bold markers
+                                                .trim();
+                                            
+                                            // Remove leading separators (dash, em-dash, colon)
+                                            titleText = titleText.replace(/^[-–—:]\s*/, '');
+                                            
+                                            // Remove trailing separators
+                                            titleText = titleText.replace(/\s*[-–—:]\s*$/, '');
+                                            
+                                            // Handle parentheses intelligently
+                                            // Case 1: Complete wrapper parentheses (remove them if no inner parentheses)
+                                            if (titleText.startsWith('(') && titleText.endsWith(')')) {
+                                                const inner = titleText.slice(1, -1);
+                                                // Only remove if there are no other parentheses inside
+                                                if (!inner.includes('(') && !inner.includes(')')) {
+                                                    titleText = inner.trim();
+                                                }
+                                            }
+                                            // Case 2: Only opening parenthesis (remove it)
+                                            else if (titleText.startsWith('(') && !titleText.endsWith(')')) {
+                                                titleText = titleText.slice(1).trim();
+                                            }
+                                            // Case 3: Only closing parenthesis - BUT check if it's a valid abbreviation
+                                            else if (!titleText.startsWith('(') && titleText.endsWith(')')) {
+                                                // Check if it looks like an abbreviation pattern: "Word (ABC)" 
+                                                const abbreviationPattern = /\s+\([A-Z]{2,5}\)$/;
+                                                if (!abbreviationPattern.test(titleText)) {
+                                                    // Not an abbreviation, remove orphaned closing parenthesis
+                                                    titleText = titleText.slice(0, -1).trim();
+                                                }
+                                            }
+                                            
+                                            titleText = titleText.trim();
+                                        }
+                                        
+                                        // Use default title if empty
+                                        const finalTitle = titleText || `Module ${moduleNumber}`;
+                                        
                                         currentModule = {
-                                            title: titleText,
+                                            title: finalTitle,
                                             content: [],
                                         };
-                                    } else if (currentModule && line.trim() !== '') {
+                                    } else if (currentModule && line.trim()) {
                                         currentModule.content.push(line.replace(/^- /, '• '));
                                     }
                                 }
