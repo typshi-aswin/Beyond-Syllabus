@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles, Wand2, Send, BrainCircuit, User } from "lucide-react";
+import { Loader2, Sparkles, Wand2, Send, BrainCircuit, User, Copy, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { generateModuleTasks, GenerateModuleTasksOutput } from "@/ai/flows/generate-module-tasks";
 import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
@@ -24,8 +24,20 @@ export default function ChatWithFilePage() {
     const [isAwaitingAi, setIsAwaitingAi] = useState(false);
     const [chatTitle, setChatTitle] = useState<string>("AI Assistant");
     const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
 
     const chatEndRef = useRef<HTMLDivElement>(null);
+
+    const copyToClipboard = async (text: string, messageIndex: number) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopiedMessageIndex(messageIndex);
+            // Reset the copied state after 2 seconds
+            setTimeout(() => setCopiedMessageIndex(null), 2000);
+        } catch (err) {
+            console.error("Failed to copy text: ", err);
+        }
+    };
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -177,13 +189,30 @@ export default function ChatWithFilePage() {
                                             <AvatarFallback className="bg-primary/10"><Sparkles className="h-4 w-4 text-primary" /></AvatarFallback>
                                         </Avatar>
                                       )}
-                                      <div
-                                        className={`max-w-md md:max-w-lg rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${msg.role === 'user'
-                                                ? 'bg-primary text-primary-foreground rounded-br-none'
-                                                : 'bg-card text-card-foreground rounded-bl-none border'
-                                            }`}
-                                      >
-                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                      <div className="relative group max-w-md md:max-w-lg">
+                                          <div
+                                            className={`rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${msg.role === 'user'
+                                                    ? 'bg-primary text-primary-foreground rounded-br-none'
+                                                    : 'bg-card text-card-foreground rounded-bl-none border'
+                                                }`}
+                                          >
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                                          </div>
+                                          {msg.role === 'assistant' && (
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              className="absolute -bottom-2 -right-2 opacity-30 group-hover:opacity-100 hover:opacity-100 transition-opacity bg-background hover:bg-accent border shadow-sm h-8 w-8 p-0 z-10"
+                                              onClick={() => copyToClipboard(msg.content, idx)}
+                                              title="Copy response"
+                                            >
+                                              {copiedMessageIndex === idx ? (
+                                                <Check className="h-4 w-4 text-green-600" />
+                                              ) : (
+                                                <Copy className="h-4 w-4" />
+                                              )}
+                                            </Button>
+                                          )}
                                       </div>
                                       {msg.role === 'user' && (
                                         <Avatar className="w-8 h-8">
