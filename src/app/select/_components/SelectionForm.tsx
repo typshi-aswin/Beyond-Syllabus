@@ -41,6 +41,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Header } from "@/components/common/Header";
 
 interface SyllabusDataStructure {
   [key: string]: any;

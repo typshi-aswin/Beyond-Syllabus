@@ -9,8 +9,8 @@ export function Header() {
     <header className="fixed top-0 w-full bg-white/10 dark:bg-black/30 backdrop-blur-sm  z-50">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <span className="hidden sm:inline-block font-semibold text-xl">
-            BeyondSyllabus
+          <span className=" sm:inline-block font-semibold text-xl">
+            Beyond Syllabus
           </span>
         </Link>
 
