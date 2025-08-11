@@ -129,7 +129,7 @@ function ChatComponent() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <header className="w-full py-3 px-4 bg-card/80 backdrop-blur-lg border-b shadow-sm sticky top-0 z-10">
+      <header className="w-full py-3 px-4 bg-black/50 backdrop-blur-lg  shadow-sm sticky top-0 z-10">
         <h1 className="text-lg md:text-xl font-bold text-center text-foreground truncate">
           AI Chat: <span className="text-primary">{moduleTitle}</span>
         </h1>
@@ -158,12 +158,12 @@ function ChatComponent() {
                     </Avatar>
                   )}
                   {msg.content ? (
-                    <div className="relative group max-w-md md:max-w-lg">
+                    <div className="relative group max-w-md md:max-w-lg ">
                       <div
                         className={`rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${
                           msg.role === "user"
                             ? "bg-primary text-primary-foreground rounded-br-none"
-                            : "bg-card text-card-foreground rounded-bl-none border"
+                            : "bg-black/50 text-card-foreground rounded-bl-none border"
                         }`}
                       >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -187,7 +187,7 @@ function ChatComponent() {
                       )}
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-muted-foreground bg-card rounded-2xl px-4 py-3 border shadow-md">
+                    <div className="flex items-center gap-2 text-muted-foreground bg-black/50 rounded-2xl px-4 py-3 border shadow-md">
                       <Loader2 className="h-5 w-5 animate-spin" /> Thinking...
                     </div>
                   )}
@@ -212,7 +212,7 @@ function ChatComponent() {
                   <Sparkles className="h-4 w-4 text-primary" />
                 </AvatarFallback>
               </Avatar>
-              <div className="flex items-center gap-2 text-muted-foreground bg-card rounded-2xl px-4 py-3 border shadow-md">
+              <div className="flex items-center gap-2 text-muted-foreground bg-black/50 rounded-2xl px-4 py-3  shadow-md">
                 <Loader2 className="h-5 w-5 animate-spin" /> Thinking...
               </div>
             </motion.div>

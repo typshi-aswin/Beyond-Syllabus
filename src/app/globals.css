@@ -36,7 +36,7 @@
   }
 
   .dark {
-    --background: 222 47% 11%; /* Deep Blue */
+    --background: #030013; /* Deep Blue */
     --foreground: 0 0% 98%;
 
     --card: 222 47% 14%;
