@@ -53,22 +53,22 @@ export default function Home() {
 
       {mounted && (
         <section
-          className={`w-full h-screen flex justify-center  mt-[15vh]  ${
+          className={`w-full h-screen flex justify-center mt-[5vh]  md:mt-[15vh]  ${
             resolvedTheme === "dark"
-              ? "w-full h-full bg-[url('/hero-img.png')] bg-no-repeat  bg-contain "
+              ? "w-full h-full md:bg-[url('/hero-img.png')] bg-[url('/hero-mob.png')] bg-no-repeat bg-contain bg-bottom "
               : "bg-white"
           }`}
         >
-          <div className="flex justify-center h-[50vh] items-center flex-col  ">
+          <div className="flex justify-center h-[80vh] items-center flex-col  ">
             <div className="">
-              <h1 className="text-[83px] flex flex-col justify-center item-center font-bold  bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] to-[#ffffff] text-center tracking-tighter">
-                <span className="text-white text-[50px] h-[40px] text-center font-light">
+              <h1 className="md:text-[83px] text-[44px] flex flex-col justify-center item-center font-bold  bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] to-[#ffffff] text-center tracking-tighter">
+                <span className="text-white md:text-[50px] text-[30px] h-[40px] text-center font-light">
                   {" "}
                   Welcome to
                 </span>
                 Beyond Syllabus
               </h1>
-              <p className=" text-muted-foreground w-[610px] text-center md:text-[20px] text-white ">
+              <p className=" text-muted-foreground md:w-[610px] w-[335px] text-center md:text-[20px] text-white ">
                 Your modern, AI-powered guide to the university curriculum.
                 Explore subjects, understand modules, and unlock your potential.
               </p>
@@ -77,7 +77,7 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="group shadow-lg relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 w-[153px] h-[38px] bg-transparent rounded-[4px] border-white hover:bg-black/20 hover:text-white"
+                className="group shadow-lg relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 w-[266px] md:w-[153px] h-[38px] bg-transparent rounded-[4px] border-white hover:bg-black/20 hover:text-white"
                 onClick={handleChatClick}
                 disabled={isNavigatingToChat}
               >
@@ -102,7 +102,7 @@ export default function Home() {
               </Button>
               <Button
                 size="lg"
-                className="group shadow-lg relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 w-[203px] h-[38px] rounded-[4px] bg-[#8800ff]"
+                className="group shadow-lg relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 md:w-[203px] w-[266px] h-[38px] rounded-[4px] bg-[#8800ff]"
                 onClick={handleExploreClick}
                 disabled={isNavigating}
               >
@@ -171,9 +171,9 @@ export default function Home() {
 
 function Footer() {
   return (
-    <footer className="relative w-full shrink-0 mt-16 bg-transparent">
+    <footer className="relative w-full shrink-0 mt-[55vh]  md:mt-16 bg-transparent">
       {/* Rotated Background Layer */}
-      <div className="absolute bottom-5  w-full h-[100vh] overflow-hidden ">
+      <div className="absolute md:bottom-5 bottom-[60vh]  w-full h-[100vh] overflow-hidden ">
         <div className="w-full h-full bg-[url('/hero-img.png')] bg-no-repeat bg-contain rotate-180"></div>
       </div>
 
@@ -182,8 +182,7 @@ function Footer() {
         {/* Mobile Layout */}
         <div className="flex md:hidden flex-col gap-2 mb-5">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <GraduationCap className="h-7 w-7 text-primary" />
-            <span className="font-semibold">BeyondSyllabus</span>
+            <span className="font-semibold">Beyond Syllabus</span>
           </Link>
           <p className="text-sm text-muted-foreground">
             Your AI-powered guide to the university curriculum.
