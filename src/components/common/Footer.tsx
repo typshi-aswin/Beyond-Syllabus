@@ -3,8 +3,12 @@ import { Github, GraduationCap } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="w-full shrink-0 border-t mt-16 bg-card/50">
-      <div className="container mx-auto px-4 md:px-6 py-8">
+    <footer className="relative w-full shrink-0 mt-16 bg-transparent">
+      {/* Rotated Background Layer */}
+
+      {/* Footer Content */}
+      <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
+        {/* Mobile Layout */}
         <div className="flex md:hidden flex-col gap-2 mb-5">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <GraduationCap className="h-7 w-7 text-primary" />
@@ -18,11 +22,12 @@ export function Footer() {
             target="_blank"
             className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
           >
-            {" "}
-            <Github /> GitHub
+            <Github />
           </a>
         </div>
-        <div className=" flex">
+
+        {/* Desktop Layout */}
+        <div className="flex">
           <div className="md:flex md:visible hidden flex-col gap-2 mb-5">
             <Link
               href="/"
@@ -39,14 +44,13 @@ export function Footer() {
               target="_blank"
               className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
             >
-              {" "}
-              <Github /> GitHub
+              <Github />
             </a>
           </div>
 
-          <div className="flex gap-5  flex-row w-[100%] md:justify-evenly ">
+          <div className="flex gap-5 flex-row w-full md:justify-evenly">
             <div>
-              <h3 className="text-sm font-semibold mb-3 ">Navigation</h3>
+              <h3 className="text-sm font-semibold mb-3">Navigation</h3>
               <nav className="flex flex-col gap-2">
                 <FooterLink href="/">Home</FooterLink>
                 <FooterLink href="/select">Select Course</FooterLink>
@@ -70,6 +74,8 @@ export function Footer() {
             </div>
           </div>
         </div>
+
+        {/* Footer Bottom */}
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>
             {new Date().getFullYear()} BeyondSyllabus. All rights reserved. An
