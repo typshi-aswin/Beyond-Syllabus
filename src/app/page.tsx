@@ -53,27 +53,27 @@ export default function Home() {
 
       {mounted && (
         <section
-          className={`w-full h-screen flex justify-center mt-[5vh]  md:mt-[15vh]  ${
+          className={`w-full h-screen flex justify-center mt-[1vh]  md:mt-[15vh]  ${
             resolvedTheme === "dark"
               ? "w-full h-full md:bg-[url('/hero-img.png')] bg-[url('/hero-mob.png')] bg-no-repeat bg-contain bg-bottom "
               : "bg-white"
           }`}
         >
-          <div className="flex justify-center h-[80vh] items-center flex-col  ">
+          <div className="flex justify-center md:h-[50vh] h-[80vh] items-center flex-col  ">
             <div className="">
-              <h1 className="md:text-[83px] text-[44px] flex flex-col justify-center item-center font-bold  bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] to-[#ffffff] text-center tracking-tighter">
+              <h1 className="md:text-[83px] text-[44px] flex flex-col justify-center item-center font-bold  bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] via-white to-[#ffffff] text-center tracking-tighter">
                 <span className="text-white md:text-[50px] text-[30px] h-[40px] text-center font-light">
                   {" "}
                   Welcome to
                 </span>
                 Beyond Syllabus
               </h1>
-              <p className=" text-muted-foreground md:w-[610px] w-[335px] text-center md:text-[20px] text-white ">
+              <p className=" text-muted-foreground md:w-[610px] w-[335px] text-center md:text-[20px] md:text-white ">
                 Your modern, AI-powered guide to the university curriculum.
                 Explore subjects, understand modules, and unlock your potential.
               </p>
             </div>
-            <div className="flex flex-col gap-4 min-[400px]:flex-row  justify-center mt-[2vh] items-center">
+            <div className="flex md:flex-row gap-4 flex-col justify-center mt-[2vh] items-center">
               <Button
                 size="lg"
                 variant="outline"
@@ -203,7 +203,6 @@ function Footer() {
               href="/"
               className="flex items-center gap-2 font-bold text-lg"
             >
-              <GraduationCap className="h-7 w-7 text-primary" />
               <span className="font-semibold">BeyondSyllabus</span>
             </Link>
             <p className="text-sm text-muted-foreground">
