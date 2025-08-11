@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles, Wand2, Send, BrainCircuit, User, Copy, Check, Edit3 } from "lucide-react";
+import { Loader2, Sparkles, Wand2, Send, BrainCircuit, User, Copy, Check, Edit3, Menu, Plus as PlusIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { generateModuleTasks, GenerateModuleTasksOutput } from "@/ai/flows/generate-module-tasks";
 import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
@@ -44,6 +44,7 @@ export default function ChatWithFilePage() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Thinking animation states
     const [thinkingText, setThinkingText] = useState("AI is thinking");
@@ -74,6 +75,23 @@ export default function ChatWithFilePage() {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, loading]);
 
+    // Auto-resize textarea when markdown changes
+    useEffect(() => {
+        resizeTextarea();
+    }, [markdown]);
+
+    // Additional effect to handle textarea resize when switching to content input mode
+    useEffect(() => {
+        if (!showChatInterface && markdown.trim()) {
+            // Small delay to ensure the textarea is rendered and visible
+            const timer = setTimeout(() => {
+                resizeTextarea();
+            }, 100);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [showChatInterface]);
+
     const copyToClipboard = async (text: string, messageIndex: number) => {
         try {
             await navigator.clipboard.writeText(text);
@@ -84,22 +102,38 @@ export default function ChatWithFilePage() {
         }
     };
 
+    // Helper function to resize textarea
+    const resizeTextarea = () => {
+        if (textareaRef.current) {
+            const textarea = textareaRef.current;
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 240) + 'px';
+            
+            // Enable/disable scrolling based on content height
+            if (textarea.scrollHeight > 240) {
+                textarea.style.overflowY = 'auto';
+            } else {
+                textarea.style.overflowY = 'hidden';
+            }
+        }
+    };
+
     // Load chat sessions on component mount
     useEffect(() => {
         const sessions = getChatSessionsList();
         setChatSessions(sessions);
     }, []);
 
-    // Auto-save current session
+    // Auto-save current session - only save if chat interface is shown (content has been submitted)
     useEffect(() => {
-        if (currentSessionId && (messages.length > 0 || markdown.trim())) {
+        if (currentSessionId && showChatInterface && (messages.length > 0 || markdown.trim())) {
             const timeoutId = setTimeout(() => {
                 saveCurrentSession();
             }, 1000);
             
             return () => clearTimeout(timeoutId);
         }
-    }, [currentSessionId, messages, markdown, suggestions]);
+    }, [currentSessionId, messages, markdown, suggestions, showChatInterface]);
 
     const saveCurrentSession = () => {
         if (!currentSessionId) return;
@@ -130,13 +164,14 @@ export default function ChatWithFilePage() {
         if (currentSessionId && 
             !markdown.trim() && 
             messages.length === 0 && 
-            suggestions.length === 0) {
-            // Current session is already empty, don't create a new one
+            suggestions.length === 0 &&
+            !showChatInterface) {
+            // Current session is already empty and unused, don't create a new one
             return;
         }
         
-        // Always save current session if it exists
-        if (currentSessionId) {
+        // Only save current session if it has been actually used (chat interface was shown)
+        if (currentSessionId && showChatInterface) {
             saveCurrentSession();
         }
         
@@ -152,13 +187,41 @@ export default function ChatWithFilePage() {
         setChatTitle("AI Assistant");
         setShowChatInterface(false); // Reset to content input mode
         
-        // Update sessions list
-        setChatSessions(prev => [newSession, ...prev]);
+        // Don't add to sessions list until actually used
     };
 
     const editContent = () => {
         setShowChatInterface(false);
         setSidebarCollapsed(false); // Expand sidebar when editing content
+        
+        // Trigger textarea resize after a short delay to ensure it's rendered
+        setTimeout(() => {
+            resizeTextarea();
+        }, 150);
+    };
+
+    const editSessionContent = (sessionId: string) => {
+        // Load the session and switch to edit mode
+        loadSession(sessionId);
+        setShowChatInterface(false); // Switch to content input mode
+        setSidebarCollapsed(false); // Expand sidebar
+    };
+
+    const editSessionTitle = (sessionId: string, newTitle: string) => {
+        // Update the session title
+        const session = getChatSession(sessionId);
+        if (session) {
+            const updatedSession = { ...session, title: newTitle, lastModified: new Date() };
+            saveChatSession(updatedSession);
+            
+            // Update local state
+            setChatSessions(prev => prev.map(s => s.id === sessionId ? updatedSession : s));
+            
+            // Update current chat title if this is the active session
+            if (currentSessionId === sessionId) {
+                setChatTitle(newTitle);
+            }
+        }
     };
 
     const loadSession = (sessionId: string) => {
@@ -168,13 +231,13 @@ export default function ChatWithFilePage() {
                                         messages.length === 0 && 
                                         suggestions.length === 0;
             
-            if (isCurrentSessionEmpty) {
-                // Delete the empty session instead of saving it
+            if (isCurrentSessionEmpty || !showChatInterface) {
+                // Delete the empty/unused session instead of saving it
                 setChatSessions(prev => prev.filter(s => s.id !== currentSessionId));
                 // Also delete from localStorage
                 deleteChatSession(currentSessionId);
             } else {
-                // Save the session if it has content
+                // Save the session only if it has been used (chat interface was shown)
                 saveCurrentSession();
             }
         }
@@ -290,6 +353,15 @@ export default function ChatWithFilePage() {
             const newSession = createNewChatSession();
             setCurrentSessionId(newSession.id);
             setChatSessions(prev => [newSession, ...prev]);
+        } else {
+            // If session exists but not in list, add it (for cases where new chat was created but not used until now)
+            const sessionExists = chatSessions.some(s => s.id === currentSessionId);
+            if (!sessionExists) {
+                const currentSession = getChatSession(currentSessionId);
+                if (currentSession) {
+                    setChatSessions(prev => [currentSession, ...prev]);
+                }
+            }
         }
         
         setSuggestions([]);
@@ -318,7 +390,7 @@ export default function ChatWithFilePage() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-muted/30 dark:bg-background">
+        <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-[#181824] dark:to-[#232946] overflow-hidden">
             <Header />
             <div className="flex flex-1 overflow-hidden">
                 <ChatHistorySidebar
@@ -327,63 +399,83 @@ export default function ChatWithFilePage() {
                     onSessionSelect={loadSession}
                     onNewChat={createNewChat}
                     onDeleteSession={deleteSession}
+                    onEditTitle={editSessionTitle}
                     isCollapsed={sidebarCollapsed}
                     onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
                 />
-                
-                <main className="flex-1 overflow-hidden">
+                <main className="flex-1 overflow-hidden flex flex-col items-center justify-center">
                     {!showChatInterface ? (
-                        // Content Input Mode
-                        <div className="container mx-auto px-4 py-8 h-full flex flex-col justify-center max-w-7xl">
-                            <motion.div 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="text-center mb-10"
-                            >
-                                <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">Chat with Any Syllabus</h1>
-                                <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-                                    Paste any syllabus or educational content below. Our AI will help you understand it, generate learning tasks, and answer your questions.
-                                </p>
-                            </motion.div>
-
-                            <Card className="w-full max-w-6xl mx-auto shadow-lg rounded-2xl bg-card/80 backdrop-blur-sm border">
-                                <CardContent className="p-8 space-y-6">
-                                    <h2 className="text-2xl font-semibold text-center">Enter Your Content</h2>
-                                    <Textarea
-                                        placeholder="Paste your syllabus markdown here..."
-                                        value={markdown}
-                                        onChange={(e) => setMarkdown(e.target.value)}
-                                        className="min-h-[500px] w-full text-base rounded-xl focus-visible:ring-primary bg-background/70 resize-none"
-                                        disabled={isAwaitingAi}
-                                    />
-                                    <Button 
-                                        onClick={handleGenerateTasks} 
-                                        disabled={loading || !markdown.trim()} 
-                                        className="w-full text-lg py-6 group"
-                                        size="lg"
-                                    >
-                                        {isAwaitingAi && loading ? (
-                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                        ) : (
-                                            <Wand2 className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                                        )}
-                                        Generate Insights & Start Chat
-                                    </Button>
-                                    {error && (
-                                        <Alert variant="destructive">
-                                            <BrainCircuit className="h-4 w-4" />
-                                            <AlertTitle>Error</AlertTitle>
-                                            <AlertDescription>{error}</AlertDescription>
-                                        </Alert>
+                        // Content Input Mode (ChatGPT style)
+                        <div className="flex flex-col items-center justify-center w-full h-full py-16">
+                            <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">Introducing BeyondSyllabus</h1>
+                            <p className="text-lg md:text-xl text-center text-muted-foreground mb-10 max-w-2xl">
+                                Paste any syllabus or educational content below. Our AI will help you understand it, generate learning tasks, and answer your questions.
+                            </p>
+                            <div className="w-full max-w-3xl mx-auto rounded-3xl shadow-2xl bg-background/80 backdrop-blur-lg border border-border flex items-start p-6">
+                                <form onSubmit={e => { e.preventDefault(); handleGenerateTasks(); }} className="w-full flex items-start gap-4">
+                                    <div className="flex-1">
+                                        <textarea
+                                            ref={textareaRef}
+                                            placeholder="Paste your syllabus or markdown here..."
+                                            value={markdown}
+                                            onChange={e => setMarkdown(e.target.value)}
+                                            className="w-full text-lg px-4 py-3 bg-transparent border-none focus:outline-none placeholder:text-muted-foreground resize-none"
+                                            disabled={isAwaitingAi}
+                                            autoFocus
+                                            rows={1}
+                                            style={{
+                                                minHeight: '48px',
+                                                maxHeight: '240px',
+                                                height: 'auto',
+                                                overflowY: 'hidden',
+                                                scrollbarWidth: 'thin',
+                                                scrollbarColor: 'hsl(var(--muted-foreground) / 0.2) transparent'
+                                            }}
+                                        />
+                                        <style jsx>{`
+                                          textarea::-webkit-scrollbar {
+                                            width: 6px;
+                                          }
+                                          textarea::-webkit-scrollbar-track {
+                                            background: transparent;
+                                          }
+                                          textarea::-webkit-scrollbar-thumb {
+                                            background-color: hsl(var(--muted-foreground) / 0.2);
+                                            border-radius: 3px;
+                                          }
+                                          textarea::-webkit-scrollbar-thumb:hover {
+                                            background-color: hsl(var(--muted-foreground) / 0.4);
+                                          }
+                                        `}</style>
+                                    </div>
+                                    {markdown.trim() && (
+                                        <Button
+                                            type="submit"
+                                            disabled={loading || !markdown.trim()}
+                                            className="p-2 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-md hover:scale-105 transition-transform flex-shrink-0 mt-1"
+                                            size="sm"
+                                        >
+                                            {isAwaitingAi && loading ? (
+                                                <Loader2 className="h-5 w-5 animate-spin" />
+                                            ) : (
+                                                <Send className="h-5 w-5" />
+                                            )}
+                                        </Button>
                                     )}
-                                </CardContent>
-                            </Card>
+                                </form>
+                            </div>
+                            {error && (
+                                <Alert variant="destructive" className="mt-4 max-w-3xl">
+                                    <BrainCircuit className="h-4 w-4" />
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>{error}</AlertDescription>
+                                </Alert>
+                            )}
                         </div>
                     ) : (
                         // Chat Interface Mode
-                        <div className="container mx-auto px-4 py-8 h-full">
-                            <div className="flex justify-between items-center mb-6">
+                        <div className="container mx-auto px-4 py-4 h-full flex flex-col">
+                            <div className="flex justify-between items-center mb-4">
                                 <motion.div 
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -408,9 +500,32 @@ export default function ChatWithFilePage() {
                                 </Button>
                             </div>
 
-                            <Card className="shadow-lg rounded-2xl bg-card/80 backdrop-blur-sm border h-[calc(100vh-14rem)]">
-                                <CardContent className="flex flex-col overflow-hidden p-4 h-full">
-                                   <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+                            <Card className="shadow-lg rounded-2xl bg-card/80 backdrop-blur-sm border flex-1 flex flex-col min-h-0">
+                                <CardContent className="flex flex-col p-4 h-full">
+                                    {/* Scrollable Messages and Suggestions Container */}
+                                    <div className="flex-1 overflow-y-auto scroll-smooth pr-2"
+                                         style={{ 
+                                           scrollbarWidth: 'thin',
+                                           scrollbarColor: 'hsl(var(--muted-foreground) / 0.2) transparent'
+                                         }}>
+                                       <style jsx>{`
+                                         div::-webkit-scrollbar {
+                                           width: 6px;
+                                         }
+                                         div::-webkit-scrollbar-track {
+                                           background: transparent;
+                                         }
+                                         div::-webkit-scrollbar-thumb {
+                                           background-color: hsl(var(--muted-foreground) / 0.2);
+                                           border-radius: 3px;
+                                         }
+                                         div::-webkit-scrollbar-thumb:hover {
+                                           background-color: hsl(var(--muted-foreground) / 0.4);
+                                         }
+                                       `}</style>
+                                       
+                                       {/* Messages Area */}
+                                       <div className="space-y-6">
                                     {messages.filter(m => m.role !== 'system').length === 0 && !loading && (
                                          <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-500/30">
                                              <Sparkles className="h-4 w-4 text-primary" />
@@ -520,32 +635,55 @@ export default function ChatWithFilePage() {
                                             </div>
                                         </motion.div>
                                     )}
-                                    <div ref={chatEndRef} />
-                                   </div>
+                                    
+                                    {/* Suggestions shown after latest AI reply */}
                                     {suggestions.length > 0 && !loading && (
-                                    <div className="flex flex-wrap gap-2 mt-4 justify-center">
-                                        {suggestions.map((s, i) => (
-                                        <Button key={i} variant="outline" size="sm" onClick={() => handleSuggestionClick(s)}>
-                                            {s}
-                                        </Button>
-                                        ))}
-                                    </div>
+                                        <div className="flex flex-col gap-2 mt-6">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Menu className="h-4 w-4" />
+                                                <span className="text-sm font-medium">Related</span>
+                                            </div>
+                                            {suggestions.map((s, i) => (
+                                                <div key={i} className="flex items-center justify-between w-full border-b border-border/50 pb-2">
+                                                    <Button
+                                                        className="w-full text-wrap flex bg-transparent hover:text-primary hover:bg-transparent text-left justify-start rounded text-sm py-3 px-2 h-auto"
+                                                        variant="ghost"
+                                                        onClick={() => handleSuggestionClick(s)}
+                                                    >
+                                                        {s}
+                                                    </Button>
+                                                    <PlusIcon className="h-5 w-5 text-primary flex-shrink-0 ml-2" />
+                                                </div>
+                                            ))}
+                                        </div>
                                     )}
-                                    <div className="border-t bg-card/40 pt-4">
+                                    
+                                    <div ref={chatEndRef} />
+                                       </div>
+                                    </div>
+                                    
+                                    {/* Fixed Input Form at Bottom */}
+                                    <div className="flex-shrink-0 border-t pt-4 mt-4">
                                         <form
                                             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-                                            className="flex gap-2"
+                                            className="flex gap-2 w-full p-2 rounded-[35px] shadow-lg border bg-background"
                                         >
                                             <input
                                                 id="chat-input-field"
-                                                className="flex-1 bg-background border border-border rounded-lg px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+                                                className="flex-1 bg-transparent border-none rounded-lg px-3 py-2 text-base text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:ring-0 disabled:opacity-70"
                                                 value={input}
                                                 onChange={(e) => setInput(e.target.value)}
                                                 placeholder="Ask about your syllabus..."
                                                 disabled={loading || messages.length === 0}
                                                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
                                             />
-                                            <Button id="chat-submit-button" type="submit" size="icon" disabled={loading || !input.trim()}>
+                                            <Button 
+                                                id="chat-submit-button" 
+                                                type="submit" 
+                                                size="icon" 
+                                                disabled={loading || !input.trim()}
+                                                className="rounded-xl w-12 h-12 flex-shrink-0"
+                                            >
                                                 <Send className="h-5 w-5" />
                                             </Button>
                                         </form>
