@@ -91,11 +91,11 @@ export default function Home() {
         >
           <div className="flex justify-center md:h-[50vh] h-[80vh] items-center flex-col">
             <div>
-              <h1 className="md:text-[83px] text-[44px] font-bold bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] via-white to-[#ffffff] text-center tracking-tighter">
-                <span className="text-white md:text-[50px] text-[30px] font-light">
+              <h1 className="md:text-[83px] text-[44px] flex flex-col justify-center item-center font-bold  bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] via-white to-[#ffffff] text-center tracking-tighter">
+                <span className="text-white md:text-[50px] text-[30px] h-[40px] text-center font-light">
+                  {" "}
                   Welcome to
                 </span>
-                <br />
                 Beyond Syllabus
               </h1>
               <p className="text-muted-foreground md:w-[610px] w-[335px] text-center md:text-[20px] md:text-white">
