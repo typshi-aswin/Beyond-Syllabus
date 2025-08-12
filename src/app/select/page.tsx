@@ -1,21 +1,24 @@
-import { Header } from '@/components/common/Header';
-import { SelectionForm } from './_components/SelectionForm';
-import ErrorDisplay from '@/components/common/ErrorDisplay';
-import { Footer } from '@/components/common/Footer';
-import { motion } from 'framer-motion';
-import { AnimatedDiv } from '@/components/common/AnimatedDiv';
+import { Header } from "@/components/common/Header";
+import { SelectionForm } from "./_components/SelectionForm";
+import ErrorDisplay from "@/components/common/ErrorDisplay";
+import { Footer } from "@/components/common/Footer";
+import { motion } from "framer-motion";
+import { AnimatedDiv } from "@/components/common/AnimatedDiv";
 
 interface DirectoryStructure {
   [key: string]: any;
 }
 
 async function getDirectoryStructure(): Promise<DirectoryStructure> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/universities`, {
-    cache: "no-store"
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/universities`,
+    {
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
-    throw new Error('Failed to fetch universities data');
+    throw new Error("Failed to fetch universities data");
   }
 
   return res.json();
@@ -28,7 +31,7 @@ export default async function SelectPage() {
   try {
     directoryStructure = await getDirectoryStructure();
   } catch (e: any) {
-    error = e.message || 'An unexpected error occurred while fetching data.';
+    error = e.message || "An unexpected error occurred while fetching data.";
   }
 
   if (error) {
@@ -42,7 +45,10 @@ export default async function SelectPage() {
         <main className="container mx-auto px-4 py-12 md:py-20 flex justify-center items-center flex-1">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl font-bold mb-4">No Syllabus Data Found</h1>
-            <p className="text-muted-foreground">Please ensure your 'universities' folder and its subdirectories contain valid syllabus data.</p>
+            <p className="text-muted-foreground">
+              Please ensure your 'universities' folder and its subdirectories
+              contain valid syllabus data.
+            </p>
           </div>
         </main>
         <Footer />
