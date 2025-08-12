@@ -11,13 +11,16 @@ import {
   ChevronRight,
   Sparkles,
   Loader2,
+  Github,
 } from "lucide-react";
 import Link from "next/link";
-import { Github } from "lucide-react";
 import { Header } from "@/components/common/Header";
 import { useTheme } from "next-themes";
+import { motion, AnimatePresence } from "framer-motion";
+import { Footer } from "@/components/common/Footer";
+import { FooterDark } from "@/components/common/FooterDark";
 
-// Simple Loader Component
+// Full-Screen Loader with fade
 function FullScreenLoader() {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#030013] z-[9999]">
@@ -31,129 +34,157 @@ export default function Home() {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
 
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [isNavigatingToChat, setIsNavigatingToChat] = useState(false);
-  const [isLoadingAssets, setIsLoadingAssets] = useState(true); // loader state
+  const [loadingRoute, setLoadingRoute] = useState<string | null>(null);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // Function to preload images
+  // Preload images helper
   const preloadImages = (urls: string[]) => {
     return Promise.all(
       urls.map(
         (url) =>
-          new Promise((resolve) => {
+          new Promise<void>((resolve) => {
             const img = new Image();
             img.src = url;
-            img.onload = resolve;
-            img.onerror = resolve;
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
           })
       )
     );
   };
 
-  // Simulate preloading all assets
+  // Preload assets on mount
   useEffect(() => {
     setMounted(true);
-
-    const imageAssets = ["/hero-img.webp", "/img-mob.svg"];
+    const imageAssets = ["/hero-img.webp", "/img-mob.svg", "/white-bg.png"];
 
     preloadImages(imageAssets).then(() => {
-      setTimeout(() => setIsLoadingAssets(false), 800); // small delay for smoother UX
+      setTimeout(() => setIsLoadingAssets(false), 800);
     });
   }, []);
 
-  const handleExploreClick = async () => {
-    setIsNavigating(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    router.push("/select");
+  // Navigation handler
+  const navigateWithDelay = async (path: string, delay: number) => {
+    setLoadingRoute(path);
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    router.push(path);
   };
-
-  const handleChatClick = async () => {
-    setIsNavigatingToChat(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    router.push("/chat-with-file");
-  };
-
-  // If still loading assets, show full-page loader
-  if (isLoadingAssets) return <FullScreenLoader />;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#030013]">
       <Header />
 
-      {mounted && (
-        <section
-          className={`w-full h-screen flex justify-center mt-[1vh] md:mt-[10vh] ${
-            resolvedTheme === "dark"
-              ? "md:bg-[url('/hero-img.webp')] bg-[url('/img-mob.svg')] bg-no-repeat md:bg-cover bg-contain bg-bottom"
-              : "bg-white"
+      {/* Loader with fade-out */}
+      <AnimatePresence>
+        {isLoadingAssets && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <FullScreenLoader />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Hero Section */}
+      <section
+        className={`w-full h-screen flex justify-center ${
+          mounted && resolvedTheme === "dark"
+            ? "md:bg-[url('/hero-img.webp')] bg-[url('/img-mob.svg')] bg-no-repeat md:bg-cover bg-contain mt-[1vh] md:mt-[10vh] bg-bottom"
+            : "bg-[url('/white-bg.png')]"
+        }`}
+      >
+        <div
+          className={`flex justify-center h-[80vh] items-center flex-col ${
+            mounted && resolvedTheme === "dark" ? "md:h-[50vh]" : ""
           }`}
         >
-          <div className="flex justify-center md:h-[50vh] h-[80vh] items-center flex-col">
-            <div>
-              <h1 className="md:text-[83px] text-[44px] flex flex-col justify-center item-center font-bold  bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] via-white to-[#ffffff] text-center tracking-tighter">
-                <span className="text-white md:text-[50px] text-[30px] h-[40px] text-center font-light">
-                  {" "}
-                  Welcome to
-                </span>
-                Beyond Syllabus
-              </h1>
-              <p className="text-muted-foreground md:w-[610px] w-[335px] text-center md:text-[20px] md:text-white">
-                Your modern, AI-powered guide to the university curriculum.
-                Explore subjects, understand modules, and unlock your potential.
-              </p>
-            </div>
-
-            <div className="flex md:flex-row gap-4 flex-col justify-center mt-[2vh] items-center">
-              {/* AI Chat Button */}
-              <Button
-                size="lg"
-                variant="outline"
-                className="group shadow-lg w-[266px] md:w-[153px] h-[38px] border-white hover:bg-black/20 hover:text-white"
-                onClick={handleChatClick}
-                disabled={isNavigatingToChat}
+          <div>
+            <h1
+              className={`md:text-[83px] text-[44px] flex flex-col justify-center font-bold text-center tracking-tighter ${
+                mounted && resolvedTheme === "dark"
+                  ? "bg-clip-text text-transparent bg-gradient-to-t from-[#8529ff] via-white to-[#ffffff]"
+                  : "text-black"
+              }`}
+            >
+              <span
+                className={`md:text-[50px] text-[30px] h-[40px] text-center font-light ${
+                  mounted && resolvedTheme === "dark"
+                    ? "text-white"
+                    : "text-black"
+                }`}
               >
-                {isNavigatingToChat ? (
-                  <>
-                    <Loader2 className="h-5 w-5 mr-2 animate-spin text-amber-400" />
-                    Loading AI Chat...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-5 w-5 mr-2 text-amber-400" />
-                    AI Chat
-                  </>
-                )}
-              </Button>
-
-              {/* Explore Button */}
-              <Button
-                size="lg"
-                className="group shadow-lg md:w-[203px] w-[266px] h-[38px] bg-[#8800ff]"
-                onClick={handleExploreClick}
-                disabled={isNavigating}
-              >
-                {isNavigating ? (
-                  <>
-                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                    Loading Syllabus...
-                  </>
-                ) : (
-                  <>
-                    Explore Your Syllabus
-                    <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </Button>
-            </div>
+                Welcome to
+              </span>
+              Beyond Syllabus
+            </h1>
+            <p
+              className={`text-muted-foreground md:w-[610px] w-[335px] text-center md:text-[20px] ${
+                mounted && resolvedTheme === "dark"
+                  ? "text-white"
+                  : "md:text-black text-black"
+              }`}
+            >
+              Your modern, AI-powered guide to the university curriculum.
+              Explore subjects, understand modules, and unlock your potential.
+            </p>
           </div>
-        </section>
-      )}
 
-      {/* Your existing features & footer */}
-      <section className="w-full py-20 md:py-28 lg:py-32 bg-[#030013]">
+          <div className="flex md:flex-row gap-4 flex-col justify-center mt-[2vh] items-center">
+            {/* AI Chat Button */}
+            <Button
+              size="lg"
+              variant="outline"
+              className="group shadow-lg w-[266px] md:w-[153px] h-[38px] border-white hover:bg-black/20 hover:text-white"
+              onClick={() => navigateWithDelay("/chat-with-file", 600)}
+              disabled={loadingRoute === "/chat-with-file"}
+            >
+              {loadingRoute === "/chat-with-file" ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin text-amber-400" />
+                  Loading AI Chat...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-5 w-5 mr-2 text-amber-400" />
+                  AI Chat
+                </>
+              )}
+            </Button>
+
+            {/* Explore Button */}
+            <Button
+              size="lg"
+              className="group shadow-lg md:w-[203px] w-[266px] h-[38px] bg-[#8800ff]"
+              onClick={() => navigateWithDelay("/select", 800)}
+              disabled={loadingRoute === "/select"}
+            >
+              {loadingRoute === "/select" ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Loading Syllabus...
+                </>
+              ) : (
+                <>
+                  Explore Your Syllabus
+                  <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section
+        className={`w-full py-20  md:py-28 lg:py-32 ${
+          mounted && resolvedTheme === "dark" ? "bg-[#030013]" : "bg-white"
+        }`}
+      >
         <div className="container h-[130vh] px-4 md:px-6 mx-auto">
-          <div className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
+          <div className="flex flex-col items-center text-center mb-16">
             <div className="space-y-4">
               <div className="inline-block rounded-lg bg-slate-950/20 px-4 py-2 text-sm font-medium">
                 Key Features
@@ -188,117 +219,23 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <Footer />
+      <div className="some-wrapper-class">
+        {mounted && resolvedTheme === "dark" ? <FooterDark /> : <Footer />}
+      </div>
     </div>
   );
 }
-function Footer() {
-  return (
-    <footer className="relative w-full shrink-0 mt-[55vh]  md:mt-16 bg-transparent">
-      {/* Rotated Background Layer */}
-      <div className="absolute md:bottom-5 bottom-[60vh]  w-full h-[100vh] overflow-hidden ">
-        <div className="w-full h-full md:bg-[url('/hero-img.webp')] bg-[url('/img-mob.svg')] bg-no-repeat bg-contain rotate-180"></div>
-      </div>
 
-      {/* Footer Content */}
-      <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
-        {/* Mobile Layout */}
-        <div className="flex md:hidden flex-col gap-2 mb-5">
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <span className="font-semibold">Beyond Syllabus</span>
-          </Link>
-          <p className="text-sm text-muted-foreground">
-            Your AI-powered guide to the university curriculum.
-          </p>
-          <a
-            href="https://github.com/The-Purple-Movement/WikiSyllabus"
-            target="_blank"
-            className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
-          >
-            <Github />
-          </a>
-        </div>
-
-        {/* Desktop Layout */}
-        <div className="flex">
-          <div className="md:flex md:visible hidden flex-col gap-2 mb-5">
-            <Link
-              href="/"
-              className="flex items-center gap-2 font-bold text-lg"
-            >
-              <span className="font-semibold">BeyondSyllabus</span>
-            </Link>
-            <p className="text-sm text-muted-foreground">
-              Your AI-powered guide to the university curriculum.
-            </p>
-            <a
-              href="https://github.com/The-Purple-Movement/WikiSyllabus"
-              target="_blank"
-              className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
-            >
-              <Github />
-            </a>
-          </div>
-
-          <div className="flex gap-5 flex-row w-full md:justify-evenly">
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Navigation</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="/">Home</FooterLink>
-                <FooterLink href="/select">Select Course</FooterLink>
-                <FooterLink href="/chat-with-file">AI Chat</FooterLink>
-              </nav>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Resources</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="#">Contribution Guide</FooterLink>
-                <FooterLink href="#">Code of Conduct</FooterLink>
-                <FooterLink href="#">License</FooterLink>
-              </nav>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Legal</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="#">Terms of Service</FooterLink>
-                <FooterLink href="#">Privacy Policy</FooterLink>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Bottom */}
-        <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
-          <p>
-            {new Date().getFullYear()} BeyondSyllabus. All rights reserved. An
-            open-source project.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterLink({
-  href,
-  children,
+// Feature Card
+function FeatureCard({
+  icon,
+  title,
+  description,
 }: {
-  href: string;
-  children: React.ReactNode;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }) {
-  return (
-    <Link
-      href={href}
-      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-      prefetch={false}
-    >
-      {children}
-    </Link>
-  );
-}
-// Footer & FeatureCard remain unchanged from your code
-function FeatureCard({ icon, title, description }: any) {
   return (
     <div>
       <div className="bg-[#D9D9D9]/10 p-4 rounded-t-full flex justify-center w-[70px] mx-auto h-[50px] items-center">

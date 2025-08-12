@@ -1,17 +1,38 @@
+"use client";
+
 import Link from "next/link";
 import { Github, GraduationCap } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function Footer() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Ensure the theme value is available after hydration
+    setMounted(true);
+  }, []);
+
+  // Decide background style based on theme
+  const bgStyle = mounted
+    ? resolvedTheme === "dark"
+      ? "bg-black"
+      : "bg-white"
+    : "";
+
   return (
-    <footer className="relative w-full shrink-0 mt-16 bg-transparent">
-      {/* Rotated Background Layer */}
+    <footer
+      className={`relative w-full shrink-0  bg-transparent ${bgStyle} bg-no-repeat bg-cover`}
+    >
+      {/* Optional overlay for better text visibility */}
+      <div className="absolute inset-0 "></div>
 
       {/* Footer Content */}
       <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
         {/* Mobile Layout */}
         <div className="flex md:hidden flex-col gap-2 mb-5">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <GraduationCap className="h-7 w-7 text-primary" />
             <span className="font-semibold">BeyondSyllabus</span>
           </Link>
           <p className="text-sm text-muted-foreground">
@@ -20,7 +41,7 @@ export function Footer() {
           <a
             href="https://github.com/The-Purple-Movement/WikiSyllabus"
             target="_blank"
-            className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
+            className="w-fit  rounded-full flex  bg-black/20 hover:shadow-lg "
           >
             <Github />
           </a>
@@ -33,7 +54,6 @@ export function Footer() {
               href="/"
               className="flex items-center gap-2 font-bold text-lg"
             >
-              <GraduationCap className="h-7 w-7 text-primary" />
               <span className="font-semibold">BeyondSyllabus</span>
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -42,7 +62,7 @@ export function Footer() {
             <a
               href="https://github.com/The-Purple-Movement/WikiSyllabus"
               target="_blank"
-              className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
+              className="w-fit rounded-full flex p-3 bg-black/20 hover:shadow-lg"
             >
               <Github />
             </a>

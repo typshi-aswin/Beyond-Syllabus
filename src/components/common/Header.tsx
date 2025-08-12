@@ -1,7 +1,7 @@
 import { GraduationCap, MessageSquareCode, Sparkles } from "lucide-react";
 import Link from "next/link";
-// import { Button } from "../ui/button";
-// import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "../ui/button";
+import { ThemeToggle } from "./ThemeToggle";
 // import { MobileNav } from "./MobileNav";
 
 export function Header() {
@@ -18,9 +18,9 @@ export function Header() {
           {/* buttons go here */}
         </div>
 
-        {/* <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ">
           <ThemeToggle />
-        </div> */}
+        </div>
       </div>
     </header>
   );

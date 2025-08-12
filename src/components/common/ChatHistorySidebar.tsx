@@ -4,8 +4,24 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Trash2, Plus, MessageSquare, ChevronLeft, ChevronRight, History, MoreVertical, Edit, Check, X } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Trash2,
+  Plus,
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight,
+  History,
+  MoreVertical,
+  Edit,
+  Check,
+  X,
+} from "lucide-react";
 import { ChatSession, deleteChatSession } from "@/lib/chat-history";
 import { formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,14 +45,19 @@ export function ChatHistorySidebar({
   onDeleteSession,
   onEditTitle,
   isCollapsed,
-  onToggleCollapse
+  onToggleCollapse,
 }: ChatHistorySidebarProps) {
-  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
+  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(
+    null
+  );
 
-  const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
+  const handleDeleteSession = async (
+    sessionId: string,
+    e: React.MouseEvent
+  ) => {
     e.stopPropagation();
     setDeletingSessionId(sessionId);
-    
+
     // Add a small delay for visual feedback
     setTimeout(() => {
       deleteChatSession(sessionId);
@@ -78,16 +99,22 @@ export function ChatHistorySidebar({
           onClick={onToggleCollapse}
           className="ml-auto"
         >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {isCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
       {/* Sessions List */}
-      <div className="flex-1 overflow-y-auto scroll-smooth" 
-           style={{ 
-             scrollbarWidth: 'thin',
-             scrollbarColor: 'hsl(var(--muted-foreground) / 0.2) transparent'
-           }}>
+      <div
+        className="flex-1 overflow-y-auto scroll-smooth"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "hsl(var(--muted-foreground) / 0.2) transparent",
+        }}
+      >
         <style jsx>{`
           div::-webkit-scrollbar {
             width: 6px;
@@ -124,7 +151,7 @@ export function ChatHistorySidebar({
             </motion.div>
           ))}
         </AnimatePresence>
-        
+
         {sessions.length === 0 && !isCollapsed && (
           <div className="p-4 text-center text-muted-foreground">
             <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -147,7 +174,15 @@ interface SessionCardProps {
   onEditTitle: (newTitle: string) => void;
 }
 
-function SessionCard({ session, isActive, isDeleting, isCollapsed, onClick, onDelete, onEditTitle }: SessionCardProps) {
+function SessionCard({
+  session,
+  isActive,
+  isDeleting,
+  isCollapsed,
+  onClick,
+  onDelete,
+  onEditTitle,
+}: SessionCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(session.title);
 
@@ -172,10 +207,10 @@ function SessionCard({ session, isActive, isDeleting, isCollapsed, onClick, onDe
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.stopPropagation();
       handleEditSave(e as any);
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       e.stopPropagation();
       handleEditCancel(e as any);
     }
@@ -184,12 +219,10 @@ function SessionCard({ session, isActive, isDeleting, isCollapsed, onClick, onDe
   return (
     <Card
       className={`m-2 cursor-pointer transition-all duration-200 hover:shadow-md group ${
-        isActive 
-          ? 'bg-primary/10 border-primary/30 shadow-sm' 
-          : 'bg-background/50 hover:bg-accent/50'
-      } ${
-        isDeleting ? 'opacity-50 scale-95' : ''
-      }`}
+        isActive
+          ? "bg-primary/10 border-primary/30 shadow-sm"
+          : "bg-background/50 hover:bg-accent/50"
+      } ${isDeleting ? "opacity-50 scale-95" : ""}`}
       onClick={onClick}
     >
       <div className="p-3">
@@ -247,12 +280,15 @@ function SessionCard({ session, isActive, isDeleting, isCollapsed, onClick, onDe
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem onClick={handleEditStart} className="cursor-pointer">
+                      <DropdownMenuItem
+                        onClick={handleEditStart}
+                        className="cursor-pointer"
+                      >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Title
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={onDelete} 
+                      <DropdownMenuItem
+                        onClick={onDelete}
                         className="cursor-pointer text-destructive focus:text-destructive"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
@@ -263,22 +299,24 @@ function SessionCard({ session, isActive, isDeleting, isCollapsed, onClick, onDe
                 </>
               )}
             </div>
-            
+
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>
-                {session.messages.filter(m => m.role !== 'system').length} messages
+                {session.messages.filter((m) => m.role !== "system").length}{" "}
+                messages
               </span>
               <span>
                 {formatDistanceToNow(session.lastModified, { addSuffix: true })}
               </span>
             </div>
-            
+
             {session.messages.length > 0 && (
               <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                 {session.messages
-                  .filter(m => m.role !== 'system')
-                  .slice(-1)[0]?.content
-                  .substring(0, 100)}...
+                  .filter((m) => m.role !== "system")
+                  .slice(-1)[0]
+                  ?.content.substring(0, 100)}
+                ...
               </p>
             )}
           </div>
