@@ -1,13 +1,12 @@
+![Beyond Syllabus Logo](https://purple-movement.com/assets/logo_pm-Bx55hodj.png)
 
 # 🌟 Beyond Syllabus – AI-Powered Learning Beyond Boundaries 🌟
 
 ## Don’t just study the syllabus. Understand it. Question it. Go beyond it.
-
-![Beyond Syllabus Logo](https://purple-movement.com/assets/logo_pm-Bx55hodj.png)
-
+---
 ## 🚀 What is Beyond Syllabus?
 
-**Beyond Syllabus** is the **front-end interface** for the open-source [WikiSyllabus](#) repository — a platform that transforms any syllabus into an **interactive AI-powered learning companion**.
+**Beyond Syllabus** is the **front-end interface** for the open-source [WikiSyllabus](https://github.com/The-Purple-Movement/WikiSyllabus) repository — a platform that transforms any syllabus into an **interactive AI-powered learning companion**.
 
 It’s like **ChatGPT for your syllabus** — but built with **purpose**.  
 Designed for **students, teachers, and lifelong learners**, it answers deeper questions such as:
@@ -65,7 +64,7 @@ The Purple Movement blends the **passion & curiosity of youth** (Red) with the *
 ## 🛠 Tech Stack
 
 - **Frontend:** React / Next.js  
-- **Backend API:** Connected to [WikiSyllabus](#)  
+- **Backend API:** Connected to [WikiSyllabus](https://github.com/The-Purple-Movement/WikiSyllabus)  
 - **AI Layer:** GPT-based conversational AI + semantic search  
 - **Deployment:** Dockerized for easy hosting on any cloud  
 
