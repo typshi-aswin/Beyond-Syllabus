@@ -52,6 +52,18 @@ export function ChatHistorySidebar({
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="bg-background/60 backdrop-blur-sm border-r flex flex-col h-full relative z-40"
     >
+      {/* New Chat Button */}
+      <div className="p-3 border-b">
+        <Button
+          onClick={onNewChat}
+          className="w-full"
+          size={isCollapsed ? "icon" : "default"}
+        >
+          <Plus className="h-4 w-4" />
+          {!isCollapsed && <span className="ml-2">New Chat</span>}
+        </Button>
+      </div>
+
       {/* Header */}
       <div className="p-4 border-b flex items-center justify-between">
         {!isCollapsed && (
@@ -67,18 +79,6 @@ export function ChatHistorySidebar({
           className="ml-auto"
         >
           {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </Button>
-      </div>
-
-      {/* New Chat Button */}
-      <div className="p-3">
-        <Button
-          onClick={onNewChat}
-          className="w-full"
-          size={isCollapsed ? "icon" : "default"}
-        >
-          <Plus className="h-4 w-4" />
-          {!isCollapsed && <span className="ml-2">New Chat</span>}
         </Button>
       </div>
 
