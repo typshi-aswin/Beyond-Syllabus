@@ -187,7 +187,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   };
 
   return (
-    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-[#120F21] backdrop-blur-sm mt-[20vh]">
+    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-white dark:bg-[#120F21]  backdrop-blur-sm mt-[20vh]">
       <form onSubmit={handleSubmit}>
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl text-center font-bold">
@@ -268,7 +268,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             }}
                           >
                             <Card
-                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm bg-black/50"
+                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm bg-white dark:bg-[#120F21] "
                               onClick={() =>
                                 handleUniversitySelect(universityId)
                               }
@@ -373,7 +373,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                           >
                             <Card
                               className={cn(
-                                "cursor-pointer bg-black/50 hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
+                                "cursor-pointer bg-white dark:bg-[#120F21]  hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
                                 selectedSchemeId === schemeId &&
                                   "border-primary bg-black/50"
                               )}

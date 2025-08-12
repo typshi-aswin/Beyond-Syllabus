@@ -26,6 +26,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/common/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Header } from "@/components/common/Header";
 
 function ChatComponent() {
   const searchParams = useSearchParams();
@@ -129,12 +130,12 @@ function ChatComponent() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <header className="w-full py-3 px-4 bg-black/50 backdrop-blur-lg  shadow-sm sticky top-0 z-10">
-        <h1 className="text-lg md:text-xl font-bold text-center text-foreground truncate">
+      <Header />
+
+      <main className=" mt-[11vh] flex-1 flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4 py-4">
+        <h1 className="text-lg pb-10 md:text-xl font-bold text-center text-foreground truncate">
           AI Chat: <span className="text-primary">{moduleTitle}</span>
         </h1>
-      </header>
-      <main className="flex-1 flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4 py-4">
         <div className="flex-1 overflow-y-auto pr-4 -mr-4 space-y-6">
           <AnimatePresence>
             {messages
@@ -163,7 +164,7 @@ function ChatComponent() {
                         className={`rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${
                           msg.role === "user"
                             ? "bg-primary text-primary-foreground rounded-br-none"
-                            : "bg-black/50 text-card-foreground rounded-bl-none border"
+                            : "text-card-foreground rounded-bl-none border"
                         }`}
                       >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -187,7 +188,7 @@ function ChatComponent() {
                       )}
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-muted-foreground bg-black/50 rounded-2xl px-4 py-3 border shadow-md">
+                    <div className="flex items-center gap-2 text-muted-foreground bg-white dark:bg-black/50 rounded-2xl px-4 py-3 border shadow-md">
                       <Loader2 className="h-5 w-5 animate-spin" /> Thinking...
                     </div>
                   )}
@@ -231,7 +232,7 @@ function ChatComponent() {
                 <div className="flex items-center justify-between w-full  border-b-[.8px] ">
                   <Button
                     key={i}
-                    className="w-[350px] md:w-full text-wrap flex bg-transparent   hover:text-purple-600 hover:bg-transparent text-left md:h-[7vh] h-[10vh] text-[12px] md:text-[13px]  justify-start rounded"
+                    className="w-[350px] md:w-full text-wrap flex bg-transparent   hover:text-purple-600 hover:bg-transparent text-left md:h-[7vh] h-[10vh] text-[12px] md:text-[13px] text-black dark:text-white justify-start rounded"
                     size="sm"
                     onClick={() => handleSuggestionClick(s)}
                   >

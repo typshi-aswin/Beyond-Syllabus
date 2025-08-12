@@ -183,7 +183,11 @@ export default function Home() {
           mounted && resolvedTheme === "dark" ? "bg-[#030013]" : "bg-white"
         }`}
       >
-        <div className="container h-[130vh] px-4 md:px-6 mx-auto">
+        <div
+          className={`container  px-4 md:px-6 mx-auto ${
+            mounted && resolvedTheme === "dark" ? "h-[130vh]" : "h-[90vh]"
+          }`}
+        >
           <div className="flex flex-col items-center text-center mb-16">
             <div className="space-y-4">
               <div className="inline-block rounded-lg bg-slate-950/20 px-4 py-2 text-sm font-medium">

@@ -36,7 +36,7 @@ export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
   };
 
   return (
-    <div className="space-y-4 bg-black/50 backdrop-blur-sm p-6 rounded-2xl shadow-md border">
+    <div className="space-y-4 bg-white dark:bg-black/50 backdrop-blur-sm p-6 rounded-2xl shadow-md border">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-primary/10 rounded-lg">
           <BookText className="h-6 w-6 text-primary" />

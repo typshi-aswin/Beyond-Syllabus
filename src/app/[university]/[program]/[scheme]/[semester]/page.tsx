@@ -217,7 +217,7 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
                   return (
                     <Card
                       key={subject.id}
-                      className="h-full w-72 overflow-hidden flex flex-col justify-between rounded-2xl hover:border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-black/40 backdrop-blur-sm"
+                      className="h-full w-72 overflow-hidden flex flex-col justify-between rounded-2xl hover:border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-[#120F21]  backdrop-blur-sm"
                     >
                       <CardHeader>
                         <div className="flex justify-between items-start">
