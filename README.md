@@ -1,6 +1,7 @@
 ![Beyond Syllabus Logo](https://purple-movement.com/assets/logo_pm-Bx55hodj.png)
 
-# 🌟 Beyond Syllabus – AI-Powered Learning Beyond Boundaries 🌟
+# Beyond Syllabus 
+## AI-Powered Learning Beyond Boundaries 🌟
 
 ## Don’t just study the syllabus. Understand it. Question it. Go beyond it.
 ---
