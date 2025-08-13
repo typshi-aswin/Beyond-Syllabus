@@ -129,7 +129,7 @@ function ChatComponent() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full bg-transparent">
       <Header />
 
       <main className=" mt-[11vh] flex-1 flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4 py-4">

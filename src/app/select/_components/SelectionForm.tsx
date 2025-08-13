@@ -187,7 +187,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   };
 
   return (
-    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-white dark:bg-[#120F21]  backdrop-blur-sm mt-[20vh]">
+    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-white dark:bg-white/10 backdrop-blur-sm mt-[5vh]">
       <form onSubmit={handleSubmit}>
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl text-center font-bold">
@@ -255,7 +255,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                       <Label className="text-lg font-semibold text-center block">
                         1. Select Your University
                       </Label>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
                         {Object.keys(directoryStructure).map((universityId) => (
                           <motion.div
                             key={universityId}
@@ -268,7 +268,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             }}
                           >
                             <Card
-                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm bg-white dark:bg-[#120F21] "
+                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm bg-white dark:bg-white/5 "
                               onClick={() =>
                                 handleUniversitySelect(universityId)
                               }
@@ -299,7 +299,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     exit="exit"
                     className="w-full"
                   >
-                    <div className="space-y-4 flex justify-center flex-col items-center">
+                    <div className="space-y-4 flex h-[40vh]  flex-col items-center">
                       <Label className="text-lg font-semibold text-center block">
                         2. Choose Your Program
                       </Label>
@@ -310,13 +310,13 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                         <SelectTrigger className="py-6 text-base w-[300px]">
                           <SelectValue placeholder="Select Program" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px] dark:bg-white/10 overflow-y-auto">
                           {Object.keys(selectedUniversityData).map(
                             (programId) => (
                               <SelectItem
                                 key={programId}
                                 value={programId}
-                                className="capitalize"
+                                className="capitalize dark:hover:bg-white/10 hover:bg-black/20 transition-colors"
                               >
                                 {capitalizeWords(programId)}
                               </SelectItem>
@@ -373,7 +373,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                           >
                             <Card
                               className={cn(
-                                "cursor-pointer bg-white dark:bg-[#120F21]  hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
+                                "cursor-pointer bg-white dark:bg-white/10 hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
                                 selectedSchemeId === schemeId &&
                                   "border-primary bg-black/50"
                               )}
@@ -405,14 +405,20 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                         4. Pick Your Semester
                       </Label>
                       <RadioGroup
-                        onValueChange={handleSemesterSelect}
                         value={selectedSemesterId ?? ""}
                         className="grid grid-cols-2 gap-4 sm:grid-cols-4"
                       >
                         {Object.keys(selectedSchemeData).map((semesterId) => (
-                          <Label
+                          <div
                             key={semesterId}
-                            htmlFor={semesterId}
+                            onClick={() => {
+                              handleSemesterSelect(semesterId); // set state
+                              handleSubmit(
+                                new Event(
+                                  "submit"
+                                ) as unknown as React.FormEvent
+                              ); // trigger form submission
+                            }}
                             className={cn(
                               "flex flex-col items-center justify-center rounded-lg border-2 p-4 cursor-pointer hover:border-primary transition-all hover:shadow-lg",
                               selectedSemesterId === semesterId &&
@@ -428,7 +434,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             <p className="font-semibold">
                               {formatSemesterName(semesterId)}
                             </p>
-                          </Label>
+                          </div>
                         ))}
                       </RadioGroup>
                     </div>
@@ -442,19 +448,20 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
           <Button
             variant="ghost"
             type="button"
+            className="hover:bg-muted"
             onClick={() => resetToLevel(step - 1)}
             disabled={step === 1}
           >
             Back
           </Button>
-          <Button
+          {/* <Button
             type="submit"
             className="group"
             disabled={!selectedSemesterId}
           >
             View Subjects{" "}
             <ChevronRight className="h-5 w-5 ml-1 transition-transform group-hover:translate-x-1" />
-          </Button>
+          </Button> */}
         </CardFooter>
       </form>
     </Card>

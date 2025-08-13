@@ -26,9 +26,9 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                   {item.label}
                 </Link>
               ) : (
-                <span className="font-medium text-foreground">
+                <Link href="/" className="font-medium text-foreground">
                   {item.label}
-                </span>
+                </Link>
               )}
             </li>
             {index < items.length - 1 && (
