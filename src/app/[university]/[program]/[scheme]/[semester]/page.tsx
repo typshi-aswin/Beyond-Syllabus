@@ -144,7 +144,6 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
   }
 
   const dataPath = findSemesterData(data, resolvedParams);
-
   if (!dataPath) {
     notFound();
   }
@@ -161,7 +160,7 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen mt-[10vh]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
         <AnimatedDiv>
@@ -184,7 +183,7 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
                   return (
                     <Card
                       key={subject.id}
-                      className="h-full w-72 overflow-hidden flex flex-col justify-between rounded-2xl hover:border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-card/80 backdrop-blur-sm"
+                      className="h-full w-72 overflow-hidden flex flex-col justify-between rounded-2xl hover:border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-[#120F21]  backdrop-blur-sm"
                     >
                       <CardHeader>
                         <div className="flex justify-between items-start">

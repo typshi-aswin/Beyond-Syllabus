@@ -41,6 +41,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Header } from "@/components/common/Header";
 
 interface SyllabusDataStructure {
   [key: string]: any;
@@ -186,7 +187,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   };
 
   return (
-    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-card/80 backdrop-blur-sm">
+    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-white dark:bg-[#120F21]  backdrop-blur-sm mt-[20vh]">
       <form onSubmit={handleSubmit}>
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl text-center font-bold">
@@ -254,7 +255,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                       <Label className="text-lg font-semibold text-center block">
                         1. Select Your University
                       </Label>
-                      <div className="grid grid-cols-1 gap-4">
+                      <div className="grid grid-cols-2 gap-4">
                         {Object.keys(directoryStructure).map((universityId) => (
                           <motion.div
                             key={universityId}
@@ -267,7 +268,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             }}
                           >
                             <Card
-                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm"
+                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm bg-white dark:bg-[#120F21] "
                               onClick={() =>
                                 handleUniversitySelect(universityId)
                               }
@@ -298,7 +299,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     exit="exit"
                     className="w-full"
                   >
-                    <div className="space-y-4">
+                    <div className="space-y-4 flex justify-center flex-col items-center">
                       <Label className="text-lg font-semibold text-center block">
                         2. Choose Your Program
                       </Label>
@@ -306,7 +307,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                         onValueChange={handleProgramSelect}
                         value={selectedProgramId ?? ""}
                       >
-                        <SelectTrigger className="py-6 text-base">
+                        <SelectTrigger className="py-6 text-base w-[300px]">
                           <SelectValue placeholder="Select Program" />
                         </SelectTrigger>
                         <SelectContent>
@@ -372,9 +373,9 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                           >
                             <Card
                               className={cn(
-                                "cursor-pointer hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
+                                "cursor-pointer bg-white dark:bg-[#120F21]  hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
                                 selectedSchemeId === schemeId &&
-                                  "border-primary bg-primary/10"
+                                  "border-primary bg-black/50"
                               )}
                               onClick={() => handleSchemeSelect(schemeId)}
                             >
