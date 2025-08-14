@@ -14,26 +14,26 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className=" hidden  md:flex items-center space-x-2 text-sm text-muted-foreground">
+      <ol className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
         {items.map((item, index) => (
           <Fragment key={item.label}>
             <li>
               {item.href ? (
                 <Link
                   href={item.href}
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-[hsl(var(--primary))]"
                 >
                   {item.label}
                 </Link>
               ) : (
-                <Link href="/" className="font-medium text-foreground">
+                <span className="font-medium text-foreground">
                   {item.label}
-                </Link>
+                </span>
               )}
             </li>
             {index < items.length - 1 && (
               <li>
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4 text-[hsl(var(--primary))]" />
               </li>
             )}
           </Fragment>

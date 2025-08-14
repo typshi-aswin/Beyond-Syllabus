@@ -34,14 +34,11 @@ import {
   CircuitBoard,
   Bolt,
   Info,
-  ChevronRight,
   GraduationCap,
-  Building,
   BookOpen,
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Header } from "@/components/common/Header";
 
 interface SyllabusDataStructure {
   [key: string]: any;
@@ -97,13 +94,17 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
 
+  const stepsConfig = [
+    { step: 1, label: "University" },
+    { step: 2, label: "Program" },
+    { step: 3, label: "Scheme" },
+    { step: 4, label: "Semester" },
+  ];
+
   const handleUniversitySelect = async (universityId: string) => {
     setIsLoading(true);
     setLoadingMessage("Loading programs...");
-
-    // Add aesthetic delay for smooth transition
     await new Promise((resolve) => setTimeout(resolve, 800));
-
     setSelectedUniversityId(universityId);
     setIsLoading(false);
     setStep(2);
@@ -112,9 +113,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const handleProgramSelect = async (programId: string) => {
     setIsLoading(true);
     setLoadingMessage("Loading schemes...");
-
     await new Promise((resolve) => setTimeout(resolve, 600));
-
     setSelectedProgramId(programId);
     setIsLoading(false);
     setStep(3);
@@ -123,9 +122,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const handleSchemeSelect = async (schemeId: string) => {
     setIsLoading(true);
     setLoadingMessage("Loading semesters...");
-
     await new Promise((resolve) => setTimeout(resolve, 500));
-
     setSelectedSchemeId(schemeId);
     setIsLoading(false);
     setStep(4);
@@ -176,10 +173,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
     ) {
       setIsLoading(true);
       setLoadingMessage("Loading syllabus modules...");
-
-      // Add a delay before navigation to show loading state
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       router.push(
         `/${selectedUniversityId}/${selectedProgramId}/${selectedSchemeId}/${selectedSemesterId}`
       );
@@ -187,7 +181,37 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   };
 
   return (
-    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-white dark:bg-white/10 backdrop-blur-sm mt-[5vh]">
+    <Card className="w-full shadow-2xl rounded-2xl bg-white dark:bg-white/10 backdrop-blur-sm mt-[5vh]">
+      {/* Breadcrumb Navigation */}
+      <div className="flex items-center justify-center flex-wrap gap-2 p-4 border-b border-muted">
+        {stepsConfig.map(({ step: stepNumber, label }, index) => {
+          const isActive = step === stepNumber;
+          const isCompleted = step > stepNumber;
+          return (
+            <div key={label} className="flex items-center">
+              <button
+                type="button"
+                disabled={!isCompleted && !isActive}
+                onClick={() => resetToLevel(stepNumber)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-sm font-medium transition-all",
+                  isActive
+                    ? "bg-primary text-white"
+                    : isCompleted
+                    ? "bg-primary/10 text-primary hover:bg-primary/20"
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                )}
+              >
+                {label}
+              </button>
+              {index < stepsConfig.length - 1 && (
+                <span className="mx-2 text-muted-foreground">›</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       <form onSubmit={handleSubmit}>
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl text-center font-bold">
@@ -197,6 +221,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
             Follow the steps to find the curriculum for your course.
           </CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-8 min-h-[400px] flex items-center justify-center">
           <AnimatePresence mode="wait">
             {isLoading ? (
@@ -218,7 +243,6 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="space-y-2"
                   >
                     <h3 className="text-xl font-semibold text-primary">
                       {loadingMessage}
@@ -226,17 +250,6 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     <p className="text-muted-foreground">
                       Please wait while we prepare your content...
                     </p>
-                    <div className="flex justify-center space-x-1 mt-4">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                      <div
-                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
-                    </div>
                   </motion.div>
                 </div>
               </MotionDiv>
@@ -255,31 +268,25 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                       <Label className="text-lg font-semibold text-center block">
                         1. Select Your University
                       </Label>
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid md:grid-cols-3 gap-4">
                         {Object.keys(directoryStructure).map((universityId) => (
                           <motion.div
                             key={universityId}
                             whileHover={{ scale: 1.02, y: -5 }}
                             whileTap={{ scale: 0.98 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 20,
-                            }}
                           >
                             <Card
-                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm bg-white dark:bg-white/5 "
+                              className="cursor-pointer bg-transparent border-2 border-purple-700   
+             hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/30 
+             hover:bg-gradient-to-br hover:from-purple-900 hover:to-purple-700 
+             dark:hover:from-purple-800 dark:hover:to-purple-600 
+             transition-all rounded-xl p-6 text-center"
                               onClick={() =>
                                 handleUniversitySelect(universityId)
                               }
                             >
-                              <motion.div
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.6 }}
-                              >
-                                <GraduationCap className="h-12 w-12 text-primary mx-auto mb-3 transition-all duration-300 group-hover:text-primary/80" />
-                              </motion.div>
-                              <p className="font-semibold text-lg group-hover:text-primary transition-colors duration-300">
+                              <GraduationCap className="h-12 w-12 text-primary mx-auto mb-3" />
+                              <p className="font-semibold text-lg">
                                 {capitalizeWords(universityId)}
                               </p>
                             </Card>
@@ -299,7 +306,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     exit="exit"
                     className="w-full"
                   >
-                    <div className="space-y-4 flex h-[40vh]  flex-col items-center">
+                    <div className="space-y-4 flex h-[40vh] flex-col items-center">
                       <Label className="text-lg font-semibold text-center block">
                         2. Choose Your Program
                       </Label>
@@ -310,13 +317,13 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                         <SelectTrigger className="py-6 text-base w-[300px]">
                           <SelectValue placeholder="Select Program" />
                         </SelectTrigger>
-                        <SelectContent className="max-h-[300px] dark:bg-white/10 overflow-y-auto">
+                        <SelectContent className="max-h-[300px] dark:bg-black overflow-y-auto">
                           {Object.keys(selectedUniversityData).map(
                             (programId) => (
                               <SelectItem
                                 key={programId}
                                 value={programId}
-                                className="capitalize dark:hover:bg-white/10 hover:bg-black/20 transition-colors"
+                                className="capitalize hover:bg-primary/10"
                               >
                                 {capitalizeWords(programId)}
                               </SelectItem>
@@ -365,21 +372,16 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             key={schemeId}
                             whileHover={{ scale: 1.05, y: -3 }}
                             whileTap={{ scale: 0.95 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 400,
-                              damping: 20,
-                            }}
                           >
                             <Card
                               className={cn(
-                                "cursor-pointer bg-white dark:bg-white/10 hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
+                                "cursor-pointer border-transparent bg-transparent border-2 border-purple-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/30 hover:bg-gradient-to-br hover:from-purple-900 hover:to-purple-700 dark:hover:from-purple-800 dark:hover:to-purple-600 transition-all rounded-xl p-6 text-center",
                                 selectedSchemeId === schemeId &&
-                                  "border-primary bg-black/50"
+                                  "border-primary bg-primary/10"
                               )}
                               onClick={() => handleSchemeSelect(schemeId)}
                             >
-                              <BookOpen className="h-10 w-10 text-primary mx-auto mb-3 transition-transform group-hover:scale-110" />
+                              <BookOpen className="h-10 w-10 text-primary mx-auto mb-3" />
                               <p className="font-semibold capitalize">
                                 {schemeId.replace(/-/g, " ")}
                               </p>
@@ -412,17 +414,17 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                           <div
                             key={semesterId}
                             onClick={() => {
-                              handleSemesterSelect(semesterId); // set state
+                              handleSemesterSelect(semesterId);
                               handleSubmit(
                                 new Event(
                                   "submit"
                                 ) as unknown as React.FormEvent
-                              ); // trigger form submission
+                              );
                             }}
                             className={cn(
-                              "flex flex-col items-center justify-center rounded-lg border-2 p-4 cursor-pointer hover:border-primary transition-all hover:shadow-lg",
+                              "flex flex-col items-center justify-center hover:border-primary  cursor-pointer border-2 border-purple-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/30 hover:bg-gradient-to-br hover:from-purple-900 hover:to-purple-700 dark:hover:from-purple-800 dark:hover:to-purple-600 transition-all rounded-xl p-6 text-center",
                               selectedSemesterId === semesterId &&
-                                "border-primary bg-primary/10 shadow-lg"
+                                "border-primary bg-primary/10"
                             )}
                           >
                             <RadioGroupItem
@@ -444,24 +446,16 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
             )}
           </AnimatePresence>
         </CardContent>
+
         <CardFooter className="flex justify-between items-center bg-muted/50 p-4 rounded-b-2xl">
           <Button
             variant="ghost"
             type="button"
-            className="hover:bg-muted"
             onClick={() => resetToLevel(step - 1)}
             disabled={step === 1}
           >
             Back
           </Button>
-          {/* <Button
-            type="submit"
-            className="group"
-            disabled={!selectedSemesterId}
-          >
-            View Subjects{" "}
-            <ChevronRight className="h-5 w-5 ml-1 transition-transform group-hover:translate-x-1" />
-          </Button> */}
         </CardFooter>
       </form>
     </Card>
