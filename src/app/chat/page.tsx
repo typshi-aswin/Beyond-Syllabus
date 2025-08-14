@@ -234,7 +234,7 @@ function ChatComponent() {
           <div ref={chatEndRef} />
         </div>
         {/* Toggle Button (Hamburger) */}
-        <div className="hidden md:block fixed right-4 top-24 z-50">
+        <div className="block fixed right-4 bottom-[32vh] z-50">
           <Button
             size="icon"
             variant="outline"
@@ -254,7 +254,7 @@ function ChatComponent() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 300, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="hidden md:flex flex-col gap-2 fixed right-4 top-36 p-3 bg-background border rounded-xl shadow-md w-fit z-40"
+              className="hidden md:flex flex-col gap-2 fixed right-4 bottom-10 p-3 bg-background border rounded-xl shadow-md w-fit z-40"
             >
               <p className="text-sm font-semibold flex items-center gap-1">
                 <Menu size={16} /> Quick Questions

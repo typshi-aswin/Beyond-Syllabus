@@ -451,8 +451,13 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
           <Button
             variant="ghost"
             type="button"
-            onClick={() => resetToLevel(step - 1)}
-            disabled={step === 1}
+            onClick={() => {
+              if (step === 1) {
+                router.push("/"); // go to homepage
+              } else {
+                resetToLevel(step - 1); // go to previous step
+              }
+            }}
           >
             Back
           </Button>
