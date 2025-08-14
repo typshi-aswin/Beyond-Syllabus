@@ -187,7 +187,7 @@ function ChatComponent() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="absolute -bottom-2 -right-2 opacity-30 group-hover:opacity-100 hover:opacity-100 transition-opacity bg-background hover:bg-accent border shadow-sm h-8 w-8 p-0 z-10"
+                          className="absolute -bottom-7 hover:bg-white/0 hover:text-green-600 transition-opacity bg-background  h-8 w-8 p-0 z-10"
                           onClick={() => copyToClipboard(msg.content, idx)}
                           title="Copy response"
                         >

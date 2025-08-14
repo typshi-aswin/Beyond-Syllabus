@@ -178,12 +178,16 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
               </aside>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Mind Map</h3>
-              <MindMap
-                subjectCode={subject.code}
-                subjectName={subject.name}
-                modules={subject.modules || []}
-              />
+              <div>
+                <h3 className="text-xl font-semibold mb-2 text-center">
+                  Mind Map
+                </h3>
+                <MindMap
+                  subjectCode={subject.code}
+                  subjectName={subject.name}
+                  modules={subject.modules || []}
+                />
+              </div>
             </div>
           </div>
         </AnimatedDiv>

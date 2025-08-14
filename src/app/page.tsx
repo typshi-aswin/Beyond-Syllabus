@@ -13,12 +13,11 @@ import {
   Loader2,
   Github,
 } from "lucide-react";
-import Link from "next/link";
+
 import { Header } from "@/components/common/Header";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/common/Footer";
-import { FooterDark } from "@/components/common/FooterDark";
 
 // Full-Screen Loader with fade
 function FullScreenLoader() {
