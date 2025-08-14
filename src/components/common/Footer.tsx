@@ -16,13 +16,13 @@ export function Footer() {
   }, []);
   if (pathname === "/") {
     return (
-      <footer className="relative w-full shrink-0 bg-transparent">
+      <footer className="relative w-full shrink-0 md:bg-transparent md:mt-0 mt-[80vh] ">
         {/* Background */}
         <div
-          className={`absolute inset-x-0 bottom-0 w-full h-[120vh] md:h-[70vh] overflow-hidden z-0 ${
+          className={`absolute inset-x-0 bottom-0 w-full h-[20vh]  overflow-hidden z-0 ${
             mounted && resolvedTheme === "dark"
-              ? "md:bg-[url('/hero-img.webp')]  rotate-180 bg-[url('/img-mob.svg')] bg-no-repeat md:bg-cover bg-contain mt-[1vh] md:mt-[10vh] bg-bottom"
-              : "bg-white bg-no-repeat bg-cover"
+              ? "md:bg-[url('/hero-img.webp')] md:h-[80vh] h-[110vh] rotate-180 bg-[url('/img-mob.svg')] bg-no-repeat md:bg-cover bg-contain mt-[1vh] md:mt-[10vh] bg-bottom"
+              : "bg-white bg-no-repeat bg-cover "
           }`}
         ></div>
 
