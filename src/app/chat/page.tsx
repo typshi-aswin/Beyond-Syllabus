@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
+
 import {
   Loader2,
   Send,
@@ -18,6 +19,8 @@ import {
   ThermometerIcon,
   MenuIcon,
   Menu,
+  Brain,
+  X,
 } from "lucide-react";
 import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
 import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
@@ -87,7 +90,16 @@ function ChatComponent() {
     );
   }, [messages, loading]);
 
-  const handleSuggestionClick = (suggestion: string) => {
+  const [quickQuestions, setQuickQuestions] = useState<string[]>([
+    "Why do I need to study this?",
+    "What is the purpose of this module?",
+    "How can I apply this in real life?",
+  ]);
+  const [showQuickPanel, setShowQuickPanel] = useState(true);
+  const handleSuggestionClick = (
+    suggestion: string,
+    isQuickQuestion = false
+  ) => {
     setInput(suggestion);
     // We need a small delay to allow the state to update before sending
     setTimeout(() => {
@@ -129,7 +141,7 @@ function ChatComponent() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full bg-transparent">
       <Header />
 
       <main className=" mt-[11vh] flex-1 flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4 py-4">
@@ -221,6 +233,46 @@ function ChatComponent() {
           {error && <div className=" text-destructive py-4">{error}</div>}
           <div ref={chatEndRef} />
         </div>
+        {/* Toggle Button (Hamburger) */}
+        <div className="block fixed right-4 bottom-[32vh] z-50">
+          <Button
+            size="icon"
+            variant="outline"
+            className="rounded-full shadow-md"
+            onClick={() => setShowQuickPanel((prev) => !prev)}
+          >
+            {showQuickPanel ? <X size={18} /> : <Menu size={18} />}
+          </Button>
+        </div>
+
+        {/* Animated Quick Questions Panel */}
+        <AnimatePresence>
+          {showQuickPanel && quickQuestions.length > 0 && (
+            <motion.div
+              key="quick-questions-panel"
+              initial={{ x: 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 300, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="hidden md:flex flex-col gap-2 fixed right-4 bottom-10 p-3 bg-background border rounded-xl shadow-md w-fit z-40"
+            >
+              <p className="text-sm font-semibold flex items-center gap-1">
+                <Menu size={16} /> Quick Questions
+              </p>
+              {quickQuestions.map((q, i) => (
+                <Button
+                  key={i}
+                  variant="ghost"
+                  className="justify-start text-left text-[13px] hover:text-purple-600"
+                  onClick={() => handleSuggestionClick(q, true)}
+                >
+                  {q}
+                </Button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="mt-4 md:w-full">
           {suggestions.length > 0 && !loading && (
             <div className="flex flex-wrap gap-2   mb-2 md:w-full">

@@ -14,6 +14,7 @@
     --popover-foreground: 224 71.4% 4.1%;
 
     --primary: 262.1 83.3% 57.8%; /* Soft Purple */
+    --primary-dark: 262.1 83.3% 45%; /* Darker Purple for hover */
     --primary-foreground: 0 0% 98%;
 
     --secondary: 220 13% 91%;
@@ -22,7 +23,7 @@
     --muted: 220 13% 91%;
     --muted-foreground: 220 8.9% 43.1%;
 
-    --accent: 180 90% 40%; /* Mint Green */
+    --accent: 262.1 83.3% 75%; /* Mint Green */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -32,37 +33,43 @@
     --input: 220 13% 91%;
     --ring: 262.1 83.3% 57.8%;
 
+    /* Optional neon purple glow */
+    --glow-purple: 262.1 83.3% 70%;
+
     --radius: 1rem;
   }
 
   .dark {
-    --background: #030013; /* Deep Blue */
+    --background: 240 15% 5%; /* Almost black purple tone */
     --foreground: 0 0% 98%;
 
-    --card: 222 47% 14%;
+    --card: 262.1 30% 12%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 224 71.4% 4.1%;
+    --popover: 262.1 30% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 262.1 83.3% 67.8%; /* Brighter Purple for dark mode */
+    --primary: 262.1 83.3% 67.8%; /* Brighter Purple */
+    --primary-dark: 262.1 83.3% 55%; /* Darker hover version for dark mode */
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 220 14.3% 15.1%;
+    --secondary: 262.1 30% 15%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 220 14.3% 15.1%;
-    --muted-foreground: 220 8.9% 63.1%;
+    --muted: 262.1 30% 10%;
+    --muted-foreground: 262.1 15% 75%;
 
-    --accent: 180 90% 45%; /* Brighter Mint for dark mode */
+    --accent: 262.1 83.3% 75%; /* Light purple accent */
     --accent-foreground: 0 0% 10%;
 
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 14.3% 20.1%;
-    --input: 220 14.3% 20.1%;
+    --border: 262.1 30% 20%;
+    --input: 262.1 30% 20%;
     --ring: 262.1 83.3% 67.8%;
+
+    --glow-purple: 262.1 83.3% 80%;
   }
 }
 
@@ -75,11 +82,13 @@
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
+/* Purple Glow Animation (optional) */
+@keyframes purpleGlow {
+  0%,
   100% {
-    background-position: 1000px 0;
+    box-shadow: 0 0 8px hsl(var(--glow-purple));
+  }
+  50% {
+    box-shadow: 0 0 20px hsl(var(--glow-purple));
   }
 }
