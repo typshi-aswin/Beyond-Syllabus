@@ -224,7 +224,7 @@ export default function Home() {
         </div>
       </section>
       <div className="some-wrapper-class">
-        {mounted && resolvedTheme === "dark" ? <FooterDark /> : <Footer />}
+        <Footer />
       </div>
     </div>
   );

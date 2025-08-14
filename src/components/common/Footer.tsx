@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Github, GraduationCap } from "lucide-react";
+import { Github } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -10,23 +10,19 @@ export function Footer() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Ensure the theme value is available after hydration
-    setMounted(true);
+    setMounted(true); // ensure theme is available after hydration
   }, []);
 
-  // Decide background style based on theme
-  const bgStyle = mounted
-    ? resolvedTheme === "dark"
-      ? "bg-black"
-      : "bg-white"
-    : "";
-
   return (
-    <footer
-      className={`relative w-full shrink-0  bg-transparent ${bgStyle} bg-no-repeat bg-cover`}
-    >
-      {/* Optional overlay for better text visibility */}
-      <div className="absolute inset-0 "></div>
+    <footer className="relative w-full shrink-0 bg-transparent">
+      {/* Background */}
+      <div
+        className={`absolute inset-x-0 bottom-0 w-full h-[120vh] md:h-[70vh] overflow-hidden z-0 ${
+          mounted && resolvedTheme === "dark"
+            ? "md:bg-[url('/hero-img.webp')]  rotate-180 bg-[url('/img-mob.svg')] bg-no-repeat md:bg-cover bg-contain mt-[1vh] md:mt-[10vh] bg-bottom"
+            : "bg-white bg-no-repeat bg-cover"
+        }`}
+      ></div>
 
       {/* Footer Content */}
       <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
@@ -41,7 +37,7 @@ export function Footer() {
           <a
             href="https://github.com/The-Purple-Movement/WikiSyllabus"
             target="_blank"
-            className="w-fit  rounded-full flex  bg-black/20 hover:shadow-lg "
+            className="w-fit rounded-full flex bg-black/20 hover:shadow-lg"
           >
             <Github />
           </a>
@@ -68,30 +64,31 @@ export function Footer() {
             </a>
           </div>
 
+          {/* Links */}
           <div className="flex gap-5 flex-row w-full md:justify-evenly">
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Navigation</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="/">Home</FooterLink>
-                <FooterLink href="/select">Select Course</FooterLink>
-                <FooterLink href="/chat-with-file">AI Chat</FooterLink>
-              </nav>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Resources</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="#">Contribution Guide</FooterLink>
-                <FooterLink href="#">Code of Conduct</FooterLink>
-                <FooterLink href="#">License</FooterLink>
-              </nav>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Legal</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="#">Terms of Service</FooterLink>
-                <FooterLink href="#">Privacy Policy</FooterLink>
-              </nav>
-            </div>
+            <FooterSection
+              title="Navigation"
+              links={[
+                { href: "/", label: "Home" },
+                { href: "/select", label: "Select Course" },
+                { href: "/chat-with-file", label: "AI Chat" },
+              ]}
+            />
+            <FooterSection
+              title="Resources"
+              links={[
+                { href: "#", label: "Contribution Guide" },
+                { href: "#", label: "Code of Conduct" },
+                { href: "#", label: "License" },
+              ]}
+            />
+            <FooterSection
+              title="Legal"
+              links={[
+                { href: "#", label: "Terms of Service" },
+                { href: "#", label: "Privacy Policy" },
+              ]}
+            />
           </div>
         </div>
 
@@ -104,6 +101,27 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterSection({
+  title,
+  links,
+}: {
+  title: string;
+  links: { href: string; label: string }[];
+}) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold mb-3">{title}</h3>
+      <nav className="flex flex-col gap-2">
+        {links.map((link) => (
+          <FooterLink key={link.href} href={link.href}>
+            {link.label}
+          </FooterLink>
+        ))}
+      </nav>
+    </div>
   );
 }
 

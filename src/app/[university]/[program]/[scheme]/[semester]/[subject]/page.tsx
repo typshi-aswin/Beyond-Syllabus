@@ -6,6 +6,7 @@ import { CourseModules } from "./_components/CourseModules";
 import ErrorDisplay from "@/components/common/ErrorDisplay";
 import { AnimatedDiv } from "@/components/common/AnimatedDiv";
 import { Footer } from "@/components/common/Footer";
+import { MindMap } from "@/app/mindMap/mindMap";
 
 interface SubjectPageProps {
   params: Promise<{
@@ -175,6 +176,14 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
                 <h2 className="text-2xl font-bold">AI-Powered Tools</h2>
                 <SyllabusSummary fullSyllabus={subject.fullSyllabus || ""} />
               </aside>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Mind Map</h3>
+              <MindMap
+                subjectCode={subject.code}
+                subjectName={subject.name}
+                modules={subject.modules || []}
+              />
             </div>
           </div>
         </AnimatedDiv>

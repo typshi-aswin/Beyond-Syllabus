@@ -26,7 +26,7 @@ import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
 import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
-import { Footer } from "@/components/common/Footer";
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Header } from "@/components/common/Header";
@@ -148,7 +148,7 @@ function ChatComponent() {
         <h1 className="text-lg pb-10 md:text-xl font-bold text-center text-foreground truncate">
           AI Chat: <span className="text-primary">{moduleTitle}</span>
         </h1>
-        <div className="flex-1 overflow-y-auto pr-4 -mr-4 space-y-6">
+        <div className="flex-1 overflow-y-hidden pr-4 -mr-4 space-y-6 ">
           <AnimatePresence>
             {messages
               .filter((m) => m.role !== "system")
