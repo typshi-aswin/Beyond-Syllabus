@@ -24,7 +24,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Header } from "@/components/common/Header";
 
-function ChatComponent() {
+export const ChatComponent = () => {
   const searchParams = useSearchParams();
   const moduleTitle = searchParams.get("title") || "Loading title...";
   const moduleContent = searchParams.get("content") || "";
@@ -727,6 +727,4 @@ function ChatComponent() {
       </div>
     </div>
   );
-}
-
-export default ChatComponent;
+};
