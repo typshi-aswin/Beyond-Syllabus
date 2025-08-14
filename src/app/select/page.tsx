@@ -66,7 +66,7 @@ export default async function SelectPage() {
           </div>
         </AnimatedDiv>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
