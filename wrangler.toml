@@ -1,6 +1,0 @@
-name = "beyond-syllabus"
-compatibility_date = "2025-08-15"
-compatibility_flags = ["nodejs_compat"]
-
-[vars]
-NODE_VERSION = "20"
