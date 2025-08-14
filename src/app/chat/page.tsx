@@ -94,8 +94,6 @@ function ChatComponent() {
     "Why do I need to study this?",
     "What is the purpose of this module?",
     "How can I apply this in real life?",
-    "What are the key concepts I should focus on?",
-    "How is this topic related to the rest of the course?",
   ]);
   const [showQuickPanel, setShowQuickPanel] = useState(true);
   const handleSuggestionClick = (
