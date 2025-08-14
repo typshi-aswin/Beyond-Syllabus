@@ -1,9 +1,8 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, use } from "react";
+import { useState, use } from "react";
 import { Header } from "@/components/common/Header";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import {
@@ -26,6 +25,7 @@ import {
 import ErrorDisplay from "@/components/common/ErrorDisplay";
 import { AnimatedDiv } from "@/components/common/AnimatedDiv";
 import { Footer } from "@/components/common/Footer";
+import { useGetDirectoryStructure } from "@/hooks/query";
 
 interface SubjectsPageProps {
   params: Promise<{
@@ -38,21 +38,6 @@ interface SubjectsPageProps {
 
 interface DirectoryStructure {
   [key: string]: any;
-}
-
-async function getDirectoryStructure(): Promise<DirectoryStructure> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/universities`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch universities data");
-  }
-
-  return res.json();
 }
 
 function findSemesterData(
@@ -122,26 +107,8 @@ const getSubjectCategory = (subjectCode: string) => {
 export default function SubjectsPage({ params }: SubjectsPageProps) {
   const router = useRouter();
   const resolvedParams = use(params);
-  const [directoryStructure, setDirectoryStructure] =
-    useState<DirectoryStructure | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [loadingSubject, setLoadingSubject] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getDirectoryStructure();
-        setDirectoryStructure(data);
-      } catch (e: any) {
-        console.error("Error fetching directory structure:", e);
-        setError("Failed to load syllabus data.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
+  const { data, isError, error, isFetching } = useGetDirectoryStructure();
 
   const handleViewSyllabus = async (subjectId: string, subjectName: string) => {
     setLoadingSubject(subjectId);
@@ -154,7 +121,7 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
     );
   };
 
-  if (loading) {
+  if (isFetching) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-mint-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
         <Header />
@@ -168,16 +135,15 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
     );
   }
 
-  if (error || !directoryStructure) {
+  if (isError || !data) {
     return (
       <ErrorDisplay
-        errorMessage={error || "Could not fetch directory structure."}
+        errorMessage={error?.message || "Could not fetch directory structure."}
       />
     );
   }
 
-  const dataPath = findSemesterData(directoryStructure, resolvedParams);
-
+  const dataPath = findSemesterData(data, resolvedParams);
   if (!dataPath) {
     notFound();
   }
