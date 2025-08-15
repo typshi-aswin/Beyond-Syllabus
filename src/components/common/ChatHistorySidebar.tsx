@@ -25,14 +25,13 @@ import {
 import { ChatSession, deleteChatSession } from "@/lib/chat-history";
 import { formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
-
 interface ChatHistorySidebarProps {
   sessions: ChatSession[];
   currentSessionId: string | null;
-  onSessionSelect: (sessionId: string) => void;
+  onSessionSelect: (id: string) => void;
   onNewChat: () => void;
-  onDeleteSession: (sessionId: string) => void;
-  onEditTitle: (sessionId: string, newTitle: string) => void;
+  onDeleteSession: (id: string) => void;
+  onEditTitle: (id: string, newTitle: string) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
 }
