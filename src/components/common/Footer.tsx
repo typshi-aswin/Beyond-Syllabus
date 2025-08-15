@@ -111,7 +111,7 @@ function FooterSection({
       <nav className="flex flex-col gap-2">
         {links.map((link) => (
           <Link
-            key={link.href}
+            key={`${link.href}-${link.label}`}
             href={link.href}
             className="text-sm text-muted-foreground hover:text-primary transition-colors"
           >
