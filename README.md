@@ -92,6 +92,63 @@ This is **not just an app** — it’s a **movement**. You can:
 🎖 **Contributors are featured** in the Hall of Builders and join the Purple Movement global network.
 
 ---
+# 🏃‍♂️ Run Locally
+
+You can set up **Beyond Syllabus** on your local machine for development or testing. Follow these steps:
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/The-Purple-Movement/Beyond-Syllabus.git
+cd Beyond-Syllabus
+```
+
+## 2. Install Dependencies
+
+Make sure you have **Node.js (v16+)** and **npm** or **yarn** installed.
+
+```bash
+# Using npm
+npm install
+
+# Or using yarn
+yarn install
+```
+
+## 3. Configure Environment Variables
+
+Create a `.env` file in the root directory and add the required keys, for example:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:9002
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+> Replace `your_gemini_api_key_here` with your own OpenAI API key if using the AI features.
+
+## 4. Start the Development Server
+
+```bash
+# Using npm
+npm run dev
+
+# Or using yarn
+yarn dev
+```
+
+The app should now be running at [http://localhost:3000](http://localhost:9002).
+
+## 5. Build for Production (Optional)
+
+```bash
+# Using npm
+npm run build
+npm start
+
+# Or using yarn
+yarn build
+yarn start
+```
 
 ## 📣 Call to Action – Join the Learning Revolution
 

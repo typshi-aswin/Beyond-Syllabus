@@ -1,60 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { Github, GraduationCap } from "lucide-react";
+import { Github } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
   const { resolvedTheme } = useTheme();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Ensure the theme value is available after hydration
     setMounted(true);
   }, []);
 
-  // Decide background style based on theme
-  const bgStyle = mounted
-    ? resolvedTheme === "dark"
-      ? "bg-black"
-      : "bg-white"
-    : "";
+  // Only show full footer on homepage
+  const isHome = pathname === "/";
 
   return (
     <footer
-      className={`relative w-full shrink-0  bg-transparent ${bgStyle} bg-no-repeat bg-cover`}
+      className={`relative w-full shrink-0 z-10 ${
+        isHome ? "bg-transparent" : "bg-transparent"
+      }`}
     >
-      {/* Optional overlay for better text visibility */}
-      <div className="absolute inset-0 "></div>
+      {/* Background gradients (visually stacked, not blocking layout) */}
+      {isHome && (
+        <div
+          className={`absolute inset-0 z-0 pointer-events-none ${
+            mounted && resolvedTheme === "dark"
+              ? "bg-[url('/img-mob.svg')] md:bg-[url('/hero-img.webp')]  bg-no-repeat bg-cover opacity-60"
+              : "bg-white"
+          }`}
+        />
+      )}
 
-      {/* Footer Content */}
-      <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
-        {/* Mobile Layout */}
-        <div className="flex md:hidden flex-col gap-2 mb-5">
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <span className="font-semibold">BeyondSyllabus</span>
-          </Link>
-          <p className="text-sm text-muted-foreground">
-            Your AI-powered guide to the university curriculum.
-          </p>
-          <a
-            href="https://github.com/The-Purple-Movement/WikiSyllabus"
-            target="_blank"
-            className="w-fit  rounded-full flex  bg-black/20 hover:shadow-lg "
-          >
-            <Github />
-          </a>
-        </div>
-
-        {/* Desktop Layout */}
-        <div className="flex">
-          <div className="md:flex md:visible hidden flex-col gap-2 mb-5">
-            <Link
-              href="/"
-              className="flex items-center gap-2 font-bold text-lg"
-            >
-              <span className="font-semibold">BeyondSyllabus</span>
+      {/* FOOTER CONTENT */}
+      <div className="relative z-10 container mx-auto px-4 md:px-6 py-12">
+        {/* Top Section */}
+        <div className="flex flex-col md:flex-row justify-between gap-8">
+          {/* Logo + Description */}
+          <div className="flex flex-col gap-4 max-w-sm">
+            <Link href="/" className="text-lg font-bold">
+              BeyondSyllabus
             </Link>
             <p className="text-sm text-muted-foreground">
               Your AI-powered guide to the university curriculum.
@@ -62,44 +50,46 @@ export function Footer() {
             <a
               href="https://github.com/The-Purple-Movement/WikiSyllabus"
               target="_blank"
-              className="w-fit rounded-full flex p-3 bg-black/20 hover:shadow-lg"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-2 w-fit bg-black/20 rounded-full hover:shadow"
             >
-              <Github />
+              <Github className="h-4 w-4" />
             </a>
           </div>
 
-          <div className="flex gap-5 flex-row w-full md:justify-evenly">
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Navigation</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="/">Home</FooterLink>
-                <FooterLink href="/select">Select Course</FooterLink>
-                <FooterLink href="/chat-with-file">AI Chat</FooterLink>
-              </nav>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Resources</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="#">Contribution Guide</FooterLink>
-                <FooterLink href="#">Code of Conduct</FooterLink>
-                <FooterLink href="#">License</FooterLink>
-              </nav>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Legal</h3>
-              <nav className="flex flex-col gap-2">
-                <FooterLink href="#">Terms of Service</FooterLink>
-                <FooterLink href="#">Privacy Policy</FooterLink>
-              </nav>
-            </div>
+          {/* Footer Sections */}
+          <div className="grid grid-cols-3 gap-6 w-full md:w-2/3">
+            <FooterSection
+              title="Navigation"
+              links={[
+                { href: "/", label: "Home" },
+                { href: "/select", label: "Select Course" },
+                { href: "/chat-with-file", label: "AI Chat" },
+              ]}
+            />
+            <FooterSection
+              title="Resources"
+              links={[
+                { href: "#", label: "Contribution Guide" },
+                { href: "#", label: "Code of Conduct" },
+                { href: "#", label: "License" },
+              ]}
+            />
+            <FooterSection
+              title="Legal"
+              links={[
+                { href: "#", label: "Terms of Service" },
+                { href: "#", label: "Privacy Policy" },
+              ]}
+            />
           </div>
         </div>
 
-        {/* Footer Bottom */}
-        <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
+        {/* Bottom line */}
+        <div className="mt-12 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>
-            {new Date().getFullYear()} BeyondSyllabus. All rights reserved. An
-            open-source project.
+            &copy; {new Date().getFullYear()} BeyondSyllabus. All rights
+            reserved. Open-source project.
           </p>
         </div>
       </div>
@@ -107,20 +97,27 @@ export function Footer() {
   );
 }
 
-function FooterLink({
-  href,
-  children,
+function FooterSection({
+  title,
+  links,
 }: {
-  href: string;
-  children: React.ReactNode;
+  title: string;
+  links: { href: string; label: string }[];
 }) {
   return (
-    <Link
-      href={href}
-      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-      prefetch={false}
-    >
-      {children}
-    </Link>
+    <div>
+      <h3 className="text-sm font-semibold mb-3">{title}</h3>
+      <nav className="flex flex-col gap-2">
+        {links.map((link) => (
+          <Link
+            key={`${link.href}-${link.label}`}
+            href={link.href}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+    </div>
   );
 }

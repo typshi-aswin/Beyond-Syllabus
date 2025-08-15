@@ -1,18 +1,19 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+
+import { Loader2, Send, Sparkles, User, Copy, Check } from "lucide-react";
 
 import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
 import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
 
-import { Header } from "@/components/common/Header";
-import DesktopChatLayout from "./DesktopChatLayout";
-import MobileChatPanels from "./mobileChatPanels";
+import MobileChatPanels from "./mobileChatPanels"; // Ensure this exists
 
-export default function ChatComponent() {
-  // Client-only state for module title/content
-  const [moduleTitle, setModuleTitle] = useState("Loading title...");
-  const [moduleContent, setModuleContent] = useState("");
+export default function MobileChatLayout() {
+  const searchParams = useSearchParams();
+  const moduleTitle = searchParams.get("title") || "Loading title...";
+  const moduleContent = searchParams.get("content") || "";
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -25,9 +26,9 @@ export default function ChatComponent() {
   const [chatHistory, setChatHistory] = useState<
     { title: string; messages: Message[] }[]
   >([]);
+  const [activeTab, setActiveTab] = useState<"ai" | "quick" | "history">("ai");
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<"ai" | "quick" | "history">("ai");
 
   const quickQuestions = [
     "Why do I need to study this?",
@@ -35,16 +36,6 @@ export default function ChatComponent() {
     "How can I apply this in real life?",
   ];
 
-  // === CLIENT-ONLY: read search params ===
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const title = params.get("title") || "Untitled Module";
-    const content = params.get("content") || "";
-    setModuleTitle(title);
-    setModuleContent(content);
-  }, []);
-
-  // Scroll to bottom
   useEffect(() => {
     setTimeout(
       () => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }),
@@ -52,7 +43,6 @@ export default function ChatComponent() {
     );
   }, [messages, loading]);
 
-  // Generate initial tasks
   useEffect(() => {
     if (!moduleContent || moduleTitle === "Loading title...") return;
 
@@ -92,7 +82,7 @@ export default function ChatComponent() {
   const handleSuggestionClick = (text: string) => {
     setInput(text);
     setTimeout(
-      () => document.getElementById("chat-submit-button")?.click(),
+      () => document.getElementById("chat-submit-button-mobile")?.click(),
       50
     );
   };
@@ -118,10 +108,12 @@ export default function ChatComponent() {
         history: chatHistoryForApi,
         message: input,
       });
+
       const assistantMessage: Message = {
         role: "assistant",
         content: result.response,
       };
+
       setMessages((msgs) => [...msgs, assistantMessage]);
       setSuggestions(result.suggestions || []);
     } catch (err) {
@@ -161,52 +153,29 @@ export default function ChatComponent() {
   };
 
   return (
-    <div className="h-full mx-4 md:mx-10 my-6 md:my-10 bg-transparent">
-      <Header />
-
-      <div className="md:flex md:visible hidden flex-row w-full gap-10 mt-[11vh] items-start justify-center h-[80vh]">
-        <DesktopChatLayout
-          moduleTitle={moduleTitle}
-          moduleContent={moduleContent}
-          messages={messages}
-          chatHistory={chatHistory}
-          suggestions={suggestions}
-          quickQuestions={quickQuestions}
-          input={input}
-          loading={loading}
-          copiedMessageIndex={copiedMessageIndex}
-          handleSend={handleSend}
-          handleNewTopic={handleNewTopic}
-          handleSuggestionClick={handleSuggestionClick}
-          setInput={setInput}
-          copyToClipboard={copyToClipboard}
-          setMessages={setMessages}
-        />
-      </div>
-
-      <div className="md:hidden mt-[15vh]">
-        <MobileChatPanels
-          messages={messages}
-          setMessages={setMessages}
-          input={input}
-          setInput={setInput}
-          loading={loading}
-          error={error}
-          suggestions={suggestions}
-          copiedMessageIndex={copiedMessageIndex}
-          chatHistory={chatHistory}
-          quickQuestions={quickQuestions}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          chatEndRef={chatEndRef}
-          moduleTitle={moduleTitle}
-          moduleContent={moduleContent}
-          copyToClipboard={copyToClipboard}
-          handleSuggestionClick={handleSuggestionClick}
-          handleSend={handleSend}
-          handleNewTopic={handleNewTopic}
-        />
-      </div>
+    <div className="md:hidden flex-1 w-full">
+      <MobileChatPanels
+        messages={messages}
+        input={input}
+        setInput={setInput}
+        loading={loading}
+        error={error}
+        suggestions={suggestions}
+        copiedMessageIndex={copiedMessageIndex}
+        chatHistory={chatHistory}
+        quickQuestions={quickQuestions}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        chatEndRef={chatEndRef}
+        moduleTitle={moduleTitle}
+        moduleContent={moduleContent}
+        setMessages={setMessages}
+        setChatHistory={setChatHistory}
+        copyToClipboard={copyToClipboard}
+        handleSuggestionClick={handleSuggestionClick}
+        handleSend={handleSend}
+        handleNewTopic={handleNewTopic}
+      />
     </div>
   );
 }

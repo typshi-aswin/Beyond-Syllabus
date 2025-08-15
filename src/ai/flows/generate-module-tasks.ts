@@ -30,31 +30,23 @@ const prompt = ai.definePrompt({
   name: 'generateModuleTasksPrompt',
   input: { schema: GenerateModuleTasksInputSchema },
   output: { schema: GenerateModuleTasksOutputSchema },
-  prompt: `You are an expert curriculum assistant. Your task is to generate a welcoming, introductory message for a student about a specific syllabus module. This message should also include 2-4 distinct learning tasks and 2-3 real-world applications based on the provided content.
-
-In addition, you must generate a list of 3-4 short, engaging follow-up questions that a student might ask after reading the introduction. These questions should be directly related to the key concepts in the module.
-
-Syllabus Module Content:
+  system: `
+You are an expert curriculum assistant. Your task is to generate a welcoming, introductory message for a student about a specific syllabus module, including learning tasks, real-world applications, and follow-up questions. Follow the JSON format strictly.
+  `,
+  prompt: `
+Module Content:
 "{{{moduleContent}}}"
 
-Guidelines:
-1.  Start the introductory message with a friendly greeting.
-2.  In the message, create a section with 2 to 4 distinct learning tasks. Use markdown lists.
-3.  In the message, create a section describing 2 to 3 real-world applications of the module's concepts. Use markdown lists.
-4.  Combine all of this into a single, cohesive introductory message string.
-5.  Generate a separate list of 3-4 short, distinct follow-up questions a user might have. These should be concise and designed to encourage exploration of the module's topics.
+Module Title:
+"{{{moduleTitle}}}"
 
-Example Output JSON:
-{
-  "introductoryMessage": "Hello! Welcome to the module on 'Sample Module Title'.\\n\\nHere are some learning tasks to get you started:\\n- Task 1\\n- Task 2\\n\\nHere are some real-world applications:\\n- Application 1\\n- Application 2",
-  "suggestions": [
-    "What is the core concept of 'Sample Topic'?",
-    "How does 'Concept A' relate to 'Concept B'?",
-    "Can you explain 'Key Term' in simple terms?",
-    "What are the practical uses of 'Another Topic'?"
-  ]
-}
-`,
+Guidelines:
+1. Start with a friendly greeting mentioning the module title.
+2. Include 2–4 distinct learning tasks in markdown list format.
+3. Include 2–3 real-world applications in markdown list format.
+4. Generate 3–4 short, engaging follow-up questions separately.
+5. Return output strictly in the provided JSON format.
+  `
 });
 
 
@@ -66,27 +58,30 @@ const generateModuleTasksFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-        const { output } = await prompt(input);
-        if (!output) {
-          throw new Error("AI did not return any output.");
-        }
-        return output;
+      const { output } = await prompt(input);
+
+      if (!output) {
+        throw new Error("AI did not return any output.");
+      }
+
+      return output;
     } catch (e) {
-        console.error("Error generating tasks:", e);
-        // Providing a fallback in case of parsing or generation failure
-        return { 
-            introductoryMessage: "Hello! I had a little trouble generating the introduction. Please paste the syllabus content again or ask me a question to get started!",
-            suggestions: [
-                `What are the key topics in "${input.moduleTitle}"?`,
-                "Can you give me an overview?",
-                "What are the real-world applications?",
-            ]
-        };
+      console.error(`Error generating tasks for module "${input.moduleTitle}":`, e);
+      // Fallback output
+      return {
+        introductoryMessage: `Hello! I had a little trouble generating the introduction for "${input.moduleTitle}". Please paste the syllabus content again or ask me a question to get started!`,
+        suggestions: [
+          `What are the key topics in "${input.moduleTitle}"?`,
+          'Can you give me an overview?',
+          'What are the real-world applications?',
+        ],
+      };
     }
   }
 );
 
-
-export async function generateModuleTasks(input: GenerateModuleTasksInput): Promise<GenerateModuleTasksOutput> {
-    return generateModuleTasksFlow(input);
+export async function generateModuleTasks(
+  input: GenerateModuleTasksInput
+): Promise<GenerateModuleTasksOutput> {
+  return generateModuleTasksFlow(input);
 }
