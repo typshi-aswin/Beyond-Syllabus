@@ -222,9 +222,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <div className="some-wrapper-class">
-        <Footer />
-      </div>
+
+      <Footer />
     </div>
   );
 }

@@ -30,35 +30,25 @@ const prompt = ai.definePrompt({
   name: 'generateModuleTasksPrompt',
   input: { schema: GenerateModuleTasksInputSchema },
   output: { schema: GenerateModuleTasksOutputSchema },
-  prompt: `You are an expert curriculum assistant. Your task is to generate a welcoming, introductory message for a student about a specific syllabus module. This message should also include 2-4 distinct learning tasks and 2-3 real-world applications based on the provided content.
-
-In addition, you must generate a list of 3-4 short, engaging follow-up questions that a student might ask after reading the introduction. These questions should be directly related to the key concepts in the module.
-
-Syllabus Module Content:
+  system: `
+You are an expert curriculum assistant. Your task is to generate a welcoming, introductory message for a student about a specific syllabus module, including learning tasks, real-world applications, and follow-up questions. Follow the JSON format strictly.
+  `,
+  prompt: `
+Module Content:
 "{{{moduleContent}}}"
 
+Module Title:
+"{{{moduleTitle}}}"
+
 Guidelines:
-1.  Start the introductory message with a friendly greeting and mention the module title.
-2.  In the message, create a section with 2 to 4 distinct learning tasks. Use markdown lists.
-3.  In the message, create a section describing 2 to 3 real-world applications of the module's concepts. Use markdown lists.
-4.  Combine all of this into a single, cohesive introductory message string.
-5.  Generate a separate list of 3-4 short, distinct follow-up questions a user might have. These should be concise and designed to encourage exploration of the module's topics.
-
-Return your answer strictly in this JSON format:
-
-\`\`\`json
-{
-  "introductoryMessage": "Hello! Welcome to the module on '{{{moduleTitle}}}'...\\n\\nHere are some learning tasks to get you started:\\n- Task 1\\n- Task 2\\n\\nHere are some real-world applications:\\n- Application 1\\n- Application 2",
-  "suggestions": [
-    "What is the core concept of 'Sample Topic'?",
-    "How does 'Concept A' relate to 'Concept B'?",
-    "Can you explain 'Key Term' in simple terms?",
-    "What are the practical uses of 'Another Topic'?"
-  ]
-}
-\`\`\`
-`,
+1. Start with a friendly greeting mentioning the module title.
+2. Include 2–4 distinct learning tasks in markdown list format.
+3. Include 2–3 real-world applications in markdown list format.
+4. Generate 3–4 short, engaging follow-up questions separately.
+5. Return output strictly in the provided JSON format.
+  `
 });
+
 
 const generateModuleTasksFlow = ai.defineFlow(
   {
