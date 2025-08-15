@@ -84,9 +84,8 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col">
-        {/* Hero Section (removed h-screen) */}
         <section
-          className={`w-full pt-16 pb-20 flex justify-center items-center ${
+          className={`w-full pt-16 pb-20 flex justify-center items-center h-screen ${
             mounted && resolvedTheme === "dark"
               ? "md:bg-[url('/hero-img.webp')] bg-[url('/img-mob.svg')] bg-no-repeat md:bg-cover bg-contain bg-bottom"
               : "bg-[url('/white-bg.png')]"
