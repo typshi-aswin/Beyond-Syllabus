@@ -21,7 +21,7 @@ export function Footer() {
   return (
     <footer
       className={`relative w-full shrink-0 z-10 ${
-        isHome ? "bg-transparent" : "bg-white"
+        isHome ? "bg-transparent" : "bg-transparent"
       }`}
     >
       {/* Background gradients (visually stacked, not blocking layout) */}
@@ -29,7 +29,7 @@ export function Footer() {
         <div
           className={`absolute inset-0 z-0 pointer-events-none ${
             mounted && resolvedTheme === "dark"
-              ? "bg-[url('/img-mob.svg')] md:bg-[url('/hero-img.webp')] bg-no-repeat bg-cover opacity-60"
+              ? "bg-[url('/img-mob.svg')] md:bg-[url('/hero-img.webp')]  bg-no-repeat bg-cover opacity-60"
               : "bg-white"
           }`}
         />
@@ -51,15 +51,14 @@ export function Footer() {
               href="https://github.com/The-Purple-Movement/WikiSyllabus"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-2 bg-black/20 rounded hover:shadow"
+              className="inline-flex items-center gap-2 px-3 py-2 w-fit bg-black/20 rounded-full hover:shadow"
             >
               <Github className="h-4 w-4" />
-              GitHub
             </a>
           </div>
 
           {/* Footer Sections */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full md:w-2/3">
+          <div className="grid grid-cols-3 gap-6 w-full md:w-2/3">
             <FooterSection
               title="Navigation"
               links={[
