@@ -12,159 +12,37 @@ export function Footer() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true); // ensure theme is available after hydration
+    setMounted(true);
   }, []);
-  if (pathname === "/") {
-    return (
-      <footer className="relative w-full shrink-0 md:bg-transparent  ">
-        {/* <footer className="relative w-full shrink-0 md:bg-transparent md:mt-0 mt-[80vh] "> */}
-        {/* Background */}
 
-        {/* Footer Content */}
-        <div className="container relative z-10 mx-auto  px-4 md:px-6 py-8">
-          <div
-            className={`absolute inset-0 top-0 w-full h-[40vh]   overflow-hidden z-0 ${
-              mounted && resolvedTheme === "dark"
-                ? "md:bg-[url('/hero-img.webp')] md:h-[80vh] w-full  rotate-180 bg-[url('/img-mob.svg')] bg-no-repeat bg-cover  mt-[1vh] md:mt-[10vh] bg-bottom"
-                : "bg-white bg-no-repeat bg-cover "
-            }`}
-          ></div>
-          {/* Mobile Layout */}
-          <div className="flex md:hidden flex-col gap-2 mb-5">
-            <Link
-              href="/"
-              className="flex items-center gap-2 font-bold text-lg"
-            >
-              <span className="font-semibold">BeyondSyllabus</span>
-            </Link>
-            <p className="text-sm text-muted-foreground">
-              Your AI-powered guide to the university curriculum.
-            </p>
-            <a
-              href="https://github.com/The-Purple-Movement/WikiSyllabus"
-              target="_blank"
-              className="w-fit rounded-full flex bg-black/20 hover:shadow-lg"
-            >
-              <Github />
-            </a>
-          </div>
-
-          {/* Desktop Layout */}
-          <div className="flex">
-            <div className="md:flex md:visible hidden flex-col gap-2 mb-5">
-              <Link
-                href="/"
-                className="flex items-center gap-2 font-bold text-lg"
-              >
-                <span className="font-semibold">BeyondSyllabus</span>
-              </Link>
-              <p className="text-sm text-muted-foreground">
-                Your AI-powered guide to the university curriculum.
-              </p>
-              <a
-                href="https://github.com/The-Purple-Movement/WikiSyllabus"
-                target="_blank"
-                className="w-fit rounded-full flex p-3 bg-black/20 hover:shadow-lg"
-              >
-                <Github />
-              </a>
-            </div>
-
-            {/* Links */}
-            <div className="flex gap-5 flex-row w-full md:justify-evenly">
-              <FooterSection
-                title="Navigation"
-                links={[
-                  { href: "/", label: "Home" },
-                  { href: "/select", label: "Select Course" },
-                  { href: "/chat-with-file", label: "AI Chat" },
-                ]}
-              />
-              <FooterSection
-                title="Resources"
-                links={[
-                  { href: "#", label: "Contribution Guide" },
-                  { href: "#", label: "Code of Conduct" },
-                  { href: "#", label: "License" },
-                ]}
-              />
-              <FooterSection
-                title="Legal"
-                links={[
-                  { href: "#", label: "Terms of Service" },
-                  { href: "#", label: "Privacy Policy" },
-                ]}
-              />
-            </div>
-          </div>
-
-          {/* Footer Bottom */}
-          <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
-            <p>
-              {new Date().getFullYear()} BeyondSyllabus. All rights reserved. An
-              open-source project.
-            </p>
-          </div>
-        </div>
-      </footer>
-    );
-  }
-
-  function FooterSection({
-    title,
-    links,
-  }: {
-    title: string;
-    links: { href: string; label: string }[];
-  }) {
-    return (
-      <div>
-        <h3 className="text-sm font-semibold mb-3">{title}</h3>
-        <nav className="flex flex-col gap-2">
-          {links.map((link) => (
-            <FooterLink key={link.href} href={link.href}>
-              {link.label}
-            </FooterLink>
-          ))}
-        </nav>
-      </div>
-    );
-  }
+  // Only show full footer on homepage
+  const isHome = pathname === "/";
 
   return (
-    <footer className="relative w-full shrink-0 bg-transparent">
-      {/* Background */}
-      <div
-        className={`absolute inset-x-0 bottom-0 w-full h-[50vh] md:h-[70vh] overflow-hidden z-0 `}
-      ></div>
+    <footer
+      className={`relative w-full shrink-0 z-10 ${
+        isHome ? "bg-transparent" : "bg-white"
+      }`}
+    >
+      {/* Background gradients (visually stacked, not blocking layout) */}
+      {isHome && (
+        <div
+          className={`absolute inset-0 z-0 pointer-events-none ${
+            mounted && resolvedTheme === "dark"
+              ? "bg-[url('/img-mob.svg')] md:bg-[url('/hero-img.webp')] bg-no-repeat bg-cover opacity-60"
+              : "bg-white"
+          }`}
+        />
+      )}
 
-      {/* Footer Content */}
-      <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
-        {/* Mobile Layout */}
-        <div className="flex md:hidden flex-col gap-2 mb-5">
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <span className="font-semibold">BeyondSyllabus</span>
-          </Link>
-          <p className="text-sm text-muted-foreground">
-            Your AI-powered guide to the university curriculum.
-          </p>
-          <a
-            href="https://github.com/The-Purple-Movement/WikiSyllabus"
-            target="_blank"
-            className="w-fit rounded-full flex bg-black/20 hover:shadow-lg"
-          >
-            <Github />
-          </a>
-        </div>
-
-        {/* Desktop Layout */}
-        <div className="flex">
-          <div className="md:flex md:visible hidden flex-col gap-2 mb-5">
-            <Link
-              href="/"
-              className="flex items-center gap-2 font-bold text-lg"
-            >
-              <span className="font-semibold">BeyondSyllabus</span>
+      {/* FOOTER CONTENT */}
+      <div className="relative z-10 container mx-auto px-4 md:px-6 py-12">
+        {/* Top Section */}
+        <div className="flex flex-col md:flex-row justify-between gap-8">
+          {/* Logo + Description */}
+          <div className="flex flex-col gap-4 max-w-sm">
+            <Link href="/" className="text-lg font-bold">
+              BeyondSyllabus
             </Link>
             <p className="text-sm text-muted-foreground">
               Your AI-powered guide to the university curriculum.
@@ -172,14 +50,16 @@ export function Footer() {
             <a
               href="https://github.com/The-Purple-Movement/WikiSyllabus"
               target="_blank"
-              className="w-fit rounded-full flex p-3 bg-black/20 hover:shadow-lg"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-2 bg-black/20 rounded hover:shadow"
             >
-              <Github />
+              <Github className="h-4 w-4" />
+              GitHub
             </a>
           </div>
 
-          {/* Links */}
-          <div className="flex gap-5 flex-row w-full md:justify-evenly">
+          {/* Footer Sections */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full md:w-2/3">
             <FooterSection
               title="Navigation"
               links={[
@@ -206,11 +86,11 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Footer Bottom */}
-        <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
+        {/* Bottom line */}
+        <div className="mt-12 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>
-            {new Date().getFullYear()} BeyondSyllabus. All rights reserved. An
-            open-source project.
+            &copy; {new Date().getFullYear()} BeyondSyllabus. All rights
+            reserved. Open-source project.
           </p>
         </div>
       </div>
@@ -230,29 +110,15 @@ function FooterSection({
       <h3 className="text-sm font-semibold mb-3">{title}</h3>
       <nav className="flex flex-col gap-2">
         {links.map((link) => (
-          <FooterLink key={link.href} href={link.href}>
+          <Link
+            key={link.href}
+            href={link.href}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
             {link.label}
-          </FooterLink>
+          </Link>
         ))}
       </nav>
     </div>
-  );
-}
-
-function FooterLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-      prefetch={false}
-    >
-      {children}
-    </Link>
   );
 }
