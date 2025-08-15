@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { User, Sparkles, Copy, Check, Loader2, Send, Menu } from "lucide-react";
 import { Message } from "@/ai/flows/chat-with-syllabus";
@@ -58,8 +58,30 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
   handleSend,
   handleNewTopic,
 }) => {
+  const features = [
+    {
+      name: "Audio Overview",
+      icon: <Sparkles className="w-6 h-6 text-primary" />,
+    },
+    { name: "Module Mindmap", icon: <User className="w-6 h-6 text-primary" /> },
+    {
+      name: "Text-to-Speech",
+      icon: <Loader2 className="w-6 h-6 text-primary" />,
+    },
+    { name: "Voice Chat", icon: <Send className="w-6 h-6 text-primary" /> },
+  ];
+
+  const [clicked, setClicked] = useState<boolean[]>(
+    Array(features.length).fill(false)
+  );
+
+  const handleClick = (index: number) => {
+    const newClicked = [...clicked];
+    newClicked[index] = true;
+    setClicked(newClicked);
+  };
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col overflow-x-hidden h-full w-full">
       {/* Tabs */}
       <div className="flex rounded-lg overflow-hidden border border-white/10">
         <button
@@ -96,7 +118,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
 
       {/* AI Panel */}
       <div
-        className={`md:hidden flex-1 h-[100vh] overflow-auto p-4 ${
+        className={`md:hidden flex-1 h-[100vh] overflow-auto py-4 ${
           activeTab === "ai" ? "block" : "hidden"
         }`}
       >
@@ -129,9 +151,9 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
                     )}
 
                     {msg.content ? (
-                      <div className="relative group max-w-full">
+                      <div className="relative group  max-w-full">
                         <div
-                          className={`rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${
+                          className={`rounded-2xl h-fit px-4 py-1 text-[12px] shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold space-y-5 prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${
                             msg.role === "user"
                               ? "bg-primary text-primary-foreground rounded-br-none"
                               : "text-card-foreground rounded-bl-none border"
@@ -146,7 +168,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="absolute -bottom-7 hover:bg-white/0 hover:text-green-600 transition-opacity bg-background h-8 w-8 p-0 z-10"
+                            className="absolute left-[-40px] bottom-1 md:-bottom-7 hover:bg-white/0 hover:text-green-600 transition-opacity bg-background h-8 w-8 p-0 z-10"
                             onClick={() => copyToClipboard(msg.content, idx)}
                             aria-label="Copy response"
                           >
@@ -194,7 +216,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
 
           {/* Suggestions */}
           {suggestions.length > 0 && !loading && (
-            <div className="flex flex-wrap gap-2 mt-4">
+            <div className="flex flex-wrap gap-2 mb-[30px] h-fit mt-10 ">
               <p className="flex items-center gap-1 text-sm font-semibold">
                 <Menu size={16} /> Related
               </p>
@@ -204,7 +226,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
                   className="w-full border-b-[0.8px]"
                 >
                   <Button
-                    className="w-full text-wrap flex bg-transparent hover:text-purple-600 hover:bg-transparent text-left md:h-[7vh] h-[9vh] text-[13px] text-black dark:text-white justify-start rounded"
+                    className="w-full text-wrap flex bg-transparent hover:text-purple-600 hover:bg-transparent text-left md:h-[7vh] h-[9vh] text-[10px]  text-black dark:text-white justify-start rounded"
                     size="sm"
                     onClick={() => handleSuggestionClick(s)}
                   >
@@ -221,7 +243,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
               e.preventDefault();
               handleSend();
             }}
-            className="fixed bottom-4 left-4 right-4 md:hidden flex gap-2 w-auto p-2 rounded-[35px] shadow-lg border bg-background"
+            className="fixed bottom-1 left-4 right-4 md:hidden flex gap-2 w-auto p-2 rounded-[35px] shadow-lg border bg-background"
           >
             <input
               className="flex-1 bg-transparent border-none rounded-lg px-3 py-2 text-base text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:ring-0 disabled:opacity-70 text-[.8rem]"
@@ -278,14 +300,20 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
             </Button>
           ))}
 
-          <div className="mt-4">
-            <h4 className="text-sm font-semibold mb-2">Features</h4>
-            {["Feature 1", "Feature 2", "Feature 3"].map((feature, i) => (
+          <div className="grid grid-cols-2 grid-rows-2 gap-3 p-3">
+            {features.map((feature, i) => (
               <div
-                key={`mobile-feature-${i}`}
-                className="p-4 bg-black/10 rounded-xl shadow-lg mb-2"
+                key={i}
+                onClick={() => handleClick(i)}
+                className="relative bg-black/10 hover:bg-accent transition-all duration-300 ease border backdrop-blur-md rounded-xl shadow-lg flex flex-col items-center justify-center h-[100px] p-3 cursor-pointer"
               >
-                {feature}
+                {/* Icon */}
+                <div className="mb-2">{feature.icon}</div>
+
+                {/* Text */}
+                <p className="text-sm font-semibold text-center text-foreground">
+                  {clicked[i] ? "Coming Soon" : feature.name}
+                </p>
               </div>
             ))}
           </div>

@@ -17,6 +17,12 @@ import {
   PlusIcon,
   ChevronLeft,
   ChevronRight,
+  Brain,
+  X,
+  Music,
+  Map,
+  Speaker,
+  MessageCircle,
 } from "lucide-react";
 
 interface Message {
@@ -74,12 +80,37 @@ export default function DesktopChatLayout({
       return "w-[80%]";
     return "w-full";
   };
+  const features = [
+    {
+      name: "Audio Overview",
+      icon: <Music className="h-6 w-6 text-primary" />,
+    },
+    { name: "Module Mindmap", icon: <Map className="h-6 w-6 text-primary" /> },
+    {
+      name: "Text-to-Speech",
+      icon: <Speaker className="h-6 w-6 text-primary" />,
+    },
+    {
+      name: "Voice Chat",
+      icon: <MessageCircle className="h-6 w-6 text-primary" />,
+    },
+  ];
 
+  // Track which cards are clicked
+  const [clicked, setClicked] = useState<boolean[]>(
+    Array(features.length).fill(false)
+  );
+
+  const handleClick = (index: number) => {
+    const updated = [...clicked];
+    updated[index] = true; // mark clicked
+    setClicked(updated);
+  };
   return (
     <>
       {/* Left Column: Chat History OR small opener */}
       {leftVisible ? (
-        <div className="flex w-[20%] flex-col border-2 h-full border-white/20 p-3">
+        <div className="flex w-[20%] flex-col border-2 h-full dark:bg-background bg-black/10 border-white/20 p-3 rounded-l-2xl">
           <div className="flex justify-end mb-2">
             {/* small toggle to hide left column */}
             <Button
@@ -88,7 +119,7 @@ export default function DesktopChatLayout({
               onClick={() => setLeftVisible(false)}
               aria-label="Hide chat history"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
 
@@ -162,7 +193,7 @@ export default function DesktopChatLayout({
               onClick={() => setLeftVisible(true)}
               aria-label="Open chat history"
             >
-              <ChevronRight className="h-4 w-4" />
+              <Menu className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -170,13 +201,13 @@ export default function DesktopChatLayout({
 
       {/* Middle Column: Chat */}
       <div
-        className={`${getMiddleWidthClass()} flex flex-col h-full overflow-y-auto pr-4 border-2 border-white/20 -mr-4 px-5 space-y-6 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent`}
+        className={`${getMiddleWidthClass()} flex flex-col h-full overflow-y-auto pr-4 border-2 border-white/20 -mr-4 px-5 space-y-6 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent `}
       >
-        <h1 className="text-lg pb-10 md:text-xl pt-5 font-bold text-center text-foreground truncate">
-          AI Chat: <span className="text-primary">{moduleTitle}</span>
+        <h1 className="border-b-2 border-primary text-lg pb-10 md:text-xl pt-5 font-bold text-center text-foreground truncate">
+          <span className="text-primary">{moduleTitle}</span>
         </h1>
 
-        <div className="flex-1 pr-4 -mr-4 space-y-6">
+        <div className="flex-1 pr-4 -mr-4 space-y-6 ">
           <AnimatePresence>
             {messages
               .filter((m) => m.role !== "system")
@@ -199,9 +230,9 @@ export default function DesktopChatLayout({
                     </Avatar>
                   )}
                   {msg.content ? (
-                    <div className="relative group max-w-md md:max-w-lg">
+                    <div className="relative  group max-w-md md:max-w-lg">
                       <div
-                        className={`rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${
+                        className={`rounded-2xl px-4 py-3 text-base shadow-md prose prose-sm dark:prose-invert  bg-black/10 prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 ${
                           msg.role === "user"
                             ? "bg-primary text-primary-foreground rounded-br-none"
                             : "text-card-foreground rounded-bl-none border"
@@ -323,8 +354,8 @@ export default function DesktopChatLayout({
 
       {/* Right Column: Features + Quick Questions OR small opener */}
       {rightVisible ? (
-        <div className="flex w-[20%] flex-col border-2 h-full border-white/20">
-          <div className="flex justify-start p-3">
+        <div className="flex w-[20%] dark:bg-background bg-black/10 px-2 rounded-r-2xl flex-col border-2 h-full  border-white/20">
+          <div className="flex justify-start p-3 ">
             {/* small toggle to hide right column */}
             <Button
               variant="ghost"
@@ -332,28 +363,31 @@ export default function DesktopChatLayout({
               onClick={() => setRightVisible(false)}
               aria-label="Hide features"
             >
-              <ChevronRight className="h-4 w-4" />
+              <Menu className="h-4 w-4" />
             </Button>
           </div>
-
           {/* Feature Cards */}
-          <div className="flex gap-3 p-3">
-            {["Feature 1", "Feature 2", "Feature 3"].map((feature, i) => (
+          <div className="grid grid-cols-2 grid-rows-2 p-3 gap-3">
+            {features.map((feature, i) => (
               <div
                 key={`feature-${i}`}
-                className="p-4 bg-black/10 border backdrop-blur-md rounded-xl shadow-lg w-[30%] h-[120px] flex gap-2"
+                className="relative bg-black/10 hover:bg-accent transition-all duration-300 ease border backdrop-blur-md rounded-xl shadow-lg justify-center h-[90px] flex flex-col items-center p-2 cursor-pointer"
+                onClick={() => handleClick(i)}
               >
-                <p className="text-sm font-semibold text-foreground">
-                  {feature}
+                {/* Icon */}
+                <div className="mb-2">{feature.icon}</div>
+
+                {/* Text */}
+                <p className="text-sm font-semibold text-center text-foreground">
+                  {clicked[i] ? "Coming Soon" : feature.name}
                 </p>
               </div>
             ))}
           </div>
-
           {/* Quick Questions */}
           <div className="flex flex-col gap-2 p-3 rounded-xl shadow-md w-fit h-fit z-40">
             <p className="text-sm font-semibold flex items-center gap-1">
-              <Menu size={16} /> Quick Questions
+              <Brain size={16} /> Quick Questions
             </p>
             {quickQuestions.map((q, i) => (
               <Button
