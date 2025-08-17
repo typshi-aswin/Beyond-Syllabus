@@ -1,109 +1,111 @@
-// src/ai/flows/chat-with-syllabus.ts
 'use server';
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-import {MessageData} from 'genkit';
+import { ai } from '@/ai/ai';
+import { z } from 'genkit';
 
 /**
  * @fileOverview An AI agent that can answer questions about a given syllabus context.
- *
- * - chatWithSyllabus - A function that handles the chat conversation.
- * - ChatWithSyllabusInput - The input type for the chatWithSyllabus function.
- * - ChatWithSyllabusOutput - The return type for the chatWithSyllabus function.
  */
+
 export interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
-// Define the schema for a single message in the chat history
+// ---------------------- Schemas ----------------------
+
+// Single chat message schema
 const ChatMessageSchema = z.object({
   role: z.enum(['user', 'assistant', 'system']),
   content: z.string(),
 });
 
-// Define the input schema for the chat flow
+// Input schema for the chat flow
 const ChatWithSyllabusInputSchema = z.object({
   history: z.array(ChatMessageSchema).describe('The history of the conversation so far.'),
   message: z.string().describe('The latest message from the user.'),
+  model: z.string().describe('The model ID selected by the user.'), // ✅ added model
 });
 export type ChatWithSyllabusInput = z.infer<typeof ChatWithSyllabusInputSchema>;
 
-// Define the output schema for the chat flow
+// Output schema for the chat flow
 const ChatWithSyllabusOutputSchema = z.object({
   response: z.string().describe("The AI's response to the user's message."),
-   suggestions: z.array(z.string()).optional().describe("A list of 3-4 short, engaging follow-up questions the user might ask next.")
+  suggestions: z
+    .array(z.string())
+    .optional()
+    .describe("A list of 3–4 short, engaging follow-up questions the user might ask next."),
 });
 export type ChatWithSyllabusOutput = z.infer<typeof ChatWithSyllabusOutputSchema>;
 
-// The main function that will be called from the frontend
-export async function chatWithSyllabus(input: ChatWithSyllabusInput): Promise<ChatWithSyllabusOutput> {
-  return chatWithSyllabusFlow(input);
-}
+// ---------------------- Flow Logic ----------------------
+const chatWithSyllabusFlow = async (
+  input: ChatWithSyllabusInput
+): Promise<ChatWithSyllabusOutput> => {
+  const conversationHistory = input.history
+    .map((msg) => `- ${msg.role}: ${msg.content}`)
+    .join('\n');
+const promptText = `
+🎓 You are a patient and flexible study tutor.  
+Your goal is to make learning clear, fun, and confidence-building.  
 
+✨ Workflow:
+1) 🧑‍🏫 TEACH: Give a clear, simple, and concise explanation of the topic.  
+   - Use friendly examples and short sentences so it feels easy to read.  
+2) 📝 PRACTICE: Create 1 short practice problem and wait for the learner’s answer.  
+   - Offer a helpful hint if they ask for it.  
+3) ✅ CHECK: Verify their answer, explain the reasoning step-by-step, and share 1 common misconception.  
+4) 🔄 REFLECT: Encourage the learner to restate the idea in their own words to strengthen memory.  
 
-const prompt = ai.definePrompt({
-  name: 'chatTutorPrompt',
-  input: { schema: ChatWithSyllabusInputSchema },
-  output: { schema: ChatWithSyllabusOutputSchema },
-  system: `You are a patient and flexible study tutor. Follow this workflow strictly:
-1) CALIBRATE: ask 2–3 questions to gauge the learner's level, goals, or interests.
-2) PLAN: propose a short plan (3–5 steps) to approach the topic or study goal.
-3) TEACH: explain briefly, then ask a guiding question.
-4) PRACTICE: generate 1 problem; wait for the user's answer; give a hint if requested.
-5) CHECK: verify the answer, show reasoning, and provide 1 common misconception tip.
-6) REFLECT: ask the learner to restate the idea in their own words.
+📌 Rules:
+- Always answer education-related questions directly (no need to ask first).  
+- Keep a respectful, encouraging, and motivating tone 🌟.  
+- Add light use of emojis to make explanations friendly (but not overwhelming).  
+- End with 2–3 short, engaging follow-up questions the learner might ask next (to spark curiosity).  
 
-Rules:
-- You may answer any questions related to study, learning strategies, educational concepts, or planning study schedules.
-- Politely decline only questions that are clearly unrelated to learning, education, or study planning.
-- Prefer asking questions over giving direct answers; reveal steps gradually.
-- Maintain a respectful and encouraging tone.
-- Always provide 3–4 short, engaging follow-up questions the student might ask next.
-
-Return all outputs strictly in this JSON format:
-
-\`\`\`json
-{
-  "response": "Your teaching output following the steps above...",
-  "suggestions": [
-    "Follow-up question 1",
-    "Follow-up question 2",
-    "Follow-up question 3"
-  ]
-}
-\`\`\`
 
 Conversation History:
-{{#each history}}
-- {{role}}: {{{content}}}
-{{/each}}
+${conversationHistory}
 
-User's Message: "{{{message}}}"`,
-  prompt: `Based on the conversation history and the user's latest message, provide a response and a new set of suggestions.`
-});
+User's Message: "${input.message}"
+`;
 
 
+  try {
+    const chatCompletion = await ai.chat.completions.create({
+      messages: [{ role: 'user', content: promptText }],
+      model: input.model ||'meta-llama/llama-4-maverick-17b-128e-instruct' , // ✅ model comes from frontend
+      temperature: 0.6,
+      max_completion_tokens: 2048,
+      top_p: 0.95,
+    });
 
+    const outputText = chatCompletion.choices?.[0]?.message?.content || '';
 
-// Define the Genkit flow for the chat functionality
-const chatWithSyllabusFlow = ai.defineFlow(
-  {
-    name: 'chatWithSyllabusFlow',
-    inputSchema: ChatWithSyllabusInputSchema,
-    outputSchema: ChatWithSyllabusOutputSchema,
-  },
-  async (input) => {
+    // Try parsing JSON safely
     try {
-      const { output } = await prompt(input);
-      if (!output) {
-        return { response: "I'm sorry, I couldn't generate a response. Please try again." };
-      }
-      return output;
-    } catch(e) {
-      console.error("Error in chat flow:", e);
-      return { response: "I'm having trouble with that request. Could you try rephrasing it?" };
+      const parsed = JSON.parse(outputText);
+      return parsed as ChatWithSyllabusOutput;
+    } catch {
+      // Fallback: return raw text if parsing fails
+      return {
+        response: outputText,
+        suggestions: [],
+      };
     }
+  } catch (e) {
+    console.error('Error in chat flow:', e);
+    return {
+      response:
+        "I'm having trouble with that request. Could you try rephrasing it?",
+      suggestions: [],
+    };
   }
-);
+};
+
+// ---------------------- Exported Function ----------------------
+export async function chatWithSyllabus(
+  input: ChatWithSyllabusInput
+): Promise<ChatWithSyllabusOutput> {
+  return chatWithSyllabusFlow(input);
+}

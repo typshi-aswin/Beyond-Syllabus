@@ -127,10 +127,10 @@ export default function Home() {
                 size="lg"
                 variant="outline"
                 className="group shadow-lg w-full md:w-auto h-[44px] border-white hover:bg-black/20 hover:text-white"
-                onClick={() => navigateWithDelay("/chat-with-file", 600)}
-                disabled={loadingRoute === "/chat-with-file"}
+                onClick={() => navigateWithDelay("/chat", 600)}
+                disabled={loadingRoute === "/chat"}
               >
-                {loadingRoute === "/chat-with-file" ? (
+                {loadingRoute === "/chat" ? (
                   <>
                     <Loader2 className="h-5 w-5 mr-2 animate-spin text-amber-400" />
                     Loading AI Chat...

@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-
 import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
 import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
-
 import { Header } from "@/components/common/Header";
 import DesktopChatLayout from "./DesktopChatLayout";
 import MobileChatPanels from "./mobileChatPanels";
@@ -22,10 +20,11 @@ export default function ChatComponent() {
   const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(
     null
   );
+  const [selectedModel, setSelectedModel] = useState("llama3-8b-8192"); // default model
+
   const [chatHistory, setChatHistory] = useState<
     { title: string; messages: Message[] }[]
   >([]);
-
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"ai" | "quick" | "history">("ai");
 
@@ -97,6 +96,10 @@ export default function ChatComponent() {
     );
   };
 
+  const handleDeleteTopic = (idx: number) => {
+    setChatHistory((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
@@ -117,11 +120,14 @@ export default function ChatComponent() {
       const result = await chatWithSyllabus({
         history: chatHistoryForApi,
         message: input,
+        model: selectedModel, // ✅ Correct model usage
       });
+
       const assistantMessage: Message = {
         role: "assistant",
         content: result.response,
       };
+
       setMessages((msgs) => [...msgs, assistantMessage]);
       setSuggestions(result.suggestions || []);
     } catch (err) {
@@ -140,9 +146,9 @@ export default function ChatComponent() {
       setChatHistory((prev) => [
         ...prev,
         {
-          title: `${moduleTitle}${
-            firstUserMessage ? ` - ${firstUserMessage}` : ""
-          }`,
+          title: firstUserMessage
+            ? `Untitled - ${firstUserMessage.slice(0, 20)}`
+            : `${moduleTitle} - New Topic`,
           messages: messages.filter((m) => m.role !== "system"),
         },
       ]);
@@ -173,12 +179,14 @@ export default function ChatComponent() {
           suggestions={suggestions}
           quickQuestions={quickQuestions}
           input={input}
+          setInput={setInput}
+          onDeleteTopic={handleDeleteTopic}
           loading={loading}
+          onModelChange={setSelectedModel}
           copiedMessageIndex={copiedMessageIndex}
           handleSend={handleSend}
           handleNewTopic={handleNewTopic}
           handleSuggestionClick={handleSuggestionClick}
-          setInput={setInput}
           copyToClipboard={copyToClipboard}
           setMessages={setMessages}
         />
@@ -187,6 +195,7 @@ export default function ChatComponent() {
       <div className="md:hidden mt-[15vh]">
         <MobileChatPanels
           messages={messages}
+          onModelChange={setSelectedModel}
           setMessages={setMessages}
           input={input}
           setInput={setInput}
