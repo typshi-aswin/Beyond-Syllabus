@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Loader2, BookText } from "lucide-react";
 import { summarizeSyllabus } from "@/ai/flows/summarize-syllabus";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface SyllabusSummaryProps {
   fullSyllabus: string;
@@ -40,7 +42,7 @@ export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
   }, [fullSyllabus]);
 
   return (
-    <div className="space-y-4 bg-white dark:bg-black/50 backdrop-blur-sm p-6 rounded-2xl shadow-md border">
+    <div className="space-y-4 bg-white dark:bg-black/50 backdrop-blur-sm p-6 rounded-2xl shadow-md border h-[500px] overflow-auto">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-primary/10 rounded-lg">
           <BookText className="h-6 w-6 text-primary" />
@@ -78,9 +80,7 @@ export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-              {summary}
-            </p>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
           </motion.div>
         )}
       </AnimatePresence>

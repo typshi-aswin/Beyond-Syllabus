@@ -1,16 +1,11 @@
-// src/ai/flows/suggest-resources.ts
 'use server';
 
 /**
  * @fileOverview A flow that suggests relevant online resources for a given syllabus section.
- *
- * - suggestResources - A function that suggests relevant online resources.
- * - SuggestResourcesInput - The input type for the suggestResources function.
- * - SuggestResourcesOutput - The return type for the suggestResources function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/ai';
+import { z } from 'genkit';
 
 const SuggestResourcesInputSchema = z.object({
   syllabusSection: z.string().describe('The syllabus section to find resources for.'),
@@ -28,47 +23,56 @@ const SuggestResourcesOutputSchema = z.object({
 });
 export type SuggestResourcesOutput = z.infer<typeof SuggestResourcesOutputSchema>;
 
+// ---------------------- Flow Logic ----------------------
+const suggestResourcesFlow = async (input: SuggestResourcesInput): Promise<SuggestResourcesOutput> => {
+  const promptText = `
+You are an expert curriculum assistant. Your goal is to find 3-5 high-quality online resources for a university student studying the following syllabus section.
+
+Syllabus Section:
+"${input.syllabusSection}"
+
+Guidelines:
+1. Provide a mix of resource types (e.g., video, article, tutorial).
+2. Prioritize reputable sources like university websites, established educational platforms, and well-known technical blogs.
+3. Ensure all URLs are valid and directly accessible.
+4. The description should clearly explain the resource's relevance.
+5. You MUST return the data in the following JSON format:
+
+{
+  "resources": [
+    {
+      "title": "Resource Title",
+      "url": "https://...",
+      "description": "Why this resource is useful for the syllabus section"
+    }
+  ]
+}
+`;
+
+  try {
+    const completion = await ai.chat.completions.create({
+      messages: [{ role: 'user', content: promptText }],
+      model: 'qwen/qwen3-32b',
+      temperature: 0.6,
+      max_completion_tokens: 2048,
+      top_p: 0.95,
+    });
+
+    const outputText = completion.choices?.[0]?.message?.content || '';
+    const output = JSON.parse(outputText);
+
+    if (!output || !output.resources || output.resources.length === 0) {
+      return { resources: [] };
+    }
+
+    return output as SuggestResourcesOutput;
+  } catch (error) {
+    console.error('Error in suggestResourcesFlow:', error);
+    return { resources: [] };
+  }
+};
+
+// Main function for frontend
 export async function suggestResources(input: SuggestResourcesInput): Promise<SuggestResourcesOutput> {
   return suggestResourcesFlow(input);
 }
-
-const prompt = ai.definePrompt({
-  name: 'suggestResourcesPrompt',
-  input: {schema: SuggestResourcesInputSchema},
-  output: {schema: SuggestResourcesOutputSchema},
-  prompt: `
-    You are an expert curriculum assistant. Your goal is to find 3-5 high-quality online resources for a university student studying the following syllabus section.
-
-    Syllabus Section:
-    "{{{syllabusSection}}}"
-
-    Guidelines:
-    1.  Provide a mix of resource types (e.g., video, article, tutorial).
-    2.  Prioritize reputable sources like university websites, established educational platforms, and well-known technical blogs.
-    3.  Ensure all URLs are valid and directly accessible.
-    4.  The description should clearly explain the resource's relevance.
-    5.  You MUST return the data in the specified JSON format.
-  `,
-});
-
-const suggestResourcesFlow = ai.defineFlow(
-  {
-    name: 'suggestResourcesFlow',
-    inputSchema: SuggestResourcesInputSchema,
-    outputSchema: SuggestResourcesOutputSchema,
-  },
-  async input => {
-    try {
-      const {output} = await prompt(input);
-      if (!output || !output.resources || output.resources.length === 0) {
-        // If the model returns no output, return an empty list of resources.
-        return { resources: [] };
-      }
-      return output;
-    } catch (error) {
-      console.error('Error in suggestResourcesFlow:', error);
-      // In case of an error, return an empty list of resources to prevent crashing.
-      return { resources: [] };
-    }
-  }
-);

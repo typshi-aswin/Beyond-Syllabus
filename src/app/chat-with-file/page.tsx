@@ -574,8 +574,8 @@ export default function ChatWithFilePage() {
                   </h1>
                   <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                     Paste any syllabus or educational content below. Our AI will
-                    help you understand it, generate learning tasks, and answer your
-                    questions.
+                    help you understand it, generate learning tasks, and answer
+                    your questions.
                   </p>
                 </div>
 
@@ -618,11 +618,15 @@ export default function ChatWithFilePage() {
                               background: transparent;
                             }
                             textarea::-webkit-scrollbar-thumb {
-                              background-color: hsl(var(--muted-foreground) / 0.2);
+                              background-color: hsl(
+                                var(--muted-foreground) / 0.2
+                              );
                               border-radius: 3px;
                             }
                             textarea::-webkit-scrollbar-thumb:hover {
-                              background-color: hsl(var(--muted-foreground) / 0.4);
+                              background-color: hsl(
+                                var(--muted-foreground) / 0.4
+                              );
                             }
                           `}</style>
                         </div>
@@ -729,15 +733,18 @@ export default function ChatWithFilePage() {
 
                       <div className="space-y-4 md:space-y-6 pb-4">
                         {/* Welcome Message */}
-                        {messages.filter((m) => m.role !== "system").length === 0 && !loading && (
-                          <Alert className="bg-primary/5 border-primary/20 dark:bg-primary/10 dark:border-primary/30">
-                            <Sparkles className="h-4 w-4 text-primary" />
-                            <AlertTitle>Ready to Assist!</AlertTitle>
-                            <AlertDescription>
-                              Your AI study assistant is ready to help you understand and explore your syllabus content.
-                            </AlertDescription>
-                          </Alert>
-                        )}
+                        {messages.filter((m) => m.role !== "system").length ===
+                          0 &&
+                          !loading && (
+                            <Alert className="bg-primary/5 border-primary/20 dark:bg-primary/10 dark:border-primary/30">
+                              <Sparkles className="h-4 w-4 text-primary" />
+                              <AlertTitle>Ready to Assist!</AlertTitle>
+                              <AlertDescription>
+                                Your AI study assistant is ready to help you
+                                understand and explore your syllabus content.
+                              </AlertDescription>
+                            </Alert>
+                          )}
 
                         {/* Error Display */}
                         {error && (
@@ -755,7 +762,8 @@ export default function ChatWithFilePage() {
                             const filteredMessages = messages.filter(
                               (m) => m.role !== "system"
                             );
-                            const isLastMessage = idx === filteredMessages.length - 1;
+                            const isLastMessage =
+                              idx === filteredMessages.length - 1;
 
                             return (
                               <motion.div
@@ -765,7 +773,9 @@ export default function ChatWithFilePage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3 }}
                                 className={`flex items-start gap-2 md:gap-3 w-full ${
-                                  msg.role === "user" ? "justify-end" : "justify-start"
+                                  msg.role === "user"
+                                    ? "justify-end"
+                                    : "justify-start"
                                 }`}
                               >
                                 {/* AI Avatar */}
@@ -787,7 +797,9 @@ export default function ChatWithFilePage() {
                                     }`}
                                   >
                                     <div className="prose prose-sm dark:prose-invert prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-li:my-1 max-w-none">
-                                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                      <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                      >
                                         {msg.content}
                                       </ReactMarkdown>
                                     </div>
@@ -799,7 +811,9 @@ export default function ChatWithFilePage() {
                                       variant="ghost"
                                       size="sm"
                                       className="absolute -bottom-2 -right-2 opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity bg-background hover:bg-accent border shadow-sm h-6 w-6 md:h-8 md:w-8 p-0 z-10"
-                                      onClick={() => copyToClipboard(msg.content, idx)}
+                                      onClick={() =>
+                                        copyToClipboard(msg.content, idx)
+                                      }
                                       title="Copy response"
                                     >
                                       {copiedMessageIndex === idx ? (
@@ -892,24 +906,27 @@ export default function ChatWithFilePage() {
                             className="space-y-3 mt-6"
                           >
                             <div className="flex flex-wrap gap-2 mb-2 md:w-full">
-                                <p className="flex">
-                                    <Menu />
-                                    Related
-                                </p>
-                                {suggestions.map((s, i) => (
+                              <p className="flex">
+                                <Menu />
+                                Related
+                              </p>
+                              {suggestions.map((s, i) => (
                                 <div className="flex items-center justify-between w-full  border-b-[.8px] ">
-                                <Button
-                                key={i}
-                                className="w-[350px] md:w-full text-wrap flex bg-transparent   hover:text-purple-600 hover:bg-transparent text-left md:h-[7vh] h-[10vh] text-[12px] md:text-[13px] text-black dark:text-white justify-start rounded"
-                                size="sm"
-                                onClick={() => handleSuggestionClick(s)}
-                            >
-                                {s}
-                            </Button>
-                            <PlusIcon size={20} className="text-purple-500" />
+                                  <Button
+                                    key={i}
+                                    className="w-[350px] md:w-full text-wrap flex bg-transparent   hover:text-purple-600 hover:bg-transparent text-left md:h-[7vh] h-[10vh] text-[12px] md:text-[13px] text-black dark:text-white justify-start rounded"
+                                    size="sm"
+                                    onClick={() => handleSuggestionClick(s)}
+                                  >
+                                    {s}
+                                  </Button>
+                                  <PlusIcon
+                                    size={20}
+                                    className="text-purple-500"
+                                  />
+                                </div>
+                              ))}
                             </div>
-                        ))}
-                        </div>
                           </motion.div>
                         )}
 

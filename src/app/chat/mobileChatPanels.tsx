@@ -2,12 +2,23 @@
 
 import { FC, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { User, Sparkles, Copy, Check, Loader2, Send, Menu } from "lucide-react";
+import {
+  User,
+  Sparkles,
+  Copy,
+  Check,
+  Loader2,
+  Send,
+  Menu,
+  Delete,
+  Trash,
+} from "lucide-react";
 import { Message } from "@/ai/flows/chat-with-syllabus";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import ModelSelector from "@/components/common/ModelSelector";
 
 interface MobileChatPanelsProps {
   setMessages: (messages: Message[]) => void;
@@ -18,6 +29,7 @@ interface MobileChatPanelsProps {
   messages: Message[];
   input: string;
   setInput: (val: string) => void;
+  onModelChange: (modelId: string) => void;
   loading: boolean;
   error: string | null;
   suggestions: string[];
@@ -43,6 +55,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
   error,
   suggestions,
   copiedMessageIndex,
+  onModelChange,
   chatHistory,
   quickQuestions,
   activeTab,
@@ -85,6 +98,16 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
       {/* Tabs */}
       <div className="flex rounded-lg overflow-hidden border dark:border-white/10">
         <button
+          onClick={() => setActiveTab("history")}
+          className={`flex-1 py-2 text-center text-sm font-semibold ${
+            activeTab === "history"
+              ? "bg-white/5 text-primary"
+              : "dark:text-white/70 text-black bg-transparent"
+          }`}
+        >
+          History
+        </button>
+        <button
           onClick={() => setActiveTab("ai")}
           className={`flex-1 py-2 text-center text-sm font-semibold ${
             activeTab === "ai"
@@ -103,16 +126,6 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
           }`}
         >
           Quick
-        </button>
-        <button
-          onClick={() => setActiveTab("history")}
-          className={`flex-1 py-2 text-center text-sm font-semibold ${
-            activeTab === "history"
-              ? "bg-white/5 text-primary"
-              : "dark:text-white/70 text-black bg-transparent"
-          }`}
-        >
-          History
         </button>
       </div>
 
@@ -278,19 +291,14 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
           activeTab === "quick" ? "block" : "hidden"
         }`}
       >
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold">Quick Questions</h3>
-            <Button variant="outline" onClick={() => setActiveTab("ai")}>
-              Open Chat
-            </Button>
-          </div>
+        <div className="space-y-4 ">
+          <h3 className="text-sm font-semibold ">Quick Questions</h3>
 
           {quickQuestions.map((q, i) => (
             <Button
               key={`mobile-quick-${i}`}
               variant="ghost"
-              className="justify-start text-left border w-full"
+              className="justify-start h-fit text-left border text-wrap  w-full"
               onClick={() => {
                 handleSuggestionClick(q);
                 setActiveTab("ai");
@@ -316,6 +324,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
                 </p>
               </div>
             ))}
+            <ModelSelector onModelChange={onModelChange} />
           </div>
         </div>
       </div>
@@ -363,7 +372,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
                   }}
                   aria-label={`Delete chat titled ${chat.title}`}
                 >
-                  <User className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
                 </Button>
               </div>
             ))}

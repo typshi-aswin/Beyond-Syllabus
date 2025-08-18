@@ -18,6 +18,7 @@ export default function MobileChatLayout() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(
@@ -29,7 +30,7 @@ export default function MobileChatLayout() {
   const [activeTab, setActiveTab] = useState<"ai" | "quick" | "history">("ai");
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-
+  const [selectedModel, setSelectedModel] = useState("llama3-8b-8192");
   const quickQuestions = [
     "Why do I need to study this?",
     "What is the purpose of this module?",
@@ -107,6 +108,7 @@ export default function MobileChatLayout() {
       const result = await chatWithSyllabus({
         history: chatHistoryForApi,
         message: input,
+        model: selectedModel, // Use the selected model if provided
       });
 
       const assistantMessage: Message = {
@@ -160,6 +162,7 @@ export default function MobileChatLayout() {
         setInput={setInput}
         loading={loading}
         error={error}
+        onModelChange={setSelectedModel}
         suggestions={suggestions}
         copiedMessageIndex={copiedMessageIndex}
         chatHistory={chatHistory}

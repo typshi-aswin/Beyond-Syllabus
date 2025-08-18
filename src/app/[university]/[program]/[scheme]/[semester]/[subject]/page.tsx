@@ -7,6 +7,8 @@ import ErrorDisplay from "@/components/common/ErrorDisplay";
 import { AnimatedDiv } from "@/components/common/AnimatedDiv";
 import { Footer } from "@/components/common/Footer";
 import { MindMap } from "@/app/mindMap/mindMap";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
 
 interface SubjectPageProps {
   params: Promise<{
@@ -172,21 +174,20 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
                   modules={subject.modules || []}
                 />
               </div>
-              <aside className="space-y-8 lg:sticky lg:top-24 self-start">
-                <h2 className="text-2xl font-bold">AI-Powered Tools</h2>
-                <SyllabusSummary fullSyllabus={subject.fullSyllabus || ""} />
-              </aside>
+              <div className=" flex gap-5 w-full flex-col">
+                <div className="flex w-full justify-center gap-5 text-[25px]  dark:bg-black/50 items-center text-center rounded-xl h-[150px] shadow-lg">
+                  New feature <br /> Coming Soon
+                </div>
+                <div className="flex w-full justify-center gap-5 text-[25px]  dark:bg-black/50 items-center text-center rounded-xl h-[150px] shadow-lg">
+                  New feature <br /> Coming Soon
+                </div>
+              </div>
             </div>
-            <div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2 text-center">
-                  Mind Map
-                </h3>
-                <MindMap
-                  subjectCode={subject.code}
-                  subjectName={subject.name}
-                  modules={subject.modules || []}
-                />
+            <div className="flex w-full gap-5">
+              <div className="space-y-8 flex-col flex mt-[20px]">
+                <h2 className="text-2xl  font-bold ">AI-Powered Tools</h2>
+
+                <SyllabusSummary fullSyllabus={subject.fullSyllabus || ""} />
               </div>
             </div>
           </div>
