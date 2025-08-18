@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ import { Footer } from "@/components/common/Footer";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FooterDark } from "@/components/common/footerDark";
 
 // Full-screen loader during asset preload
 function FullScreenLoader() {
@@ -101,7 +102,9 @@ export default function Home() {
             >
               <span
                 className={`block text-[24px] font-light ${
-                  mounted && resolvedTheme === "dark" ? "text-white" : "text-black"
+                  mounted && resolvedTheme === "dark"
+                    ? "text-white"
+                    : "text-black"
                 }`}
               >
                 Welcome to
@@ -115,8 +118,8 @@ export default function Home() {
                   : "text-black"
               }`}
             >
-              Your modern, AI-powered guide to the university curriculum. Explore
-              subjects, understand modules, and unlock your potential.
+              Your modern, AI-powered guide to the university curriculum.
+              Explore subjects, understand modules, and unlock your potential.
             </p>
 
             <div className="flex flex-col md:flex-row justify-center gap-4 mt-6">
@@ -204,8 +207,10 @@ export default function Home() {
             </div>
           </div>
         </section>
-        </main>
-        <Footer />
+      </main>
+      <div className="some-wrapper-class">
+        {mounted && resolvedTheme === "dark" ? <FooterDark /> : <Footer />}
+      </div>
     </div>
   );
 }
