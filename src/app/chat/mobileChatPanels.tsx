@@ -83,13 +83,13 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
   return (
     <div className="flex flex-col overflow-x-hidden h-full w-full">
       {/* Tabs */}
-      <div className="flex rounded-lg overflow-hidden border border-white/10">
+      <div className="flex rounded-lg overflow-hidden border dark:border-white/10">
         <button
           onClick={() => setActiveTab("ai")}
           className={`flex-1 py-2 text-center text-sm font-semibold ${
             activeTab === "ai"
               ? "bg-white/5 text-primary"
-              : "text-white/70 bg-transparent"
+              : "dark:text-white/70 text-black bg-transparent"
           }`}
         >
           AI
@@ -99,7 +99,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
           className={`flex-1 py-2 text-center text-sm font-semibold ${
             activeTab === "quick"
               ? "bg-white/5 text-primary"
-              : "text-white/70 bg-transparent"
+              : "dark:text-white/70 text-black bg-transparent"
           }`}
         >
           Quick
@@ -109,7 +109,7 @@ const MobileChatPanels: FC<MobileChatPanelsProps> = ({
           className={`flex-1 py-2 text-center text-sm font-semibold ${
             activeTab === "history"
               ? "bg-white/5 text-primary"
-              : "text-white/70 bg-transparent"
+              : "dark:text-white/70 text-black bg-transparent"
           }`}
         >
           History
