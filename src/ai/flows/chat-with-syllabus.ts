@@ -97,8 +97,8 @@ User's Message: "${input.message}"
     console.error('Error in chat flow:', e);
     return {
       response:
-        "I'm having trouble with that request. Could you try rephrasing it?",
-      suggestions: [],
+          "I'm having trouble with that request. You could try rephrasing it, or switch to a different model to see if it works better.",
+    suggestions: ["Try a different model", "Rephrase the question"]
     };
   }
 };

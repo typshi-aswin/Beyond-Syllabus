@@ -10,6 +10,7 @@ import { z } from 'genkit';
 const GenerateModuleTasksInputSchema = z.object({
   moduleContent: z.string().describe('The text content of the syllabus module to generate tasks and applications for.'),
   moduleTitle: z.string().describe('The title of the syllabus module.'),
+  model: z.string().optional().describe('Optional AI model to use for generation.'),
 });
 export type GenerateModuleTasksInput = z.infer<typeof GenerateModuleTasksInputSchema>;
 
@@ -20,47 +21,53 @@ const GenerateModuleTasksOutputSchema = z.object({
 export type GenerateModuleTasksOutput = z.infer<typeof GenerateModuleTasksOutputSchema>;
 
 // ---------------------- Flow Logic ----------------------
-const generateModuleTasksFlow = async (input: GenerateModuleTasksInput): Promise<GenerateModuleTasksOutput> => {
+
+  const generateModuleTasksFlow = async (input: GenerateModuleTasksInput): Promise<GenerateModuleTasksOutput> => {
   const promptText = `
-You are an expert curriculum assistant. Your task is to generate a welcoming, introductory message for a student about a specific syllabus module, including learning tasks, real-world applications, and follow-up questions. Follow the JSON format strictly.
+You are an expert curriculum assistant. Generate a welcoming introductory message for a syllabus module, including:
+- 2–4 learning tasks (markdown list)
+- 2–3 real-world applications (markdown list)
+- 3–4 follow-up questions
 
-Module Content:
-"${input.moduleContent}"
-
-Module Title:
-"${input.moduleTitle}"
-
-Guidelines:
-1. Start with a friendly greeting mentioning the module title.
-2. Include 2–4 distinct learning tasks in markdown list format.
-3. Include 2–3 real-world applications in markdown list format.
-4. Generate 3–4 short, engaging follow-up questions separately.
-5. Return output strictly in the provided JSON format.
+Return output strictly in JSON format:
+{
+  "introductoryMessage": "...",
+  "suggestions": ["...", "..."]
+}
+Module Title: "${input.moduleTitle}"
+Module Content: "${input.moduleContent}"
 `;
 
   try {
     const chatCompletion = await ai.chat.completions.create({
       messages: [{ role: 'user', content: promptText }],
-      model: 'qwen/qwen3-32b',
+      model: input.model || 'meta-llama/llama-4-maverick-17b-128e-instruct',
       temperature: 0.6,
       max_completion_tokens: 2048,
       top_p: 0.95,
     });
 
-    const outputText = chatCompletion.choices?.[0]?.message?.content || '';
-    const output = JSON.parse(outputText);
+    let outputText = chatCompletion.choices?.[0]?.message?.content || '';
 
+    // === Sanitize AI output: remove ```json or ``` wrappers ===
+    outputText = outputText
+      .trim()
+      .replace(/^```json\s*/, '')
+      .replace(/^```/, '')
+      .replace(/```$/, '');
+
+    const output = JSON.parse(outputText);
     return output as GenerateModuleTasksOutput;
   } catch (e) {
     console.error(`Error generating tasks for module "${input.moduleTitle}":`, e);
 
-    // Fallback output
     return {
-      introductoryMessage: `Hello! I had a little trouble generating the introduction for "${input.moduleTitle}". Please paste the syllabus content again or ask me a question to get started!`,
+      introductoryMessage: `Hello! I ran into some issues generating the introduction for "${input.moduleTitle}". You can try again or change the AI model if needed.`,
       suggestions: [
+        `Try using a different AI model for "${input.moduleTitle}"`,
+        `Rephrase your module content and try again`,
         `What are the key topics in "${input.moduleTitle}"?`,
-        'Can you give me an overview?',
-        'What are the real-world applications?',
+        'Can you provide a brief overview of this module?',
       ],
     };
   }
