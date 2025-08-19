@@ -24,6 +24,7 @@ import {
   Speaker,
   MessageCircle,
 } from "lucide-react";
+import ModelSelector from "@/components/common/ModelSelector";
 
 interface Message {
   role: "system" | "user" | "assistant";
@@ -32,6 +33,7 @@ interface Message {
 
 interface DesktopChatLayoutProps {
   moduleTitle: string;
+  onModelChange: (modelId: string) => void;
   moduleContent: string;
   messages: Message[];
   chatHistory: { title: string; messages: Message[] }[];
@@ -41,6 +43,7 @@ interface DesktopChatLayoutProps {
   loading: boolean;
   error?: string;
   copiedMessageIndex: number | null;
+  onDeleteTopic: (index: number) => void;
   handleSend: () => void;
   handleNewTopic: () => void;
   handleSuggestionClick: (text: string) => void;
@@ -51,7 +54,9 @@ interface DesktopChatLayoutProps {
 
 export default function DesktopChatLayout({
   moduleTitle,
+  onDeleteTopic,
   moduleContent,
+  onModelChange,
   messages,
   chatHistory,
   suggestions,
@@ -75,10 +80,8 @@ export default function DesktopChatLayout({
 
   // compute middle column width class to keep your desktop layout proportions
   const getMiddleWidthClass = () => {
-    if (leftVisible && rightVisible) return "w-[60%]";
-    if ((leftVisible && !rightVisible) || (!leftVisible && rightVisible))
-      return "w-[80%]";
-    return "w-full";
+    if (rightVisible) return "w-[80%]";
+    if (!rightVisible && !leftVisible) return "w-full";
   };
   const features = [
     {
@@ -106,13 +109,13 @@ export default function DesktopChatLayout({
     updated[index] = true; // mark clicked
     setClicked(updated);
   };
+
   return (
     <>
       {/* Left Column: Chat History OR small opener */}
       {leftVisible ? (
-        <div className="flex w-[20%] flex-col border-2 h-full dark:bg-background bg-black/10 border-white/20 p-3 rounded-l-2xl">
+        <div className="flex w-[16%] flex-col border-2 h-full dark:bg-background bg-black/10 border-white/20 p-3 rounded-l-2xl">
           <div className="flex justify-end mb-2">
-            {/* small toggle to hide left column */}
             <Button
               variant="ghost"
               size="sm"
@@ -129,51 +132,25 @@ export default function DesktopChatLayout({
           <div className="flex-1 overflow-y-auto">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-semibold">Chat History</h3>
-              <button
-                className="text-xs text-primary hover:underline"
-                onClick={handleNewTopic}
-              >
-                + New Topic
-              </button>
             </div>
             {chatHistory.length === 0 ? (
               <p className="text-xs text-muted-foreground">
                 No previous topics
               </p>
             ) : (
-              chatHistory.map((chat, idx) => (
+              chatHistory.map((topic, idx) => (
                 <div
-                  key={`history-${idx}`}
-                  className="flex justify-between items-center cursor-pointer p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                  key={idx}
+                  className="flex items-center justify-between gap-2"
                 >
-                  <div
-                    className="flex-1"
-                    onClick={() => {
-                      setMessages([
-                        {
-                          role: "system",
-                          content: `You are an expert assistant for the course module: ${moduleTitle}.\nModule Content:\n${moduleContent}`,
-                        },
-                        ...chat.messages,
-                      ]);
-                      setTimeout(
-                        () =>
-                          chatEndRef.current?.scrollIntoView({
-                            behavior: "smooth",
-                          }),
-                        120
-                      );
-                    }}
-                  >
-                    {chat.title}
-                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {topic.title}
+                  </span>
                   <button
                     className="text-red-500 text-xs ml-2 hover:underline"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // keep original behavior: delete from chat history
-                      // (caller provided setChatHistory elsewhere, here we only remove by firing a custom event is not available)
-                      // As DesktopChatLayout doesn't own setChatHistory prop, leave delete action as stopPropagation only.
+                      onDeleteTopic(idx); // ✅ actually deletes now
                     }}
                   >
                     Delete
@@ -184,7 +161,7 @@ export default function DesktopChatLayout({
           </div>
         </div>
       ) : (
-        // small visible tab to re-open left column (keeps desktop layout)
+        // small visible tab to re-open left column
         <div className="flex items-start">
           <div className="flex h-full items-center px-1">
             <Button
@@ -193,7 +170,7 @@ export default function DesktopChatLayout({
               onClick={() => setLeftVisible(true)}
               aria-label="Open chat history"
             >
-              <Menu className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -354,7 +331,7 @@ export default function DesktopChatLayout({
 
       {/* Right Column: Features + Quick Questions OR small opener */}
       {rightVisible ? (
-        <div className="flex w-[20%] dark:bg-background bg-black/10 px-2 rounded-r-2xl flex-col border-2 h-full  border-white/20">
+        <div className="flex w-[24%] dark:bg-background bg-black/10  rounded-r-2xl flex-col border-2 h-full  border-white/20">
           <div className="flex justify-start p-3 ">
             {/* small toggle to hide right column */}
             <Button
@@ -367,11 +344,11 @@ export default function DesktopChatLayout({
             </Button>
           </div>
           {/* Feature Cards */}
-          <div className="grid grid-cols-2 grid-rows-2 p-3 gap-3">
+          <div className="grid grid-cols-2 grid-rows-2 px-[10px] gap-2">
             {features.map((feature, i) => (
               <div
                 key={`feature-${i}`}
-                className="relative bg-black/10 hover:bg-accent transition-all duration-300 ease border backdrop-blur-md rounded-xl shadow-lg justify-center h-[90px] flex flex-col items-center p-2 cursor-pointer"
+                className="relative bg-black/10 hover:bg-accent transition-all duration-300 ease border backdrop-blur-md rounded-xl shadow-lg justify-center h-[90px] flex flex-col items-center p-2 cursor-pointer w-[100px] max-[990px]:w-[80px] max-[860px]:font-[12px]"
                 onClick={() => handleClick(i)}
               >
                 {/* Icon */}
@@ -384,8 +361,9 @@ export default function DesktopChatLayout({
               </div>
             ))}
           </div>
+          <ModelSelector onModelChange={onModelChange} />
           {/* Quick Questions */}
-          <div className="flex flex-col gap-2 p-3 rounded-xl shadow-md w-fit h-fit z-40">
+          <div className="flex text-wrap flex-col gap-2 p-3 rounded-xl  w-full h-fit  z-40">
             <p className="text-sm font-semibold flex items-center gap-1">
               <Brain size={16} /> Quick Questions
             </p>
@@ -393,7 +371,7 @@ export default function DesktopChatLayout({
               <Button
                 key={`quick-${i}`}
                 variant="ghost"
-                className="justify-start text-left border text-[13px] hover:text-purple-600"
+                className="justify-start text-left border-purple-900 border-[1px] dark:border text-[13px] hover:text-purple-600 w-fit text-wrap"
                 onClick={() => handleSuggestionClick(q)}
               >
                 {q}
