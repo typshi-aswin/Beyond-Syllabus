@@ -4,6 +4,8 @@
 ## AI-Powered Learning Beyond Boundaries 🌟
 
 ## Don’t just study the syllabus. Understand it. Question it. Go beyond it.
+
+## [live](https://beyondsyllabus.in/)
 ---
 ## 🚀 What is Beyond Syllabus?
 
