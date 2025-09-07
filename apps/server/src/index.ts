@@ -1,45 +1,56 @@
-import { env } from "cloudflare:workers";
+import "dotenv/config";
+import { Elysia } from "elysia";
+import { cors } from "@elysiajs/cors";
+import { OpenAPIHandler } from "@orpc/openapi/fetch";
+import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
+import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { RPCHandler } from "@orpc/server/fetch";
+import { onError } from "@orpc/server";
+import { appRouter } from "./routes";
 import { createContext } from "./lib/context";
-import { appRouter } from "./routers/index";
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import { logger } from "hono/logger";
-import { timing } from "hono/timing";
-import { prettyJSON } from "hono/pretty-json";
-import { secureHeaders } from "hono/secure-headers";
 
+const rpcHandler = new RPCHandler(appRouter, {
+	interceptors: [
+		onError((error) => {
+			console.error(error);
+		}),
+	],
+});
+const apiHandler = new OpenAPIHandler(appRouter, {
+	plugins: [
+		new OpenAPIReferencePlugin({
+			schemaConverters: [new ZodToJsonSchemaConverter()],
+		}),
+	],
+	interceptors: [
+		onError((error) => {
+			console.error(error);
+		}),
+	],
+});
 
-const app = new Hono();
-
-app.use(logger());
-app.use(timing());
-app.use(prettyJSON());
-app.use(secureHeaders());
-app.use(
-	"/*",
-	cors({
-		origin: env.CORS_ORIGIN || "",
-		allowMethods: ["GET", "POST", "OPTIONS"],
-	}),
-);
-
-const handler = new RPCHandler(appRouter);
-app.use("/rpc/*", async (c, next) => {
-	const context = await createContext({ context: c });
-	const { matched, response } = await handler.handle(c.req.raw, {
-		prefix: "/rpc",
-		context: context,
+const app = new Elysia()
+	.use(
+		cors({
+			origin: process.env.CORS_ORIGIN || "",
+			methods: ["GET", "POST", "OPTIONS"],
+		}),
+	)
+	.all("/rpc*", async (context) => {
+		const { response } = await rpcHandler.handle(context.request, {
+			prefix: "/rpc",
+			context: await createContext({ context }),
+		});
+		return response ?? new Response("Not Found", { status: 404 });
+	})
+	.all("/api*", async (context) => {
+		const { response } = await apiHandler.handle(context.request, {
+			prefix: "/api",
+			context: await createContext({ context }),
+		});
+		return response ?? new Response("Not Found", { status: 404 });
+	})
+	.get("/", () => "OK")
+	.listen(3000, () => {
+		console.log("Server is running on http://localhost:3000");
 	});
-
-	if (matched) {
-		return c.newResponse(response.body, response);
-	}
-	await next();
-});
-
-app.get("/", (c) => {
-	return c.text("OK");
-});
-
-export default app;

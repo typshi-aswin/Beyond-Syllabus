@@ -1,7 +1,7 @@
-import type { Context as HonoContext } from "hono";
+import type { Context as ElysiaContext } from "elysia";
 
 export type CreateContextOptions = {
-	context: HonoContext;
+	context: ElysiaContext;
 };
 
 export async function createContext({ context }: CreateContextOptions) {
