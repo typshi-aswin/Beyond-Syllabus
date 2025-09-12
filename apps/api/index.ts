@@ -43,13 +43,13 @@ const app = new Elysia()
 		});
 		return response ?? new Response("Not Found", { status: 404 });
 	})
-	// .all("/api*", async (context) => {
-	// 	const { response } = await apiHandler.handle(context.request, {
-	// 		prefix: "/api",
-	// 		context: await createContext({ context }),
-	// 	});
-	// 	return response ?? new Response("Not Found", { status: 404 });
-	// })
+	.all("/api*", async (context) => {
+		const { response } = await apiHandler.handle(context.request, {
+			prefix: "/api",
+			context: await createContext({ context }),
+		});
+		return response ?? new Response("Not Found", { status: 404 });
+	})
 	.get("/", () => "OK")
 	.listen(3000, () => {
 		console.log("Server is running on http://localhost:3000");
