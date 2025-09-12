@@ -9,12 +9,12 @@
     "check": "oxlint",
     "dev": "turbo dev",
     "build": "turbo build",
-    "sync": "bunx degit The-Purple-Movement/WikiSyllabus/universities apps/server/universities/ --force",
-    "build:prod": "bun sync && turbo -F server build",
+    "sync": "bunx degit The-Purple-Movement/WikiSyllabus/universities apps/api/universities/ --force",
+    "build:prod": "bun sync && turbo -F api build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
-    "dev:server": "turbo -F server dev"
+    "dev:api": "turbo -F api dev"
   },
   "dependencies": {},
   "devDependencies": {
