@@ -1,104 +1,188 @@
+![Beyond Syllabus Logo](https://purple-movement.com/assets/logo_pm-Bx55hodj.png)
 
-# 📚 WikiSyllabus
+# Beyond Syllabus
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-∞-orange.svg?style=flat-square)](#contributors)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Open Issues](https://img.shields.io/github/issues/The-Purple-Movement/WikiSyllabus)](https://github.com/The-Purple-Movement/WikiSyllabus/issues)
+## AI-Powered Learning Beyond Boundaries 🌟
 
----
+## Don’t just study the syllabus. Understand it. Question it. Go beyond it
 
-**WikiSyllabus** is the **open-source Wikipedia of university syllabi** — a global academic repository that makes it easy to search, access, and contribute syllabi from universities around the world.
-
----
-
-## 🌟 Vision
-
-To provide the **core database of every university syllabus** — organized, markdown-first, and community-driven.
+## [live](https://beyondsyllabus.in/)
 
 ---
 
-## 💬 What We Advocate
+## 🚀 What is Beyond Syllabus?
 
-- 📖 **Open-book examinations**
-- 🔁 **Flipped learning** and **flipped classrooms**
-- 🤝 **Collaborative, community-driven education**
-- 🔓 **Free and open access to academic information**
+**Beyond Syllabus** is the **front-end interface** for the open-source [WikiSyllabus](https://github.com/The-Purple-Movement/WikiSyllabus) repository — a platform that transforms any syllabus into an **interactive AI-powered learning companion**.
+
+It’s like **ChatGPT for your syllabus** — but built with **purpose**.  
+Designed for **students, teachers, and lifelong learners**, it answers deeper questions such as:
+
+- **Why am I learning this?**
+- **Where can it be applied in the real world?**
+- **Explain it with relatable examples.**
+- **What opportunities exist in this field?**
+- **Which industries and innovations connect to it?**
+- **How is it evolving in the AI-powered world?**
+
+With Beyond Syllabus, learning becomes **context-rich, curiosity-driven, and future-focused**.
 
 ---
 
-## 🧑‍💻 What We Are
+## 💡 Why We Exist
 
-WikiSyllabus is a **fully open-source initiative** maintained by volunteers from the global educational and open-source communities. Contributions are welcome from anyone.
+Too many students fall into the trap of **skip-learning** — cramming only what’s needed for the exam and forgetting it all afterwards. This creates:
+
+❌ Weak conceptual foundations  
+❌ No ability to connect knowledge across subjects  
+❌ Poor readiness for AI-driven careers  
+
+We’re building a **movement against rote memorisation and closed-book examinations**.  
+Our vision is a world where:
+
+✅ Students ask better questions  
+✅ Teachers inspire understanding, not just coverage  
+✅ Learning connects to **industry, innovation, and purpose**  
 
 ---
 
-## 📦 Folder Structure
+## 🟣 Part of the Purple Movement
 
-Each syllabus file is organized in the following structure:
+Beyond Syllabus is one of three core missions of the **Purple Movement**:
 
+- **Beyond Syllabus** – Free learning from outdated curriculum constraints.  
+- **Beyond Gatekeepers** – Open access to knowledge without institutional blockers.  
+- **Beyond Borders** – Connect learners globally, without geographic or social barriers.  
+
+The Purple Movement blends the **passion & curiosity of youth** (Red) with the **structure & wisdom of mentors** (Blue) — creating **Purple**, the colour of transformation.
+
+---
+
+## ✨ Features
+
+- **AI-Powered Subject Companion** – Ask your syllabus anything  
+- **Contextual Learning Prompts** – “Why, Where, How” built-in  
+- **Use-Case Mapping** – Industry, research, and innovation examples  
+- **Interdisciplinary Links** – Connect concepts across fields  
+- **Career Insights** – Pathways, jobs, and future opportunities  
+- **Open Contribution** – Improve content for the next learner  
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend:** React / Next.js  
+- **Backend API:** Connected to [WikiSyllabus](https://github.com/The-Purple-Movement/WikiSyllabus)  
+- **AI Layer:** GPT-based conversational AI + semantic search  
+- **Deployment:** Dockerized for easy hosting on any cloud  
+
+---
+
+## 📚 How It Works
+
+1. **Connect Your Syllabus** – Upload or select an existing WikiSyllabus dataset  
+2. **Ask Better Questions** – Guided prompts or free-form queries  
+3. **Get Context, Not Just Facts** – Real-world applications and examples  
+4. **Explore Career Links** – Jobs, research areas, and industries  
+5. **Contribute Back** – Share improvements and case studies  
+
+---
+
+## 🤝 How to Contribute
+
+This is **not just an app** — it’s a **movement**. You can:  
+
+- **Develop** – Improve UI/UX and AI integrations  
+- **Enrich Content** – Add examples, case studies, and industry mappings  
+- **Spread Awareness** – Share with educators, media, and policy makers  
+- **Fund the Mission** – Help scale this as a free public good  
+
+🎖 **Contributors are featured** in the Hall of Builders and join the Purple Movement global network.
+
+---
+
+# 🏃‍♂️ Run Locally
+
+You can set up **Beyond Syllabus** on your local machine for development or testing. Follow these steps:
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/The-Purple-Movement/Beyond-Syllabus.git
+cd Beyond-Syllabus
 ```
 
-universities/university/branch/year/semester/xx.md
+## 2. Install Dependencies
 
+Make sure you have **Node.js (v16+)** and **npm** or **yarn** installed.
+
+```bash
+# Using npm
+npm install
+
+# Or using yarn
+yarn install
 ```
 
-✅ Example:
+## 3. Configure Environment Variables
 
+Create a `.env` file in the root directory and add the required keys, for example:
+
+```json
+NEXT_PUBLIC_API_URL=http://localhost:9002
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
+> Replace `your_gemini_api_key_here` with your own OpenAI API key if using the AI features.
 
+## 4. Start the Development Server
 
-universities/ktu/computer-science/2019/s8/01.md
+```bash
+# Using npm
+npm run dev
 
-````
+# Or using yarn
+yarn dev
+```
 
----
+The app should now be running at [http://localhost:3000](http://localhost:9002).
 
-## 📝 Markdown File Format
+## 5. Build for Production (Optional)
 
-Each `.md` file must begin with **YAML frontmatter** like this:
+```bash
+# Using npm
+npm run build
+npm start
 
-```yaml
----
-country: "india"
-university: "ktu"
-branch: "computer-science"
-version: "2019"
-semester: 8
-course_code: "cst402"
-course_title: "distributed computing"
-language: "english"
-contributor: "@your-github-username"
----
-````
+# Or using yarn
+yarn build
+yarn start
+```
 
-Then continue with content like objectives, units, textbooks, references, etc.
+## 📣 Call to Action – Join the Learning Revolution
 
----
+We are DONE with:
 
-## 🙌 How to Contribute
+- Students sitting only for attendance  
+- Teachers teaching only to “finish portions”  
+- Exams that reward memorisation over understanding  
 
-If you’re ready to contribute, check out our 👉 [**Contribution Guide**](./CONTRIBUTION.md)
+If you believe:
 
----
+- The **next generation deserves better learning tools**  
+- **India can lead the AI wave**  
+- **Learning should be connected to purpose**  
 
-## 🤝 Code of Conduct
-
-Please read our 👉 [**Code of Conduct**](./CODE_OF_CONDUCT.md)
-We’re committed to maintaining a safe, inclusive, and respectful environment for all.
-
----
-
-## ⚖ License
-
-This project is licensed under the [MIT License](./LICENSE).
+💜 **Contribute to Beyond Syllabus and Join the Purple Movement. Be the change.**
 
 ---
 
-## 📬 Contact & Help
+## 📬 Get Involved
 
-Open an [issue](https://github.com/The-Purple-Movement/WikiSyllabus/issues) or tag a maintainer (e.g., `@admin`) in your PR for support.
+🌐  [**Purple Movement:**](https://purple-movement.com/)
 
 ---
 
-### 💡 Together, let’s build the world’s most open academic resource.
+## 📜 License
+
+This project is licensed under the [MIT License](LICENSE).  
+Built with 💜 by the Purple Movement community.

@@ -1,7 +1,7 @@
 // frontend/src/components/common/ErrorDisplay.tsx
 "use client";
 
-import { Header } from "./Header"; // Assuming Header is also a Client Component or compatible
+import { Header } from "@/components/common/Header"; // Assuming Header is also a Client Component or compatible
 
 interface ErrorDisplayProps {
   errorMessage: string;

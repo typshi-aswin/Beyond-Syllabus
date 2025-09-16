@@ -1,13 +1,38 @@
+"use client";
+
 import Link from "next/link";
 import { Github, GraduationCap } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function Footer() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Ensure the theme value is available after hydration
+    setMounted(true);
+  }, []);
+
+  // Decide background style based on theme
+  const bgStyle = mounted
+    ? resolvedTheme === "dark"
+      ? "bg-black"
+      : "bg-white"
+    : "";
+
   return (
-    <footer className="w-full shrink-0 border-t mt-16 bg-card/50">
-      <div className="container mx-auto px-4 md:px-6 py-8">
+    <footer
+      className={`relative w-full shrink-0  bg-transparent ${bgStyle} bg-no-repeat bg-cover`}
+    >
+      {/* Optional overlay for better text visibility */}
+      <div className="absolute inset-0 "></div>
+
+      {/* Footer Content */}
+      <div className="container relative z-10 mx-auto px-4 md:px-6 py-8">
+        {/* Mobile Layout */}
         <div className="flex md:hidden flex-col gap-2 mb-5">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <GraduationCap className="h-7 w-7 text-primary" />
             <span className="font-semibold">BeyondSyllabus</span>
           </Link>
           <p className="text-sm text-muted-foreground">
@@ -16,19 +41,19 @@ export function Footer() {
           <a
             href="https://github.com/The-Purple-Movement/WikiSyllabus"
             target="_blank"
-            className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
+            className="w-fit p-2 rounded-full flex  bg-black/20 hover:shadow-lg "
           >
-            {" "}
-            <Github /> GitHub
+            <Github />
           </a>
         </div>
-        <div className=" flex">
+
+        {/* Desktop Layout */}
+        <div className="flex">
           <div className="md:flex md:visible hidden flex-col gap-2 mb-5">
             <Link
               href="/"
               className="flex items-center gap-2 font-bold text-lg"
             >
-              <GraduationCap className="h-7 w-7 text-primary" />
               <span className="font-semibold">BeyondSyllabus</span>
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -37,16 +62,15 @@ export function Footer() {
             <a
               href="https://github.com/The-Purple-Movement/WikiSyllabus"
               target="_blank"
-              className="w-[100px] rounded-[10px] flex p-3 bg-black/20 hover:shadow-lg"
+              className="w-fit rounded-full flex p-3 bg-black/20 hover:shadow-lg"
             >
-              {" "}
-              <Github /> GitHub
+              <Github />
             </a>
           </div>
 
-          <div className="flex gap-5  flex-row w-[100%] md:justify-evenly ">
+          <div className="flex gap-5 flex-row w-full md:justify-evenly">
             <div>
-              <h3 className="text-sm font-semibold mb-3 ">Navigation</h3>
+              <h3 className="text-sm font-semibold mb-3">Navigation</h3>
               <nav className="flex flex-col gap-2">
                 <FooterLink href="/">Home</FooterLink>
                 <FooterLink href="/select">Select Course</FooterLink>
@@ -70,6 +94,8 @@ export function Footer() {
             </div>
           </div>
         </div>
+
+        {/* Footer Bottom */}
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>
             {new Date().getFullYear()} BeyondSyllabus. All rights reserved. An

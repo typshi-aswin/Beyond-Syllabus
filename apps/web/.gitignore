@@ -47,3 +47,6 @@ debug-regex.js
 fix-regex-test.js
 test-module-regex.js
 test-regex-fix.js
+src/app/chat-with-file/page-broken.tsx
+src/app/chat-with-file/page-clean.tsx
+src/app/chat-with-file/page-original.tsx
