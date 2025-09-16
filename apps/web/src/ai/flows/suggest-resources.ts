@@ -1,30 +1,29 @@
-'use server';
+"use server";
 
 /**
  * @fileOverview A flow that suggests relevant online resources for a given syllabus section.
  */
 
-import { ai } from '@/ai/ai';
-import { z } from 'genkit';
+import { ai } from "@/ai/ai";
 
-const SuggestResourcesInputSchema = z.object({
-  syllabusSection: z.string().describe('The syllabus section to find resources for.'),
-});
-export type SuggestResourcesInput = z.infer<typeof SuggestResourcesInputSchema>;
+export interface SuggestResourcesInput {
+  syllabusSection: string;
+}
 
-const SuggestResourcesOutputSchema = z.object({
-  resources: z.array(
-    z.object({
-      title: z.string().describe('The title of the resource.'),
-      url: z.string().url().describe('The URL of the resource.'),
-      description: z.string().describe('A brief description of the resource and its relevance to the syllabus section.'),
-    })
-  ).describe('A list of 3 to 5 relevant online resources.'),
-});
-export type SuggestResourcesOutput = z.infer<typeof SuggestResourcesOutputSchema>;
+export interface Resource {
+  title: string;
+  url: string;
+  description: string;
+}
+
+export interface SuggestResourcesOutput {
+  resources: Resource[];
+}
 
 // ---------------------- Flow Logic ----------------------
-const suggestResourcesFlow = async (input: SuggestResourcesInput): Promise<SuggestResourcesOutput> => {
+const suggestResourcesFlow = async (
+  input: SuggestResourcesInput
+): Promise<SuggestResourcesOutput> => {
   const promptText = `
 You are an expert curriculum assistant. Your goal is to find 3-5 high-quality online resources for a university student studying the following syllabus section.
 
@@ -51,28 +50,37 @@ Guidelines:
 
   try {
     const completion = await ai.chat.completions.create({
-      messages: [{ role: 'user', content: promptText }],
-      model: 'qwen/qwen3-32b',
-      temperature: 0.6,
+      messages: [{ role: "user", content: promptText }],
+      model: "qwen/qwen3-32b",
+      temperature: 0.8,
       max_completion_tokens: 2048,
       top_p: 0.95,
     });
 
-    const outputText = completion.choices?.[0]?.message?.content || '';
-    const output = JSON.parse(outputText);
+    const outputText = completion.choices?.[0]?.message?.content || "";
 
-    if (!output || !output.resources || output.resources.length === 0) {
+    // Safely parse JSON output
+    try {
+      const output = JSON.parse(outputText);
+
+      if (!output || !output.resources || !Array.isArray(output.resources)) {
+        return { resources: [] };
+      }
+
+      return output as SuggestResourcesOutput;
+    } catch (parseError) {
+      console.error("Failed to parse AI output as JSON:", parseError);
       return { resources: [] };
     }
-
-    return output as SuggestResourcesOutput;
   } catch (error) {
-    console.error('Error in suggestResourcesFlow:', error);
+    console.error("Error in suggestResourcesFlow:", error);
     return { resources: [] };
   }
 };
 
 // Main function for frontend
-export async function suggestResources(input: SuggestResourcesInput): Promise<SuggestResourcesOutput> {
+export async function suggestResources(
+  input: SuggestResourcesInput
+): Promise<SuggestResourcesOutput> {
   return suggestResourcesFlow(input);
 }

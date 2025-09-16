@@ -18,14 +18,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    // These packages are optional dependencies of genkit and are not used in this project.
-    // We can ignore them to avoid build warnings.
-    config.externals.push('@opentelemetry/exporter-jaeger');
-    config.externals.push('@genkit-ai/firebase');
-
-    return config;
-  },
+  compress: true,
 };
 
 export default nextConfig;

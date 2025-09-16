@@ -1,42 +1,26 @@
-'use server';
+"use server";
 
-import { ai } from '@/ai/ai';
-import { z } from 'genkit';
+import { ai } from "@/ai/ai";
 
 /**
  * @fileOverview An AI agent that can answer questions about a given syllabus context.
  */
 
 export interface Message {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
 }
 
-// ---------------------- Schemas ----------------------
+export interface ChatWithSyllabusInput {
+  history: Message[];
+  message: string;
+  model?: string;
+}
 
-// Single chat message schema
-const ChatMessageSchema = z.object({
-  role: z.enum(['user', 'assistant', 'system']),
-  content: z.string(),
-});
-
-// Input schema for the chat flow
-const ChatWithSyllabusInputSchema = z.object({
-  history: z.array(ChatMessageSchema).describe('The history of the conversation so far.'),
-  message: z.string().describe('The latest message from the user.'),
-  model: z.string().describe('The model ID selected by the user.'), // ✅ added model
-});
-export type ChatWithSyllabusInput = z.infer<typeof ChatWithSyllabusInputSchema>;
-
-// Output schema for the chat flow
-const ChatWithSyllabusOutputSchema = z.object({
-  response: z.string().describe("The AI's response to the user's message."),
-  suggestions: z
-    .array(z.string())
-    .optional()
-    .describe("A list of 3–4 short, engaging follow-up questions the user might ask next."),
-});
-export type ChatWithSyllabusOutput = z.infer<typeof ChatWithSyllabusOutputSchema>;
+export interface ChatWithSyllabusOutput {
+  response: string;
+  suggestions?: string[];
+}
 
 // ---------------------- Flow Logic ----------------------
 const chatWithSyllabusFlow = async (
@@ -44,8 +28,9 @@ const chatWithSyllabusFlow = async (
 ): Promise<ChatWithSyllabusOutput> => {
   const conversationHistory = input.history
     .map((msg) => `- ${msg.role}: ${msg.content}`)
-    .join('\n');
-const promptText = `
+    .join("\n");
+
+  const promptText = `
 🎓 You are a patient and flexible study tutor.  
 Your goal is to make learning clear, fun, and confidence-building.  
 
@@ -63,42 +48,38 @@ Your goal is to make learning clear, fun, and confidence-building.
 - Add light use of emojis to make explanations friendly (but not overwhelming).  
 - End with 2–3 short, engaging follow-up questions the learner might ask next (to spark curiosity).  
 
-
 Conversation History:
 ${conversationHistory}
 
 User's Message: "${input.message}"
 `;
 
-
   try {
     const chatCompletion = await ai.chat.completions.create({
-      messages: [{ role: 'user', content: promptText }],
-      model: input.model ||'openai/gpt-oss-20b' , // ✅ model comes from frontend
-      temperature: 0.6,
-      max_completion_tokens: 20048,
+      messages: [{ role: "user", content: promptText }],
+      model: input.model || "openai/gpt-oss-20b",
+      temperature: 0.9,
+      max_completion_tokens: 2048,
       top_p: 0.95,
     });
 
-    const outputText = chatCompletion.choices?.[0]?.message?.content || '';
+    const outputText = chatCompletion.choices?.[0]?.message?.content || "";
 
-    // Try parsing JSON safely
     try {
       const parsed = JSON.parse(outputText);
       return parsed as ChatWithSyllabusOutput;
     } catch {
-      // Fallback: return raw text if parsing fails
       return {
         response: outputText,
         suggestions: [],
       };
     }
   } catch (e) {
-    console.error('Error in chat flow:', e);
+    console.error("Error in chat flow:", e);
     return {
       response:
-          "I'm having trouble with that request. You could try rephrasing it, or switch to a different model to see if it works better.",
-    suggestions: ["Try a different model", "Rephrase the question"]
+        "I'm having trouble with that request. You could try rephrasing it, or switch to a different model to see if it works better.",
+      suggestions: ["Try a different model", "Rephrase the question"],
     };
   }
 };

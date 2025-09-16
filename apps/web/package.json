@@ -13,10 +13,6 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@genkit-ai/compat-oai": "^1.16.1",
-    "@genkit-ai/google-cloud": "^1.16.1",
-    "@genkit-ai/googleai": "^1.16.1",
-    "@genkit-ai/next": "^1.16.1",
     "@hookform/resolvers": "^4.1.3",
     "@orpc/client": "^1.8.9",
     "@orpc/tanstack-query": "^1.8.9",
@@ -52,8 +48,6 @@
     "embla-carousel-react": "^8.6.0",
     "firebase": "^11.9.1",
     "framer-motion": "^11.18.2",
-    "genkit": "^1.16.1",
-    "genkitx-anthropic": "^0.23.1",
     "gray-matter": "^4.0.3",
     "groq-sdk": "^0.30.0",
     "katex": "^0.16.22",
@@ -80,8 +74,6 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@genkit-ai/firebase": "^1.16.1",
-    "@opentelemetry/exporter-jaeger": "^1.28.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
