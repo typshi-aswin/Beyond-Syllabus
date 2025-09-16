@@ -35,7 +35,7 @@ const apiHandler = new OpenAPIHandler(appRouter, {
   ],
 });
 
-export default new Elysia()
+const app = new Elysia()
   .use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -56,7 +56,7 @@ export default new Elysia()
     return response ?? new Response("Not Found", { status: 404 });
   })
 
-  .all("/*", async (context) => {
+  .all("/api*", async (context) => {
     const { response } = await apiHandler.handle(context.request, {
       prefix: "/",
       context: await createContext({ context }),
@@ -76,3 +76,4 @@ export default new Elysia()
     ).json();
   })
 
+export default app.handle;
