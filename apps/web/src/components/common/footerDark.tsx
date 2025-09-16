@@ -107,7 +107,7 @@ function FooterLinksGroup({
       <nav className="flex flex-col gap-2">
         {links.map((link) => (
           <Link
-            key={link.href}
+            key={link.label}
             href={link.href}
             prefetch={false}
             className="text-sm text-muted-foreground hover:text-primary transition-colors"
