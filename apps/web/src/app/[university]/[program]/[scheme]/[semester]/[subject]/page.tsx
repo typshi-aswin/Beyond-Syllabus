@@ -1,11 +1,17 @@
+"use client";
 import { notFound } from "next/navigation";
-import { Header } from "../../../../../../components/common/Header";
-import { Breadcrumbs } from "../../../../../../components/common/Breadcrumbs";
+import { Header } from "@/components/common/Header";
+import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { SyllabusSummary } from "./_components/SyllabusSummary";
 import { CourseModules } from "./_components/CourseModules";
-import ErrorDisplay from "../../../../../../components/common/ErrorDisplay";
-import { AnimatedDiv } from "../../../../../../components/common/AnimatedDiv";
-import { Footer } from "../../../../../../components/common/Footer";
+import ErrorDisplay from "@/components/common/ErrorDisplay";
+import { AnimatedDiv } from "@/components/common/AnimatedDiv";
+import { Footer } from "@/components/common/Footer";
+import { MindMap } from "@/app/mindMap/mindMap";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import { useData } from "@/contexts";
+import { use } from "react";
 
 interface SubjectPageProps {
   params: Promise<{
@@ -19,21 +25,6 @@ interface SubjectPageProps {
 
 interface DirectoryStructure {
   [key: string]: any;
-}
-
-async function getDirectoryStructure(): Promise<DirectoryStructure> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/universities`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch universities data");
-  }
-
-  return res.json();
 }
 
 function findDataPath(
@@ -87,32 +78,26 @@ function findDataPath(
   return { university, program, scheme, semester, subject };
 }
 
-function capitalizeWords(str: string | undefined): string {
-  if (!str) return "";
-  return str
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
 function formatSemesterName(semesterId: string): string {
   if (!semesterId) return "";
   return `Semester ${semesterId.replace("s", "").replace(/^0+/, "")}`;
 }
+function capitalizeWords(str: string | undefined): string {
+  if (!str) return "";
+  return str
+    .replace(/-/g, " ") // replace all "-" with spaces
+    .split(" ")
+    .map((word) =>
+      word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1) : ""
+    )
+    .join(" ");
+}
 
-export default async function SubjectPage({ params }: SubjectPageProps) {
-  const resolvedParams = await params;
-  let directoryStructure: DirectoryStructure | null = null;
-  let error: string | null = null;
+export default function SubjectPage({ params }: SubjectPageProps) {
+  const resolvedParams = use(params);
+  const { error, isError, data: directoryStructure } = useData();
 
-  try {
-    directoryStructure = await getDirectoryStructure();
-  } catch (e: any) {
-    console.error("Error fetching directory structure:", e);
-    error = "Failed to load syllabus data.";
-  }
-
-  if (error || !directoryStructure) {
+  if (isError || !directoryStructure) {
     return (
       <ErrorDisplay
         errorMessage={error || "Could not fetch directory structure."}
@@ -149,32 +134,43 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 mt-[10vh]">
         <AnimatedDiv>
           <div className="max-w-6xl mx-auto">
             <Breadcrumbs items={breadcrumbItems} />
 
             <div className="mt-8 mb-12">
               <h1 className="text-3xl font-bold md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-                {subject.name}
+                {capitalizeWords(subject.name)}
               </h1>
               <p className="text-muted-foreground mt-2 text-lg">
                 {subject.code}
               </p>
             </div>
 
-            <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
-              <div className="space-y-8">
+            <div className="grid gap-12 lg:grid-cols-[1fr_350px] ">
+              <div className="space-y-8 ">
                 <h2 className="text-2xl font-bold">Course Modules</h2>
                 <CourseModules
                   subjectId={subject.id}
                   modules={subject.modules || []}
                 />
               </div>
-              <aside className="space-y-8 lg:sticky lg:top-24 self-start">
-                <h2 className="text-2xl font-bold">AI-Powered Tools</h2>
+              <div className=" flex gap-5 w-full flex-col">
+                <div className="flex w-full justify-center gap-5 text-[25px]  dark:bg-black/50 items-center text-center rounded-xl h-[150px] shadow-lg">
+                  New feature <br /> Coming Soon
+                </div>
+                <div className="flex w-full justify-center gap-5 text-[25px]  dark:bg-black/50 items-center text-center rounded-xl h-[150px] shadow-lg">
+                  New feature <br /> Coming Soon
+                </div>
+              </div>
+            </div>
+            <div className="flex w-full gap-5">
+              <div className="space-y-8 flex-col flex mt-[20px]">
+                <h2 className="text-2xl  font-bold ">AI-Powered Tools</h2>
+
                 <SyllabusSummary fullSyllabus={subject.fullSyllabus || ""} />
-              </aside>
+              </div>
             </div>
           </div>
         </AnimatedDiv>

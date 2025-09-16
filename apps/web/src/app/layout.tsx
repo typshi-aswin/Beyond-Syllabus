@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
-import { ThemeProvider } from "../components/common/ThemeProvider";
+import { ThemeProvider } from "@/components/common/ThemeProvider";
+import { QueryProvider } from "@/lib/rQuery";
+import { DataProvider } from "@/contexts";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -26,7 +28,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <QueryProvider>
+            <DataProvider>{children}</DataProvider>
+          </QueryProvider>
           <Toaster />
         </ThemeProvider>
       </body>

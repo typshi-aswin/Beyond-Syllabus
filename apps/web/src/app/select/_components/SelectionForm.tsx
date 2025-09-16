@@ -10,62 +10,34 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui/select";
-import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
-import { Label } from "../../../components/ui/label";
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../../../components/ui/tooltip";
-import {
-  Computer,
-  Cog,
-  HardHat,
-  CircuitBoard,
-  Bolt,
-  Info,
-  ChevronRight,
-  GraduationCap,
-  Building,
-  BookOpen,
-  Loader2,
-} from "lucide-react";
-import { cn } from "../../../lib/utils";
-
-interface SyllabusDataStructure {
-  [key: string]: any;
-}
-
-interface SelectionFormProps {
-  directoryStructure: SyllabusDataStructure;
-}
-
-const programIcons: { [key: string]: React.ElementType } = {
-  "computer-science": Computer,
-  "mechanical-engineering": Cog,
-  "civil-engineering": HardHat,
-  "electronics-communication-engineering": CircuitBoard,
-  "electrical-electronics-engineering": Bolt,
-};
+} from "@/components/ui/tooltip";
+import { Info, GraduationCap, BookOpen, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useData } from "@/contexts/dataContext";
+import { Footer } from "@/components/common/Footer";
+import { Header } from "@/components/common/Header";
+import ErrorDisplay from "@/components/common/ErrorDisplay";
 
 function capitalizeWords(str: string | undefined): string {
   if (!str) return "";
-  return str
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  return str.replace(/-/g, " ").toUpperCase(); // replace "-" with space and uppercase everything
 }
-
 function formatSemesterName(semesterId: string): string {
   if (!semesterId) return "";
   return `Semester ${semesterId.replace("s", "").replace(/^0+/, "")}`;
@@ -79,9 +51,9 @@ const stepVariants = {
 
 const MotionDiv = motion.div;
 
-export function SelectionForm({ directoryStructure }: SelectionFormProps) {
+export function SelectionForm() {
   const router = useRouter();
-
+  const { data: directoryStructure, isFetching, isError, error } = useData();
   const [selectedUniversityId, setSelectedUniversityId] = useState<
     string | null
   >(null);
@@ -96,13 +68,17 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
 
+  const stepsConfig = [
+    { step: 1, label: "University" },
+    { step: 2, label: "Program" },
+    { step: 3, label: "Scheme" },
+    { step: 4, label: "Semester" },
+  ];
+
   const handleUniversitySelect = async (universityId: string) => {
     setIsLoading(true);
     setLoadingMessage("Loading programs...");
-
-    // Add aesthetic delay for smooth transition
     await new Promise((resolve) => setTimeout(resolve, 800));
-
     setSelectedUniversityId(universityId);
     setIsLoading(false);
     setStep(2);
@@ -111,9 +87,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const handleProgramSelect = async (programId: string) => {
     setIsLoading(true);
     setLoadingMessage("Loading schemes...");
-
     await new Promise((resolve) => setTimeout(resolve, 600));
-
     setSelectedProgramId(programId);
     setIsLoading(false);
     setStep(3);
@@ -122,9 +96,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   const handleSchemeSelect = async (schemeId: string) => {
     setIsLoading(true);
     setLoadingMessage("Loading semesters...");
-
     await new Promise((resolve) => setTimeout(resolve, 500));
-
     setSelectedSchemeId(schemeId);
     setIsLoading(false);
     setStep(4);
@@ -152,7 +124,25 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
     }
     setStep(level);
   };
-
+  if (isFetching) return;
+  if (isError) return <ErrorDisplay errorMessage={error} />;
+  if (!directoryStructure || Object.keys(directoryStructure).length === 0) {
+    return (
+      <>
+        <Header />
+        <main className="container mx-auto px-4 py-12 md:py-20 flex justify-center items-center flex-1">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-3xl font-bold mb-4">No Syllabus Data Found</h1>
+            <p className="text-muted-foreground">
+              Please ensure your 'universities' folder and its subdirectories
+              contain valid syllabus data.
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
   const selectedUniversityData = selectedUniversityId
     ? directoryStructure[selectedUniversityId]
     : null;
@@ -175,10 +165,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
     ) {
       setIsLoading(true);
       setLoadingMessage("Loading syllabus modules...");
-
-      // Add a delay before navigation to show loading state
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       router.push(
         `/${selectedUniversityId}/${selectedProgramId}/${selectedSchemeId}/${selectedSemesterId}`
       );
@@ -186,7 +173,37 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
   };
 
   return (
-    <Card className="w-full md:-w-[100%]  shadow-2xl rounded-2xl bg-card/80 backdrop-blur-sm">
+    <Card className="w-full shadow-2xl rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-sm mt-[5vh]">
+      {/* Breadcrumb Navigation */}
+      <div className="flex items-center justify-center flex-wrap gap-2 p-4 border-b border-muted">
+        {stepsConfig.map(({ step: stepNumber, label }, index) => {
+          const isActive = step === stepNumber;
+          const isCompleted = step > stepNumber;
+          return (
+            <div key={label} className="flex items-center">
+              <button
+                type="button"
+                disabled={!isCompleted && !isActive}
+                onClick={() => resetToLevel(stepNumber)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-sm font-medium transition-all",
+                  isActive
+                    ? "bg-primary text-white"
+                    : isCompleted
+                    ? "bg-primary/10 text-primary hover:bg-primary/20"
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                )}
+              >
+                {label}
+              </button>
+              {index < stepsConfig.length - 1 && (
+                <span className="mx-2 text-muted-foreground">›</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       <form onSubmit={handleSubmit}>
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl text-center font-bold">
@@ -196,7 +213,8 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
             Follow the steps to find the curriculum for your course.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-8 min-h-[400px] flex items-center justify-center">
+
+        <CardContent className="space-y-8  flex items-center justify-center">
           <AnimatePresence mode="wait">
             {isLoading ? (
               <MotionDiv
@@ -217,7 +235,6 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="space-y-2"
                   >
                     <h3 className="text-xl font-semibold text-primary">
                       {loadingMessage}
@@ -225,17 +242,6 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     <p className="text-muted-foreground">
                       Please wait while we prepare your content...
                     </p>
-                    <div className="flex justify-center space-x-1 mt-4">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                      <div
-                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
-                    </div>
                   </motion.div>
                 </div>
               </MotionDiv>
@@ -248,43 +254,42 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="w-full"
+                    className="w-full flex items-start justify-center"
                   >
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold text-center block">
+                    <div className="space-y-6 flex flex-col items-center justify-center rounded-2xl p-6">
+                      <Label className="text-xl font-bold text-center text-purple-900 dark:text-purple-200">
                         1. Select Your University
                       </Label>
-                      <div className="grid grid-cols-1 gap-4">
-                        {Object.keys(directoryStructure).map((universityId) => (
-                          <motion.div
-                            key={universityId}
-                            whileHover={{ scale: 1.02, y: -5 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 20,
-                            }}
-                          >
-                            <Card
-                              className="cursor-pointer hover:border-primary transition-all duration-300 p-6 text-center group hover:shadow-xl hover:bg-primary/5 border-2 backdrop-blur-sm"
-                              onClick={() =>
-                                handleUniversitySelect(universityId)
-                              }
-                            >
-                              <motion.div
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.6 }}
+
+                      <Select
+                        onValueChange={(value) => {
+                          handleUniversitySelect(value); // ✅ sets selected university
+                          setStep(2); // ✅ instantly move to next step
+                        }}
+                      >
+                        <SelectTrigger className="w-[320px] py-4 px-4 text-lg font-medium rounded-xl border border-purple-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:border-purple-500 focus:ring-2 focus:ring-purple-500 transition-all">
+                          <SelectValue placeholder="Choose a university" />
+                        </SelectTrigger>
+                        <SelectContent
+                          position="popper"
+                          side="bottom"
+                          sideOffset={8}
+                          avoidCollisions={false}
+                          className="w-[320px] rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"
+                        >
+                          {Object.keys(directoryStructure).map(
+                            (universityId) => (
+                              <SelectItem
+                                key={universityId}
+                                value={universityId}
+                                className="capitalize px-3 py-2 text-base hover:bg-purple-100 dark:hover:bg-purple-800 rounded-lg cursor-pointer transition-colors"
                               >
-                                <GraduationCap className="h-12 w-12 text-primary mx-auto mb-3 transition-all duration-300 group-hover:text-primary/80" />
-                              </motion.div>
-                              <p className="font-semibold text-lg group-hover:text-primary transition-colors duration-300">
                                 {capitalizeWords(universityId)}
-                              </p>
-                            </Card>
-                          </motion.div>
-                        ))}
-                      </div>
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </MotionDiv>
                 )}
@@ -298,24 +303,31 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                     exit="exit"
                     className="w-full"
                   >
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold text-center block">
+                    <div className="space-y-6 flex flex-col items-center justify-center rounded-2xl p-6">
+                      <Label className="text-xl font-bold text-center text-purple-900 dark:text-purple-200">
                         2. Choose Your Program
                       </Label>
+
                       <Select
                         onValueChange={handleProgramSelect}
                         value={selectedProgramId ?? ""}
                       >
-                        <SelectTrigger className="py-6 text-base">
+                        <SelectTrigger className="w-[320px] py-4 px-4 text-lg font-medium rounded-xl border border-purple-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:border-purple-500 focus:ring-2 focus:ring-purple-500 transition-all">
                           <SelectValue placeholder="Select Program" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent
+                          position="popper"
+                          side="bottom"
+                          sideOffset={8}
+                          avoidCollisions={false}
+                          className="w-[320px] rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 max-h-[300px] overflow-y-auto"
+                        >
                           {Object.keys(selectedUniversityData).map(
                             (programId) => (
                               <SelectItem
                                 key={programId}
                                 value={programId}
-                                className="capitalize"
+                                className="capitalize px-3 py-2 text-base hover:bg-purple-100 dark:hover:bg-purple-800 rounded-lg cursor-pointer transition-colors"
                               >
                                 {capitalizeWords(programId)}
                               </SelectItem>
@@ -364,21 +376,16 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             key={schemeId}
                             whileHover={{ scale: 1.05, y: -3 }}
                             whileTap={{ scale: 0.95 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 400,
-                              damping: 20,
-                            }}
                           >
                             <Card
                               className={cn(
-                                "cursor-pointer hover:border-primary transition-all text-center p-6 group hover:shadow-lg",
+                                "cursor-pointer border-transparent bg-transparent border-2 border-purple-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/30 hover:bg-gradient-to-br hover:from-purple-900 hover:to-purple-700 dark:hover:from-purple-800 dark:hover:to-purple-600 transition-all rounded-xl p-6 text-center",
                                 selectedSchemeId === schemeId &&
                                   "border-primary bg-primary/10"
                               )}
                               onClick={() => handleSchemeSelect(schemeId)}
                             >
-                              <BookOpen className="h-10 w-10 text-primary mx-auto mb-3 transition-transform group-hover:scale-110" />
+                              <BookOpen className="h-10 w-10 text-primary mx-auto mb-3" />
                               <p className="font-semibold capitalize">
                                 {schemeId.replace(/-/g, " ")}
                               </p>
@@ -404,18 +411,24 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                         4. Pick Your Semester
                       </Label>
                       <RadioGroup
-                        onValueChange={handleSemesterSelect}
                         value={selectedSemesterId ?? ""}
                         className="grid grid-cols-2 gap-4 sm:grid-cols-4"
                       >
                         {Object.keys(selectedSchemeData).map((semesterId) => (
-                          <Label
+                          <div
                             key={semesterId}
-                            htmlFor={semesterId}
+                            onClick={() => {
+                              handleSemesterSelect(semesterId);
+                              handleSubmit(
+                                new Event(
+                                  "submit"
+                                ) as unknown as React.FormEvent
+                              );
+                            }}
                             className={cn(
-                              "flex flex-col items-center justify-center rounded-lg border-2 p-4 cursor-pointer hover:border-primary transition-all hover:shadow-lg",
+                              "flex flex-col items-center justify-center hover:border-primary  cursor-pointer border-2 border-purple-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/30 hover:bg-gradient-to-br hover:from-purple-900 hover:to-purple-700 dark:hover:from-purple-800 dark:hover:to-purple-600 transition-all rounded-xl p-6 text-center",
                               selectedSemesterId === semesterId &&
-                                "border-primary bg-primary/10 shadow-lg"
+                                "border-primary bg-primary/10"
                             )}
                           >
                             <RadioGroupItem
@@ -427,7 +440,7 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
                             <p className="font-semibold">
                               {formatSemesterName(semesterId)}
                             </p>
-                          </Label>
+                          </div>
                         ))}
                       </RadioGroup>
                     </div>
@@ -437,22 +450,20 @@ export function SelectionForm({ directoryStructure }: SelectionFormProps) {
             )}
           </AnimatePresence>
         </CardContent>
+
         <CardFooter className="flex justify-between items-center bg-muted/50 p-4 rounded-b-2xl">
           <Button
             variant="ghost"
             type="button"
-            onClick={() => resetToLevel(step - 1)}
-            disabled={step === 1}
+            onClick={() => {
+              if (step === 1) {
+                router.push("/"); // go to homepage
+              } else {
+                resetToLevel(step - 1); // go to previous step
+              }
+            }}
           >
             Back
-          </Button>
-          <Button
-            type="submit"
-            className="group"
-            disabled={!selectedSemesterId}
-          >
-            View Subjects{" "}
-            <ChevronRight className="h-5 w-5 ml-1 transition-transform group-hover:translate-x-1" />
           </Button>
         </CardFooter>
       </form>

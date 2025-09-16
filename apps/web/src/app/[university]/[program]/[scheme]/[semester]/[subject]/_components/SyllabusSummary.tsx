@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "../../../../../../../components/ui/button";
-import { Loader2, BookText, Wand2 } from "lucide-react";
-import { summarizeSyllabus } from "../../../../../../../ai/flows/summarize-syllabus";
+import { useState, useEffect } from "react";
+import { Loader2, BookText } from "lucide-react";
+import { summarizeSyllabus } from "@/ai/flows/summarize-syllabus";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface SyllabusSummaryProps {
   fullSyllabus: string;
@@ -15,28 +16,33 @@ export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSummarize = async () => {
-    if (!fullSyllabus.trim()) {
-      setSummary("No syllabus content available to summarize.");
-      return;
-    }
+  // Auto-generate summary on mount
+  useEffect(() => {
+    const generateSummary = async () => {
+      if (!fullSyllabus.trim()) {
+        setSummary("No syllabus content available to summarize.");
+        return;
+      }
 
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await summarizeSyllabus({ syllabusText: fullSyllabus });
-      setSummary(result.summary);
-    } catch (e: any) {
-      console.error("Error summarizing syllabus:", e);
-      setError("Failed to generate summary.");
-      setSummary(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await summarizeSyllabus({ syllabusText: fullSyllabus });
+        setSummary(result.summary);
+      } catch (e: any) {
+        console.error("Error summarizing syllabus:", e);
+        setError("Failed to generate summary.");
+        setSummary(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    generateSummary();
+  }, [fullSyllabus]);
 
   return (
-    <div className="space-y-4 bg-card/80 backdrop-blur-sm p-6 rounded-2xl shadow-md border">
+    <div className="space-y-4 bg-white dark:bg-black/50 backdrop-blur-sm p-6 rounded-2xl shadow-md border h-[500px] overflow-auto">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-primary/10 rounded-lg">
           <BookText className="h-6 w-6 text-primary" />
@@ -45,66 +51,39 @@ export function SyllabusSummary({ fullSyllabus }: SyllabusSummaryProps) {
       </div>
 
       <AnimatePresence mode="wait">
-        {!summary && !loading && !error && (
+        {loading && (
           <motion.div
-            key="button"
+            key="loader"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center space-x-2 text-muted-foreground py-4"
+          >
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span>Generating summary...</span>
+          </motion.div>
+        )}
+
+        {error && (
+          <motion.p
+            key="error"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            className="text-destructive text-center py-4"
           >
-            <Button
-              onClick={handleSummarize}
-              disabled={loading}
-              className="w-full py-6 text-base group"
-            >
-              <Wand2 className="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />{" "}
-              Generate AI Summary
-            </Button>
+            {error}
+          </motion.p>
+        )}
+
+        {summary && !loading && !error && (
+          <motion.div
+            key="summary"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {loading && (
-        <motion.div
-          key="loader"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-center space-x-2 text-muted-foreground py-4"
-        >
-          <Loader2 className="h-5 w-5 animate-spin" />
-          <span>Generating summary...</span>
-        </motion.div>
-      )}
-
-      {error && (
-        <motion.p
-          key="error"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-destructive text-center py-4"
-        >
-          {error}
-        </motion.p>
-      )}
-
-      {summary && (
-        <motion.div
-          key="summary"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-            {summary}
-          </p>
-          <Button
-            onClick={() => setSummary(null)}
-            variant="link"
-            className="mt-4 p-0 h-auto"
-          >
-            Generate again
-          </Button>
-        </motion.div>
-      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { Menu, GraduationCap, Sparkles, BookOpen } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function MobileNav() {

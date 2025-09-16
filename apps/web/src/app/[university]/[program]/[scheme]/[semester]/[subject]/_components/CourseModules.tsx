@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "../../../../../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Sparkles, BrainCircuit, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -72,7 +72,7 @@ export function CourseModules({ modules }: CourseModulesProps) {
             >
               <AccordionItem
                 value={`item-${index}`}
-                className="border-b-0 rounded-2xl bg-card/80 backdrop-blur-sm shadow-md overflow-hidden"
+                className="border-b-0 rounded-2xl bg-white dark:bg-black/50 backdrop-blur-sm shadow-md overflow-hidden"
               >
                 <AccordionTrigger className="flex justify-between items-center w-full text-left p-6 font-semibold text-lg hover:no-underline">
                   <span className="flex-1 mr-4">{module.title}</span>
