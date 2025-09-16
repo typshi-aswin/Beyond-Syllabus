@@ -56,9 +56,9 @@ export default new Elysia()
     return response ?? new Response("Not Found", { status: 404 });
   })
 
-  .all("/api*", async (context) => {
+  .all("/*", async (context) => {
     const { response } = await apiHandler.handle(context.request, {
-      prefix: "/api",
+      prefix: "/",
       context: await createContext({ context }),
     });
     return response ?? new Response("Not Found", { status: 404 });
