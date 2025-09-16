@@ -35,7 +35,7 @@ const apiHandler = new OpenAPIHandler(appRouter, {
   ],
 });
 
-const app = new Elysia()
+export default new Elysia()
   .use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -74,9 +74,4 @@ const app = new Elysia()
     return await file(
       path.join(process.cwd(), "src/routes/syllabus/university.json")
     ).json();
-  })
-  if (process.env.NODE_ENV !== "production") {
-    app.listen({ port: 3000 });
-    console.log("Server is running on http://localhost:3000");
-  }
-export default app.handle;
+  });
