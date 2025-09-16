@@ -1,6 +1,7 @@
 "use client";
-import { useGetDirectoryStructure } from "@/hooks/query";
-import { createContext, useContext, useEffect } from "react";
+
+import { createContext, useContext, useEffect, useState } from "react";
+import { orpc } from "@/lib/orpc";
 
 type DataContextType = {
   data: any;
@@ -12,10 +13,28 @@ type DataContextType = {
 const DataContext = createContext<DataContextType>({} as DataContextType);
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data, refetch, isFetching, isError, error } =
-    useGetDirectoryStructure();
+  const [data, setData] = useState<any>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<any>(null);
+
+  const fetchData = async () => {
+    setIsFetching(true);
+    setIsError(false);
+    setError(null);
+    try {
+      const result = await orpc.syllabus.call();
+      setData(result);
+    } catch (err: any) {
+      setIsError(true);
+      setError(err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   useEffect(() => {
-    refetch();
+    fetchData();
   }, []);
 
   return (

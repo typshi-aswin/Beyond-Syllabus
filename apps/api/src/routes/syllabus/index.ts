@@ -75,53 +75,40 @@ async function readSyllabusData() {
                       });
                     }
 
-                    // Extract type (Module/Week/Weeks), number/range and title from the regex groups
                     const typeLabelRaw = moduleMatch[1];
                     const numberOrRange = moduleMatch[2];
                     let titleText = moduleMatch[3] || "";
 
-                    // Clean up the title more carefully
                     if (titleText) {
-                      // Remove bold markers first
                       titleText = titleText
-                        .replace(/^\*{0,2}/, "") // Remove leading bold markers
-                        .replace(/\*{0,2}$/, "") // Remove trailing bold markers
+                        .replace(/^\*{0,2}/, "")
+                        .replace(/\*{0,2}$/, "")
                         .trim();
 
-                      // Remove leading separators (dash, em-dash, colon)
                       titleText = titleText.replace(/^[-–—:]\s*/, "");
-
-                      // Remove trailing separators
                       titleText = titleText.replace(/\s*[-–—:]\s*$/, "");
 
-                      // Handle parentheses intelligently
-                      // Case 1: Complete wrapper parentheses (remove them if no inner parentheses)
                       if (
                         titleText.startsWith("(") &&
                         titleText.endsWith(")")
                       ) {
                         const inner = titleText.slice(1, -1);
-                        // Only remove if there are no other parentheses inside
                         if (!inner.includes("(") && !inner.includes(")")) {
                           titleText = inner.trim();
                         }
                       }
-                      // Case 2: Only opening parenthesis (remove it)
                       else if (
                         titleText.startsWith("(") &&
                         !titleText.endsWith(")")
                       ) {
                         titleText = titleText.slice(1).trim();
                       }
-                      // Case 3: Only closing parenthesis - BUT check if it's a valid abbreviation
                       else if (
                         !titleText.startsWith("(") &&
                         titleText.endsWith(")")
                       ) {
-                        // Check if it looks like an abbreviation pattern: "Word (ABC)"
                         const abbreviationPattern = /\s+\([A-Z]{2,5}\)$/;
                         if (!abbreviationPattern.test(titleText)) {
-                          // Not an abbreviation, remove orphaned closing parenthesis
                           titleText = titleText.slice(0, -1).trim();
                         }
                       }
@@ -129,13 +116,12 @@ async function readSyllabusData() {
                       titleText = titleText.trim();
                     }
 
-                    // Normalize type label to singular 'Module' or 'Weeks'
                     const normalizedType = /^week/i.test(typeLabelRaw)
                       ? /-/.test(numberOrRange)
                         ? "Weeks"
                         : "Week"
                       : "Module";
-                    // Use default title if empty
+
                     const finalTitle =
                       titleText || `${normalizedType} ${numberOrRange}`;
 
@@ -180,7 +166,6 @@ async function readSyllabusData() {
       JSON.stringify(data)
     );
   } catch (error) {
-    // :) Handle errors silently for now
     throw error;
   }
 }

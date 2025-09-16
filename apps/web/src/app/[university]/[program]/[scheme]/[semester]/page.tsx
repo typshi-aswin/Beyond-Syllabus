@@ -2,7 +2,7 @@
 
 import { notFound } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, use } from "react";
 import { Header } from "@/components/common/Header";
 import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import {
@@ -25,46 +25,20 @@ import {
 import ErrorDisplay from "@/components/common/ErrorDisplay";
 import { AnimatedDiv } from "@/components/common/AnimatedDiv";
 import { Footer } from "@/components/common/Footer";
-import { orpc } from "@/lib/orpc"; // make sure your ORPC client is imported
+import { useGetDirectoryStructure } from "@/hooks/query";
+import { useData } from "@/contexts";
 
 interface SubjectsPageProps {
-  params: {
+  params: Promise<{
     university: string;
     program: string;
     scheme: string;
     semester: string;
-  };
+  }>;
 }
 
 interface DirectoryStructure {
   [key: string]: any;
-}
-
-function capitalizeWords(str: string | undefined): string {
-  if (!str) return "";
-  return str
-    .replace(/-/g, " ")
-    .split(" ")
-    .map((word) =>
-      word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1) : ""
-    )
-    .join(" ");
-}
-
-function formatSemesterName(semesterId: string): string {
-  if (!semesterId) return "";
-  return `Semester ${semesterId.replace("s", "").replace(/^0+/, "")}`;
-}
-
-function getSubjectCategory(subjectCode: string) {
-  const code = subjectCode.toUpperCase();
-  if (code.startsWith("CS") || code.startsWith("IT"))
-    return { name: "Code", icon: <Code className="h-4 w-4" /> };
-  if (code.startsWith("MA"))
-    return { name: "Math", icon: <Sigma className="h-4 w-4" /> };
-  if (code.startsWith("PH") || code.startsWith("CY"))
-    return { name: "Science", icon: <FlaskConical className="h-4 w-4" /> };
-  return { name: "Core", icon: <BookText className="h-4 w-4" /> };
 }
 
 function findSemesterData(
@@ -75,7 +49,7 @@ function findSemesterData(
     scheme: string;
     semester: string;
   }
-) {
+): { university: any; program: any; scheme: any; semester: any } | null {
   const {
     university: universityId,
     program: programId,
@@ -107,36 +81,44 @@ function findSemesterData(
   return { university, program, scheme, semester };
 }
 
+function capitalizeWords(str: string | undefined): string {
+  if (!str) return "";
+  return str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function formatSemesterName(semesterId: string): string {
+  if (!semesterId) return "";
+  return `Semester ${semesterId.replace("s", "").replace(/^0+/, "")}`;
+}
+
+const getSubjectCategory = (subjectCode: string) => {
+  const code = subjectCode.toUpperCase();
+  if (code.startsWith("CS") || code.startsWith("IT"))
+    return { name: "Code", icon: <Code className="h-4 w-4" /> };
+  if (code.startsWith("MA"))
+    return { name: "Math", icon: <Sigma className="h-4 w-4" /> };
+  if (code.startsWith("PH") || code.startsWith("CY"))
+    return { name: "Science", icon: <FlaskConical className="h-4 w-4" /> };
+  return { name: "Core", icon: <BookText className="h-4 w-4" /> };
+};
+
 export default function SubjectsPage({ params }: SubjectsPageProps) {
   const router = useRouter();
-  const [directoryStructure, setDirectoryStructure] =
-    useState<DirectoryStructure | null>(null);
-  const [isFetching, setIsFetching] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const resolvedParams = use(params);
   const [loadingSubject, setLoadingSubject] = useState<string | null>(null);
+  const { data, isFetching, isError, error } = useData();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsFetching(true);
-      try {
-        const data = await orpc.syllabus.call();
-        setDirectoryStructure(data);
-        setIsFetching(false);
-      } catch (err: any) {
-        setIsError(true);
-        setErrorMessage(err?.message || "Failed to fetch syllabus data");
-        setIsFetching(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleViewSyllabus = async (subjectId: string) => {
+  const handleViewSyllabus = async (subjectId: string, subjectName: string) => {
     setLoadingSubject(subjectId);
-    await new Promise((resolve) => setTimeout(resolve, 700)); // optional delay
+
+    // Add aesthetic delay for smooth UX
+    await new Promise((resolve) => setTimeout(resolve, 700));
+
     router.push(
-      `/${params.university}/${params.program}/${params.scheme}/${params.semester}/${subjectId}`
+      `/${resolvedParams.university}/${resolvedParams.program}/${resolvedParams.scheme}/${resolvedParams.semester}/${subjectId}`
     );
   };
 
@@ -154,13 +136,28 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
     );
   }
 
-  if (isError || !directoryStructure) {
-    return <ErrorDisplay errorMessage={errorMessage} />;
+  if (isError || !data) {
+    return (
+      <ErrorDisplay
+        errorMessage={error?.message || "Could not fetch directory structure."}
+      />
+    );
   }
 
-  const dataPath = findSemesterData(directoryStructure, params);
-  if (!dataPath) notFound();
-
+  const dataPath = findSemesterData(data, resolvedParams);
+  if (!dataPath) {
+    notFound();
+  }
+  function capitalizeWords(str: string | undefined): string {
+    if (!str) return "";
+    return str
+      .replace(/-/g, " ") // replace all "-" with spaces
+      .split(" ")
+      .map((word) =>
+        word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1) : ""
+      )
+      .join(" ");
+  }
   const { university, program, scheme, semester } = dataPath;
 
   const breadcrumbItems = [
@@ -215,7 +212,9 @@ export default function SubjectsPage({ params }: SubjectsPageProps) {
                       </CardHeader>
                       <CardFooter>
                         <Button
-                          onClick={() => handleViewSyllabus(subject.id)}
+                          onClick={() =>
+                            handleViewSyllabus(subject.id, subject.name)
+                          }
                           disabled={isLoading}
                           variant="ghost"
                           className={`flex items-center text-sm font-medium text-primary group p-0 h-auto w-full justify-start transition-all duration-200 hover:bg-transparent ${
