@@ -58,7 +58,7 @@ const app = new Elysia()
 
   .all("/api*", async (context) => {
     const { response } = await apiHandler.handle(context.request, {
-      prefix: "/",
+      prefix: "/api",
       context: await createContext({ context }),
     });
     return response ?? new Response("Not Found", { status: 404 });
@@ -75,5 +75,8 @@ const app = new Elysia()
       path.join(process.cwd(), "src/routes/syllabus/university.json")
     ).json();
   })
-
+  if (process.env.NODE_ENV !== "production") {
+    app.listen({ port: 3000 });
+    console.log("Server is running on http://localhost:3000");
+  }
 export default app.handle;
