@@ -125,7 +125,12 @@ export function SelectionForm() {
     setStep(level);
   };
   if (isFetching) return;
-  if (isError) return <ErrorDisplay errorMessage={error} />;
+  if (isError)
+    return (
+      <ErrorDisplay
+        errorMessage={error?.message || "An error occurred while fetching data"}
+      />
+    );
   if (!directoryStructure || Object.keys(directoryStructure).length === 0) {
     return (
       <>
