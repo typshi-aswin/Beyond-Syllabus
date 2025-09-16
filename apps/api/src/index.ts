@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
@@ -8,6 +7,13 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { onError } from "@orpc/server";
 import { appRouter } from "./routes";
 import { createContext } from "./lib/context";
+import { readSyllabusData } from "./routes/syllabus";
+import { file } from "bun";
+import path from "node:path";
+import { env } from "./config/env";
+import serverTiming from "@elysiajs/server-timing";
+
+await readSyllabusData();
 
 const rpcHandler = new RPCHandler(appRouter, {
   interceptors: [
@@ -32,10 +38,16 @@ const apiHandler = new OpenAPIHandler(appRouter, {
 const app = new Elysia()
   .use(
     cors({
-      origin: process.env.CORS_ORIGIN || "",
+      origin: env.CORS_ORIGIN,
       methods: ["GET", "POST", "OPTIONS"],
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization"],
     })
   )
+  .use(serverTiming())
+
+  .options("/rpc*", () => new Response(null, { status: 204 }))
+
   .all("/rpc*", async (context) => {
     const { response } = await rpcHandler.handle(context.request, {
       prefix: "/rpc",
@@ -43,6 +55,7 @@ const app = new Elysia()
     });
     return response ?? new Response("Not Found", { status: 404 });
   })
+
   .all("/api*", async (context) => {
     const { response } = await apiHandler.handle(context.request, {
       prefix: "/api",
@@ -50,9 +63,14 @@ const app = new Elysia()
     });
     return response ?? new Response("Not Found", { status: 404 });
   })
+
   .get("/", () => "OK")
+  .get("/syllabus", async () => {
+    return await file(
+      path.join(process.cwd(), "src/routes/syllabus/university.json")
+    ).json();
+  })
   .listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
   });
-
 export { app };
