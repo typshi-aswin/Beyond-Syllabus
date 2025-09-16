@@ -7,7 +7,7 @@
     "check-types": "tsc -b",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile api",
     "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js"
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.3.3",
