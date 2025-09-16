@@ -8,6 +8,11 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { onError } from "@orpc/server";
 import { appRouter } from "./routes";
 import { createContext } from "./lib/context";
+import { readSyllabusData } from "./generated/generator";
+import { file } from "bun";
+import path from 'path';
+// Generate for better perf
+await readSyllabusData()
 
 const rpcHandler = new RPCHandler(appRouter, {
   interceptors: [
@@ -51,6 +56,9 @@ const app = new Elysia()
     return response ?? new Response("Not Found", { status: 404 });
   })
   .get("/", () => "OK")
+  .get("/university", async () => {
+    return await file(path.join(process.cwd(), "src/generated/university.json")).json()
+  })
   .listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
   });
