@@ -1,0 +1,15 @@
+services:  
+  - type: web
+    name: elysiajs-hello-world
+    runtime: node
+    repo: https://github.com/alvin-dennis/Beyond-Syllabus
+    plan: free
+    envVars:
+    - key: NODE_ENV
+      value: development
+    - key: CORS_ORIGIN
+      value: https://bs-web-mu.vercel.app
+    region: oregon
+    buildCommand: bun install
+    startCommand: bun start
+version: "1"
