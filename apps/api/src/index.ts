@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
@@ -35,7 +35,7 @@ const apiHandler = new OpenAPIHandler(appRouter, {
   ],
 });
 
-const app = new Elysia()
+export default new Elysia()
   .use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -65,13 +65,14 @@ const app = new Elysia()
   })
 
   .get("/", () => "OK")
+  .post("/", ({ body }) => body, {
+    body: t.Object({
+      name: t.String(),
+    }),
+  })
   .get("/syllabus", async () => {
     return await file(
       path.join(process.cwd(), "src/routes/syllabus/university.json")
     ).json();
   })
-  .listen(3000, () => {
-    console.log("Server is running on http://localhost:3000");
-  });
 
-module.exports = app;
