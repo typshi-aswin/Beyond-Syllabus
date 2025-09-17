@@ -7,7 +7,7 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { onError } from "@orpc/server";
 import { appRouter } from "./routes";
 import { createContext } from "./lib/context";
-import { readSyllabusData } from "./routes/syllabus";
+import { readSyllabusData } from "./routes/syllabus/generated/generate";
 import { file } from "bun";
 import path from "node:path";
 import { env } from "./config/env";
@@ -70,8 +70,8 @@ export default new Elysia()
       name: t.String(),
     }),
   })
-  .get("/syllabus", async () => {
-    return await file(
-      path.join(process.cwd(), "src/routes/syllabus/university.json")
-    ).json();
+  app.all("/api/syllabus", async (c) => {
+    const url = new URL(c.req.url);
+    const query = Object.fromEntries(url.searchParams.entries());
+    return rpcHandler(new NodeRequest(c.req), { input: query });
   });

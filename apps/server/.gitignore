@@ -52,4 +52,4 @@ lerna-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-src/routes/syllabus/university.json
+src/routes/syllabus/generated/university.json

@@ -162,7 +162,7 @@ async function readSyllabusData() {
       }
     }
     await Bun.write(
-      path.join(process.cwd(), "src/routes/syllabus/university.json"),
+      path.join(process.cwd(), "src/routes/syllabus/generated/university.json"),
       JSON.stringify(data)
     );
   } catch (error) {
