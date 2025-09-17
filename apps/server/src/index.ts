@@ -35,8 +35,6 @@ const apiHandler = new OpenAPIHandler(appRouter, {
   ],
 });
 
-const port = env.PORT || 3000;
-
 
 export default new Elysia()
   .use(
@@ -48,7 +46,6 @@ export default new Elysia()
     })
   )
   .use(serverTiming())
-  .listen(port)
 
   .options("/rpc*", () => new Response(null, { status: 204 }))
 
