@@ -30,7 +30,7 @@ export default {
 		// publish to a Queue, query a D1 Database, and much more.
 		//
 		// We'll keep it simple and make an API call to a Cloudflare API:
-		let resp = await fetch('https://bs-api-8lq1.onrender.coms');
+		let resp = await fetch('https://bs-api-te2f.onrender.com');
 		let wasSuccessful = resp.ok ? 'success' : 'fail';
 
 		// You could store this result in KV, write to a D1 Database, or publish to a Queue.
