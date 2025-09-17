@@ -11,6 +11,7 @@ import { file } from "bun";
 import path from "node:path";
 import { env } from "./config/env";
 import serverTiming from "@elysiajs/server-timing";
+import { logger } from "@chneau/elysia-logger";
 
 
 const rpcHandler = new RPCHandler(appRouter, {
@@ -33,8 +34,9 @@ const apiHandler = new OpenAPIHandler(appRouter, {
   ],
 });
 
+const port = Number(process.env.PORT) || 3000;
 
-export default new Elysia()
+const app = new Elysia()
   .use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -44,6 +46,7 @@ export default new Elysia()
     })
   )
   .use(serverTiming())
+  .use(logger())
 
   .options("/rpc*", () => new Response(null, { status: 204 }))
 
@@ -73,8 +76,9 @@ export default new Elysia()
     return await file(
       path.join(process.cwd(), "src/routes/syllabus/generated/university.json")
     ).json();
+  })
+  .listen(port, () => {
+    console.log(
+      "🦊 Beyond Syllabus API is running !!"
+    );
   });
-
-  console.log(
-    "Beyond Syllabus API is running!!"
-  );
