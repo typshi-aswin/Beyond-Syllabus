@@ -13,8 +13,6 @@ import path from "node:path";
 import { env } from "./config/env";
 import serverTiming from "@elysiajs/server-timing";
 
-await readSyllabusData();
-
 const rpcHandler = new RPCHandler(appRouter, {
   interceptors: [
     onError((error) => {
@@ -78,6 +76,8 @@ const app = new Elysia()
       path.join(process.cwd(), "src/routes/syllabus/generated/university.json")
     ).json();
   });
+
+  await readSyllabusData();
 
   console.log(
     `Beyond Syllabus API is running at ${app.server?.hostname}:${app.server?.port}`
