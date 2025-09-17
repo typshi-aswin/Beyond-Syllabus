@@ -7,13 +7,11 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { onError } from "@orpc/server";
 import { appRouter } from "./routes";
 import { createContext } from "./lib/context";
-import { readSyllabusData } from "./routes/syllabus/generated/generate";
 import { file } from "bun";
 import path from "node:path";
 import { env } from "./config/env";
 import serverTiming from "@elysiajs/server-timing";
 
-await readSyllabusData();
 
 const rpcHandler = new RPCHandler(appRouter, {
   interceptors: [

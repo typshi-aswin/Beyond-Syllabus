@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import fs from "fs";
 import path from "node:path";
 import matter from "gray-matter";
@@ -96,14 +97,12 @@ async function readSyllabusData() {
                         if (!inner.includes("(") && !inner.includes(")")) {
                           titleText = inner.trim();
                         }
-                      }
-                      else if (
+                      } else if (
                         titleText.startsWith("(") &&
                         !titleText.endsWith(")")
                       ) {
                         titleText = titleText.slice(1).trim();
-                      }
-                      else if (
+                      } else if (
                         !titleText.startsWith("(") &&
                         titleText.endsWith(")")
                       ) {
@@ -161,12 +160,22 @@ async function readSyllabusData() {
         }
       }
     }
-    await Bun.write(
-      path.join(process.cwd(), "src/routes/syllabus/generated/university.json"),
-      JSON.stringify(data)
+
+    const outputPath = path.join(
+      process.cwd(),
+      "src/routes/syllabus/generated/university.json"
     );
+
+    await Bun.write(outputPath, JSON.stringify(data, null, 2));
+    console.log(`✅ Syllabus data generated at ${outputPath}`);
   } catch (error) {
-    throw error;
+    console.error("❌ Error generating syllabus data:", error);
+    process.exit(1);
   }
 }
-export { readSyllabusData };
+
+(async () => {
+  console.log("🔹 Generating syllabus data...");
+  await readSyllabusData();
+  console.log("🔹 Done!");
+})();
