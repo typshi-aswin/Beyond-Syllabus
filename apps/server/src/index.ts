@@ -35,7 +35,9 @@ const apiHandler = new OpenAPIHandler(appRouter, {
   ],
 });
 
-export default new Elysia()
+const port = env.PORT || 3000;
+
+const app = new Elysia()
   .use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -45,6 +47,7 @@ export default new Elysia()
     })
   )
   .use(serverTiming())
+  .listen(port)
 
   .options("/rpc*", () => new Response(null, { status: 204 }))
 
@@ -75,3 +78,7 @@ export default new Elysia()
       path.join(process.cwd(), "src/routes/syllabus/generated/university.json")
     ).json();
   });
+
+  console.log(
+    `Beyond Syllabus API is running at ${app.server?.hostname}:${app.server?.port}`
+  );
