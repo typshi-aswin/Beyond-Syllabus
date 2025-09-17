@@ -10,7 +10,7 @@ export const appRouter = {
   }),
   syllabus: publicProcedure.handler(async () => {
     const data = await file(
-      path.join(process.cwd(), "src/routes/syllabus/university.json")
+      path.join(process.cwd(), "src/routes/syllabus/generated/university.json")
     ).json();
     return data;
   }),
