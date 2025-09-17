@@ -70,8 +70,8 @@ export default new Elysia()
       name: t.String(),
     }),
   })
-  app.all("/api/syllabus", async (c) => {
-    const url = new URL(c.req.url);
-    const query = Object.fromEntries(url.searchParams.entries());
-    return rpcHandler(new NodeRequest(c.req), { input: query });
+  .get("/syllabus", async () => {
+    return await file(
+      path.join(process.cwd(), "src/routes/syllabus/generated/university.json")
+    ).json();
   });
