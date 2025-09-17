@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "sync": "bunx degit The-Purple-Movement/WikiSyllabus/universities universities/ --force",
-    "build": "tsdown src/index.ts -d api --dts && bun run generate && bun sync",
+    "build": "tsdown src/index.ts -d api --dts && bun sync && bun run generate",
     "generate": "bun run ./src/routes/syllabus/generated/generate.ts",
     "check-types": "tsc -b",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile api",
