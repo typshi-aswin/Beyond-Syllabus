@@ -6,20 +6,19 @@
     "packages/*"
   ],
   "scripts": {
-    "check": "oxlint",
-    "dev": "turbo dev",
-    "build": "turbo build",
     "sync": "bunx degit The-Purple-Movement/WikiSyllabus/universities apps/server/universities/ --force",
-    "build:prod": "bun sync && turbo -F server build",
-    "check-types": "turbo check-types",
-    "dev:native": "turbo -F native dev",
-    "dev:web": "turbo -F web dev",
-    "dev:server": "turbo -F server dev",
-    "start:server": "turbo -F server start"
+    "build:server": "bun sync && bun run --filter server build",
+    "build:web": "bun run --filter web build",
+    "check": "oxlint",
+    "dev": "bun run --filter '*' dev",
+    "build": "bun run --filter '*' build",
+    "check-types": "bun run --filter '*' check-types",
+    "dev:native": "bun run --filter native dev",
+    "dev:web": "bun run --filter web dev",
+    "dev:server": "bun run --filter server dev"
   },
   "dependencies": {},
   "devDependencies": {
-    "turbo": "^2.5.4",
     "@biomejs/biome": "^2.1.2",
     "oxlint": "^1.8.0"
   },
