@@ -5,12 +5,12 @@ import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { RPCHandler } from "@orpc/server/fetch";
 import { onError } from "@orpc/server";
-import { appRouter } from "./src/routes";
-import { createContext } from "./src/lib/context";
-import { readSyllabusData } from "./src/routes/syllabus/generated/generate";
+import { appRouter } from "./routes";
+import { createContext } from "./lib/context";
+import { readSyllabusData } from "./routes/syllabus/generated/generate";
 import { file } from "bun";
 import path from "node:path";
-import { env } from "./src/config/env";
+import { env } from "./config/env";
 import serverTiming from "@elysiajs/server-timing";
 
 await readSyllabusData();

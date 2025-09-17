@@ -1,13 +1,13 @@
 {
   "name": "server",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsdown index.ts -d api --dts",
+    "build": "tsdown src/index.ts -d api --dts",
     "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode index.ts --outfile api",
-    "dev": "bun run --hot index.ts",
-    "start": "bun run index.ts"
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile api",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.3.3",
