@@ -16,16 +16,16 @@
     padding: 2px;
     border-radius: 10px;
     background:
-        linear-gradient(to right, transparent, rgb(184, 94, 244), transparent) top,
+        linear-gradient(to right, transparent, hsl(var(--primary)), transparent) top,
 
-        linear-gradient(to right, transparent, rgb(184, 94, 244), transparent) bottom,
+        linear-gradient(to right, transparent, hsl(var(--primary)), transparent) bottom,
 
-        linear-gradient(to bottom, transparent, rgb(184, 94, 244), transparent) left,
+        linear-gradient(to bottom, transparent, hsl(var(--primary)), transparent) left,
 
-        linear-gradient(to bottom, transparent, rgb(184, 94, 244), transparent) right;
+        linear-gradient(to bottom, transparent, hsl(var(--primary)), transparent) right;
     background-size: 100% 2px, 100% 2px, 2px 100%, 2px 100%;
     background-repeat: no-repeat;
-    filter: drop-shadow(0 0 8px rgb(184, 94, 244)) drop-shadow(0 0 16px rgb(184, 94, 244));
+    filter: drop-shadow(0 0 8px hsl(var(--primary))) drop-shadow(0 0 16px hsl(var(--primary)));
     pointer-events: none;
 
 }
