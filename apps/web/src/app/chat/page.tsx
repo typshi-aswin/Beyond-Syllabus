@@ -148,21 +148,25 @@ export default function ChatComponent() {
     const firstUserMessage =
       messages.find((m) => m.role === "user")?.content || "";
 
-    if(historyViewing === true) setHistoryViewing(false);
+    if (historyViewing) {
+      // Just exit history mode + clear messages
+      setHistoryViewing(false);
+      setMessages([]);
+      return; // stop here, don’t archive old chat
+    }
+
+    // Normal behavior (not in history view)
     if (messages.length > 1) {
       setChatHistory((prev) => [
         ...prev,
         {
-          title: historyViewing
-            ? `${moduleTitle} - New Topic`
-            : firstUserMessage
-              ? `Untitled - ${firstUserMessage.slice(0, 20)}`
-              : `${moduleTitle} - New Topic`,
+          title: firstUserMessage
+            ? `Untitled - ${firstUserMessage.slice(0, 20)}`
+            : `${moduleTitle} - New Topic`,
           messages: messages.filter((m) => m.role !== "system"),
         },
       ]);
     }
-
     const systemMessage: Message = {
       role: "system",
       content: `You are an expert assistant for the course module: ${moduleTitle}.\nModule Content:\n${moduleContent}`,
