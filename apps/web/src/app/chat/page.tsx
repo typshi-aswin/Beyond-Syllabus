@@ -1,11 +1,12 @@
 "use client";
-import "katex/dist/katex.min.css"; 
+import "katex/dist/katex.min.css";
 import { useState, useEffect, useRef } from "react";
 import { chatWithSyllabus, Message } from "@/ai/flows/chat-with-syllabus";
 import { generateModuleTasks } from "@/ai/flows/generate-module-tasks";
-import { Header } from "@/components/common/Header";
 import DesktopChatLayout from "./DesktopChatLayout";
+import DesktopChat from "./DesktopChat/DesktopChat";
 import MobileChatPanels from "./mobileChatPanels";
+import styles from './page.module.css';
 
 export default function ChatComponent() {
   // Client-only state for module title/content
@@ -27,6 +28,7 @@ export default function ChatComponent() {
   >([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"ai" | "quick" | "history">("ai");
+  const [historyViewing, setHistoryViewing] = useState<boolean>(false);
 
   const quickQuestions = [
     "Why do I need to study this?",
@@ -50,6 +52,10 @@ export default function ChatComponent() {
       100
     );
   }, [messages, loading]);
+
+  useEffect(() => {
+    console.log(messages)
+  }, [messages])
 
   // Generate initial tasks
   useEffect(() => {
@@ -142,13 +148,16 @@ export default function ChatComponent() {
     const firstUserMessage =
       messages.find((m) => m.role === "user")?.content || "";
 
+    if(historyViewing === true) setHistoryViewing(false);
     if (messages.length > 1) {
       setChatHistory((prev) => [
         ...prev,
         {
-          title: firstUserMessage
-            ? `Untitled - ${firstUserMessage.slice(0, 20)}`
-            : `${moduleTitle} - New Topic`,
+          title: historyViewing
+            ? `${moduleTitle} - New Topic`
+            : firstUserMessage
+              ? `Untitled - ${firstUserMessage.slice(0, 20)}`
+              : `${moduleTitle} - New Topic`,
           messages: messages.filter((m) => m.role !== "system"),
         },
       ]);
@@ -167,11 +176,11 @@ export default function ChatComponent() {
   };
 
   return (
-    <div className="h-full mx-4 md:mx-10 my-6 md:my-10 bg-transparent">
-      <Header />
+    <div className={styles.container}>
 
-      <div className="md:flex md:visible hidden flex-row w-full gap-10 mt-[11vh] items-start justify-center h-[80vh]">
-        <DesktopChatLayout
+
+      <div className={styles.desktopContainer}>
+        {/* <DesktopChatLayout
           moduleTitle={moduleTitle}
           moduleContent={moduleContent}
           messages={messages}
@@ -189,10 +198,32 @@ export default function ChatComponent() {
           handleSuggestionClick={handleSuggestionClick}
           copyToClipboard={copyToClipboard}
           setMessages={setMessages}
+        /> */}
+        <DesktopChat
+          chatHistory={chatHistory}
+          onDeleteTopic={handleDeleteTopic}
+          moduleTitle={moduleTitle}
+          messages={messages}
+          copiedMessageIndex={copiedMessageIndex}
+          copyToClipboard={copyToClipboard}
+          loading={loading}
+          suggestions={suggestions}
+          handleSend={handleSend}
+          handleSuggestionClick={handleSuggestionClick}
+          input={input}
+          setInput={setInput}
+          onModelChange={setSelectedModel}
+          handleNewTopic={handleNewTopic}
+          setMessages={setMessages}
+          setActiveTab={setActiveTab}
+          historyViewing={historyViewing}
+          setHistoryViewing={setHistoryViewing}
         />
+
+
       </div>
 
-      <div className="md:hidden mt-[15vh]">
+      <div className={styles.mobileContainer}>
         <MobileChatPanels
           messages={messages}
           onModelChange={setSelectedModel}
@@ -204,12 +235,12 @@ export default function ChatComponent() {
           suggestions={suggestions}
           copiedMessageIndex={copiedMessageIndex}
           chatHistory={chatHistory}
+          setChatHistory={setChatHistory}
           quickQuestions={quickQuestions}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           chatEndRef={chatEndRef}
           moduleTitle={moduleTitle}
-          moduleContent={moduleContent}
           copyToClipboard={copyToClipboard}
           handleSuggestionClick={handleSuggestionClick}
           handleSend={handleSend}
